@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\ShadowStalk.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{E65C1C46-97E7-4502-8550-23295A5584E5}</UniqueIdentifier>
+      <UniqueIdentifier>{BD4AE547-D069-4616-879F-2046A9E5ACF0}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\ShadowStalk.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{0DEFCE3B-04A2-44BD-B9C8-E9C96CA6C79E}</UniqueIdentifier>
+      <UniqueIdentifier>{FBE8B25D-786C-4FCB-9A97-D9A6560DF124}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -24,7 +24,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\ShadowStalk">
-      <UniqueIdentifier>{1BA9C903-7B24-40AE-AFBB-9A0A29AB3531}</UniqueIdentifier>
+      <UniqueIdentifier>{B8655D63-CDD5-4C09-94DB-B1A47D970E26}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\ShadowStalk\ShadowStalk.Build.cs">
       <Filter>Source\ShadowStalk</Filter>
