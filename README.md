@@ -1,1 +1,2 @@
-# W21_GAM1528_ParticleInteractive
+Particle Interactive.
+Currently working on a heavily stylized asymmetrical multiplayer game.
