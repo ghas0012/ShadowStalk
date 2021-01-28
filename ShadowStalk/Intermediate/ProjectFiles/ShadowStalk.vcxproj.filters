@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\ShadowStalk.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{BD4AE547-D069-4616-879F-2046A9E5ACF0}</UniqueIdentifier>
+      <UniqueIdentifier>{541DC95E-8E3B-429C-B124-8B4E90506547}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\ShadowStalk.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{FBE8B25D-786C-4FCB-9A97-D9A6560DF124}</UniqueIdentifier>
+      <UniqueIdentifier>{9BB6F999-5BA1-49B7-8231-3C19C4F4CD83}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -24,7 +24,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\ShadowStalk">
-      <UniqueIdentifier>{B8655D63-CDD5-4C09-94DB-B1A47D970E26}</UniqueIdentifier>
+      <UniqueIdentifier>{72C1ED3A-E149-4216-81F0-C4B9C46A8389}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\ShadowStalk\ShadowStalk.Build.cs">
       <Filter>Source\ShadowStalk</Filter>
@@ -39,6 +39,12 @@
       <Filter>Source\ShadowStalk</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\ShadowStalk\ShadowStalkGameModeBase.h">
+      <Filter>Source\ShadowStalk</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\ShadowStalk\TestClass.cpp">
+      <Filter>Source\ShadowStalk</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ShadowStalk\TestClass.h">
       <Filter>Source\ShadowStalk</Filter>
     </ClInclude>
   </ItemGroup>

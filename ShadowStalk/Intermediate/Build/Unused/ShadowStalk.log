@@ -1,23 +1,11 @@
 ﻿  Using 'git status' to determine working set for adaptive non-unity build (D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive).
-  Creating makefile for ShadowStalkEditor (no existing makefile)
-  While compiling D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\BuildRules\ShadowStalkModuleRules.dll:
-d:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Source\ShadowStalk\ShadowStalk.Build.cs(16,3): warning CS0618: 'UnrealBuildTool.ModuleRules.bFasterWithoutUnity' is obsolete: 'bFasterWithoutUnity has been deprecated in favor of setting 'bUseUnity' on a per module basis in BuildConfiguration'
-  Parsing headers for ShadowStalkEditor
-    Running UnrealHeaderTool "D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\ShadowStalk.uproject" "D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\ShadowStalkEditor\Development\ShadowStalkEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Chris\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
-  Reflection code generated for ShadowStalkEditor in 18.9719847 seconds
   Building ShadowStalkEditor...
   Using Visual Studio 2019 14.26.28805 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.26.28801) and Windows 10.0.18362.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-  Building 9 actions with 8 processes...
-    [1/9] Default.rc2
-    [2/9] SharedPCH.Engine.ShadowErrors.cpp
-    [3/9] ShadowStalk.cpp
-    [4/9] ShadowStalkGameModeBase.cpp
-    [5/9] ShadowStalk.init.gen.cpp
-    [6/9] ShadowStalkGameModeBase.gen.cpp
-    [7/9] UE4Editor-ShadowStalk.lib
-       Creating library D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk.lib and object D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk.exp
-    [8/9] UE4Editor-ShadowStalk.dll
-       Creating library D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk.suppressed.lib and object D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk.suppressed.exp
-    [9/9] ShadowStalkEditor.target
-  Total time in Parallel executor: 59.99 seconds
-  Total execution time: 122.93 seconds
+  Building 3 actions with 8 processes...
+    [1/3] UE4Editor-ShadowStalk-0003.lib
+       Creating library D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk-0003.lib and object D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk-0003.exp
+    [2/3] UE4Editor-ShadowStalk-0003.dll
+       Creating library D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk-0003.suppressed.lib and object D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\UE4Editor-ShadowStalk-0003.suppressed.exp
+    [3/3] ShadowStalkEditor.target
+  Total time in Parallel executor: 1.99 seconds
+  Total execution time: 3.46 seconds
