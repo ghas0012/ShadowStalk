@@ -1,0 +1,7 @@
+P:\Unreal Projects\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\Definitions.ShadowStalk.h
+P:\Unreal Projects\ShadowStalk\Source\ShadowStalk\ShadowStalkGameModeBase.h
+P:\Epic Games\UE_4.25\Engine\Source\Runtime\Engine\Classes\GameFramework/GameModeBase.h
+P:\Epic Games\UE_4.25\Engine\Source\Runtime\Engine\Classes\Engine/ServerStatReplicator.h
+P:\Epic Games\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ServerStatReplicator.generated.h
+P:\Epic Games\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameModeBase.generated.h
+P:\Unreal Projects\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Inc\ShadowStalk\ShadowStalkGameModeBase.generated.h

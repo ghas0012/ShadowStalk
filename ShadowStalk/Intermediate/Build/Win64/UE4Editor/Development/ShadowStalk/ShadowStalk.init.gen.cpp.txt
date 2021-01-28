@@ -1,0 +1,3 @@
+P:\Unreal Projects\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\Definitions.ShadowStalk.h
+P:\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
+P:\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h

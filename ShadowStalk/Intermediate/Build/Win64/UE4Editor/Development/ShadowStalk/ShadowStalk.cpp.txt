@@ -1,0 +1,2 @@
+P:\Unreal Projects\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\Definitions.ShadowStalk.h
+P:\Unreal Projects\ShadowStalk\Source\ShadowStalk\ShadowStalk.h

@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalk\\ShadowStalk.Build.cs",
+		"P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalk.Target.cs",
+		"P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalkEditor.Target.cs"
+	],
+	"EngineVersion": "4.25.4"
+}
