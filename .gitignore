@@ -1,6 +1,13 @@
 # Visual Studio 2015 user specific files
 .vs/
 
+# Particle Interactive ---
+*.log
+Binaries
+DerivedDataCache
+Intermediate
+Saved
+
 # Compiled Object files
 *.slo
 *.lo
@@ -56,10 +63,10 @@ Plugins/*/Binaries/*
 # Builds
 Build/*
 
-# Whitelist PakBlacklist-<BuildConfiguration>.txt files
-!Build/*/
-Build/*/**
-!Build/*/PakBlacklist*.txt
+## Whitelist PakBlacklist-<BuildConfiguration>.txt files
+##!Build/*/
+##Build/*/**
+##!Build/*/PakBlacklist*.txt
 
 # Don't ignore icon files in Build
 !Build/**/*.ico
