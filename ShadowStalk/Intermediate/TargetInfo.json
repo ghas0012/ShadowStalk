@@ -2,12 +2,12 @@
 	"Targets": [
 		{
 			"Name": "ShadowStalk",
-			"Path": "P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalk.Target.cs",
+			"Path": "D:\\Chris\\Documents\\School Work\\Semester 4\\High Level 2\\Mini Capstone\\W21_GAM1528_ParticleInteractive\\ShadowStalk\\Source\\ShadowStalk.Target.cs",
 			"Type": "Game"
 		},
 		{
 			"Name": "ShadowStalkEditor",
-			"Path": "P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalkEditor.Target.cs",
+			"Path": "D:\\Chris\\Documents\\School Work\\Semester 4\\High Level 2\\Mini Capstone\\W21_GAM1528_ParticleInteractive\\ShadowStalk\\Source\\ShadowStalkEditor.Target.cs",
 			"Type": "Editor"
 		}
 	]

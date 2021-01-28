@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalk\\ShadowStalk.Build.cs",
-		"P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalk.Target.cs",
-		"P:\\Unreal Projects\\ShadowStalk\\Source\\ShadowStalkEditor.Target.cs"
+		"D:\\Chris\\Documents\\School Work\\Semester 4\\High Level 2\\Mini Capstone\\W21_GAM1528_ParticleInteractive\\ShadowStalk\\Source\\ShadowStalk\\ShadowStalk.Build.cs",
+		"D:\\Chris\\Documents\\School Work\\Semester 4\\High Level 2\\Mini Capstone\\W21_GAM1528_ParticleInteractive\\ShadowStalk\\Source\\ShadowStalk.Target.cs",
+		"D:\\Chris\\Documents\\School Work\\Semester 4\\High Level 2\\Mini Capstone\\W21_GAM1528_ParticleInteractive\\ShadowStalk\\Source\\ShadowStalkEditor.Target.cs"
 	],
-	"EngineVersion": "4.25.4"
+	"EngineVersion": "4.25.3"
 }

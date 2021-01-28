@@ -1,7 +1,7 @@
-P:\Unreal Projects\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\Definitions.ShadowStalk.h
-P:\Unreal Projects\ShadowStalk\Source\ShadowStalk\ShadowStalkGameModeBase.h
-P:\Epic Games\UE_4.25\Engine\Source\Runtime\Engine\Classes\GameFramework/GameModeBase.h
-P:\Epic Games\UE_4.25\Engine\Source\Runtime\Engine\Classes\Engine/ServerStatReplicator.h
-P:\Epic Games\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ServerStatReplicator.generated.h
-P:\Epic Games\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameModeBase.generated.h
-P:\Unreal Projects\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Inc\ShadowStalk\ShadowStalkGameModeBase.generated.h
+D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\Definitions.ShadowStalk.h
+D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Source\ShadowStalk\ShadowStalkGameModeBase.h
+D:\Program Files (x86)\Epic Games\UE_4.25\Engine\Source\Runtime\Engine\Classes\GameFramework/GameModeBase.h
+D:\Program Files (x86)\Epic Games\UE_4.25\Engine\Source\Runtime\Engine\Classes\Engine/ServerStatReplicator.h
+D:\Program Files (x86)\Epic Games\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ServerStatReplicator.generated.h
+D:\Program Files (x86)\Epic Games\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameModeBase.generated.h
+D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Inc\ShadowStalk\ShadowStalkGameModeBase.generated.h
