@@ -1,2 +1,0 @@
-D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\Definitions.ShadowStalk.h
-D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Source\ShadowStalk\ShadowStalk.h

@@ -1,3 +1,0 @@
-D:\Chris\Documents\School Work\Semester 4\High Level 2\Mini Capstone\W21_GAM1528_ParticleInteractive\ShadowStalk\Intermediate\Build\Win64\UE4Editor\Development\ShadowStalk\Definitions.ShadowStalk.h
-D:\Program Files (x86)\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-D:\Program Files (x86)\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
