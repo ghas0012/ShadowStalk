@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+
 #include "Entity.generated.h"
-#include "../Movement Component/EntityMovementComponent.h"
 
 UCLASS()
 class SHADOWSTALK_API AEntity : public ACharacter
@@ -16,13 +17,22 @@ public:
 	// Sets default values for this character's properties
 	AEntity();
 
-	UEntityMovementComponent* m_MovementComponent;
-	UCapsuleComponent* m_CapsuleComponent;
+	class UEntityMovementComponent* m_MovementComp;
+	class UCapsuleComponent* m_PlayerCapsule;
+	class USphereComponent* m_InteractComp;
+
 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void Forward(float value);
+	virtual void Strafe(float value);
+	virtual void Interact();
+	virtual void Jump();
+	virtual void Crawl(bool IsCrawl);
+
 
 public:	
 	// Called every frame

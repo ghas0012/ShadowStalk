@@ -25,13 +25,19 @@ public:
 	float FrictionLerp = 1;
 	float Acceleration;
 	float WalkSpeed;
-	float MaxWalkSpeed;
-	float CrawlWalkSpeed;
+	float CurrentSpeed;
+	float SprintSpeed;
+	float CrawlSpeed;
+	float JumpStrength;
 	float AirControl = 0;
 
+	bool bIsCrawling;
+
 	void Reset();
-	void Jump(float JumpStrength);
+	void Jump();
 	void LockInput(bool b);
+	void Sprint();
+	void Walk();
 	void Crawl();
 	bool bInputLocked = false;
 	bool bIsGrounded = false;

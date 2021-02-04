@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "EntityMovementComponent.h"
+
 
 void UEntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -56,7 +57,7 @@ void UEntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
     InputAcceleration = ConsumeInputVector() * Acceleration * AirControlMultiplier;
 
     VelocityVector += InputAcceleration * DeltaTime;
-    VelocityVector = VelocityVector.GetClampedToMaxSize2D(MaxWalkSpeed);
+    VelocityVector = VelocityVector.GetClampedToMaxSize2D(CurrentSpeed);
     
     if ((bIsGrounded) && InputAcceleration.SizeSquared() < 0.5f)
     {
@@ -78,6 +79,16 @@ void UEntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
         }
     }
 
+    //TODO - Temp Code, will update once we have actual sizes
+    if (bIsCrawling)
+    {
+        CapsuleComp->SetCapsuleHalfHeight(0.5f);
+    }
+    else
+    {
+        CapsuleComp->SetCapsuleHalfHeight(1.0f);
+    }
+
     UpdateComponentVelocity();
 
 }
@@ -91,7 +102,7 @@ void UEntityMovementComponent::Reset()
     LockInput(false);
 }
 
-void UEntityMovementComponent::Jump(float JumpStrength)
+void UEntityMovementComponent::Jump()
 {
     if (bInputLocked)
         return;
@@ -109,7 +120,34 @@ void UEntityMovementComponent::LockInput(bool b)
     CapsuleComp->SetPhysicsAngularVelocity(FVector::ZeroVector);
 }
 
+void UEntityMovementComponent::Sprint()
+{
+    if (bInputLocked)
+    {
+        return;
+    }
+
+    CurrentSpeed = SprintSpeed;
+    bIsCrawling = false;
+}
+
+void UEntityMovementComponent::Walk()
+{
+    if (bInputLocked)
+    {
+        return;
+    }
+
+    CurrentSpeed = WalkSpeed;
+    bIsCrawling = false;
+}
+
 void UEntityMovementComponent::Crawl()
 {
+    if (bInputLocked)
+        return;
+
+    CurrentSpeed = CrawlSpeed;
+    bIsCrawling = true;
 
 }
