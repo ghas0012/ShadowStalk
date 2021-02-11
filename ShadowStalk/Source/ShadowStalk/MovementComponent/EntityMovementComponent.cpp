@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/CapsuleComponent.h"
 #include "EntityMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+
 
 
 void UEntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -102,7 +103,7 @@ void UEntityMovementComponent::Reset()
     LockInput(false);
 }
 
-void UEntityMovementComponent::Jump()
+void UEntityMovementComponent::Jump(float jumps) //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
 {
     if (bInputLocked)
         return;

@@ -34,7 +34,7 @@ public:
 	bool bIsCrawling;
 
 	void Reset();
-	void Jump();
+	void Jump(float jumps); //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
 	void LockInput(bool b);
 	void Sprint();
 	void Walk();
