@@ -19,6 +19,10 @@ public:
 
 	AEntityMonster();
 
+	virtual void Forward(float value) override;
+	virtual void Strafe(float value) override;
+	virtual void Jump() override;
+	virtual void Interact() override;
 
 protected:
 

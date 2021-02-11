@@ -9,3 +9,22 @@ AEntityMonster::AEntityMonster()
 
 }
 
+void AEntityMonster::Forward(float value)
+{
+    Super::Forward(value);
+}
+
+void AEntityMonster::Strafe(float value)
+{
+    Super::Strafe(value);
+}
+
+void AEntityMonster::Jump()
+{
+    Super::Jump();
+}
+
+void AEntityMonster::Interact()
+{
+    //TODO 
+}

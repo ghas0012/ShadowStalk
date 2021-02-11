@@ -88,7 +88,7 @@ void AEntity::Strafe(float value)
 
 void AEntity::Interact()
 {
-	//TODO - Set up Interact (might remove and add to Child classes)
+	//LEAVE EMPTY, Will get overrided by child classes.
 }
 
 void AEntity::Jump()
@@ -137,6 +137,13 @@ void AEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	HandleCamera();
+
+	FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
+	if (!CombinedAccleration.IsNearlyZero() && m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
+	{
+		m_MovementComp->AddInputVector(CombinedAccleration);
+	}
 
 }
 
