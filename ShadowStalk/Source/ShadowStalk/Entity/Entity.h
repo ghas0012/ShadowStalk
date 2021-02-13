@@ -9,7 +9,7 @@
 #include "Entity.generated.h"
 
 UCLASS()
-class SHADOWSTALK_API AEntity : public ACharacter
+class SHADOWSTALK_API AEntity : public APawn
 {
 	GENERATED_BODY()
 

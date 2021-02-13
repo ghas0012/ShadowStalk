@@ -27,6 +27,8 @@ protected:
 	void Strafe(float value);
 	void Jump();
 	void Interact();
+	void MouseLook_Vertical(float value);
+	void MouseLook_Horizontal(float value);
 
 	class AEntityMonster* m_MonsterEntity;
 };

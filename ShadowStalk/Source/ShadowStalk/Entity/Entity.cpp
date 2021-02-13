@@ -35,6 +35,7 @@ AEntity::AEntity()
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
 	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
+	m_CameraComp->SetupAttachment(m_PlayerCapsule);
 
 	m_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh Comp");
 	m_MeshComp->SetupAttachment(m_PlayerCapsule);

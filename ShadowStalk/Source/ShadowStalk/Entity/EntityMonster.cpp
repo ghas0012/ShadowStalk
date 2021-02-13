@@ -26,5 +26,25 @@ void AEntityMonster::Jump()
 
 void AEntityMonster::Interact()
 {
-    //TODO 
+    
+}
+
+void AEntityMonster::MouseLook_Vertical(float value)
+{
+    Super::MouseLook_Vertical(value);
+}
+
+void AEntityMonster::MouseLook_Horizontal(float value)
+{
+    Super::MouseLook_Horizontal(value);
+}
+
+void AEntityMonster::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
+
+void AEntityMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

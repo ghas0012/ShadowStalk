@@ -24,7 +24,19 @@ public:
 	virtual void Jump() override;
 	virtual void Interact() override;
 
+	virtual void MouseLook_Vertical(float value) override;
+	virtual void MouseLook_Horizontal(float value) override;
+
+
 protected:
 
-	
+
+public:
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 };
