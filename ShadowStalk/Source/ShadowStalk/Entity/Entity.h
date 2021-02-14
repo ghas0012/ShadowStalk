@@ -21,7 +21,7 @@ public:
 
 	UPROPERTY()
 	class UEntityMovementComponent* m_MovementComp;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
@@ -54,7 +54,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_MaxWalkSpeed;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_AirControl;
 
@@ -66,7 +66,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 		float m_InteractRadius = 50.f;
-	
+
 
 	//Respawn won't have a function, however if we want to add this, the framework is here.
 	UFUNCTION()
@@ -92,7 +92,7 @@ protected:
 
 
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

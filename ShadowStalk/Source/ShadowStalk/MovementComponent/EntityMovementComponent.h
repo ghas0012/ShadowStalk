@@ -31,7 +31,7 @@ public:
 	float JumpStrength;
 	float AirControl = 0;
 
-	bool bIsCrawling;
+	bool bIsCrawling = false;
 
 	void Reset();
 	void Jump(float jumps); //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT

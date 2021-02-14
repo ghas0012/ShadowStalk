@@ -83,11 +83,11 @@ void UEntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
     //TODO - Temp Code, will update once we have actual sizes
     if (bIsCrawling)
     {
-        CapsuleComp->SetCapsuleHalfHeight(0.5f);
+        CapsuleComp->SetCapsuleHalfHeight(35.0f);
     }
     else
     {
-        CapsuleComp->SetCapsuleHalfHeight(1.0f);
+        CapsuleComp->SetCapsuleHalfHeight(70.0f);
     }
 
     UpdateComponentVelocity();

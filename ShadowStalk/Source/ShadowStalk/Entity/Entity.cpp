@@ -23,7 +23,6 @@ AEntity::AEntity()
 	m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
 	m_PlayerCapsule->GetBodyInstance()->bLockXRotation;
 	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
-	m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SetRootComponent(m_PlayerCapsule);
 
 	m_InteractComp = CreateDefaultSubobject<USphereComponent>("Interact Comp");
@@ -42,23 +41,22 @@ AEntity::AEntity()
 	m_MeshComp->bHiddenInGame = false;
 
 	m_MovementComp = CreateDefaultSubobject<UEntityMovementComponent>("Movement Component");
-	m_MovementComp->UpdatedComponent = RootComponent;
 	m_MovementComp->CapsuleComp = m_PlayerCapsule;
+	m_MovementComp->UpdatedComponent = RootComponent;
 
 }
 
 // Called when the game starts or when spawned
 void AEntity::BeginPlay()
 {
-	Super::BeginPlay();
-	
+
 	m_MovementComp->FrictionLerp = m_FrictionLerp;
 	m_MovementComp->Acceleration = m_Acceleration;
 	m_MovementComp->SprintSpeed = m_MaxWalkSpeed;
 	m_MovementComp->AirControl = m_AirControl;
 
+	Super::BeginPlay();
 	//TODO - GameState callers.
-
 }
 
 void AEntity::HandleCamera()
@@ -154,4 +152,3 @@ void AEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-
