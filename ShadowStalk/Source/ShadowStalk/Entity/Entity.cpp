@@ -23,7 +23,6 @@ AEntity::AEntity()
 	m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
 	m_PlayerCapsule->GetBodyInstance()->bLockXRotation;
 	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
-	m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SetRootComponent(m_PlayerCapsule);
 
 	m_InteractComp = CreateDefaultSubobject<USphereComponent>("Interact Comp");
@@ -35,29 +34,29 @@ AEntity::AEntity()
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
 	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
+	m_CameraComp->SetupAttachment(m_PlayerCapsule);
 
 	m_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh Comp");
 	m_MeshComp->SetupAttachment(m_PlayerCapsule);
 	m_MeshComp->bHiddenInGame = false;
 
 	m_MovementComp = CreateDefaultSubobject<UEntityMovementComponent>("Movement Component");
-	m_MovementComp->UpdatedComponent = RootComponent;
 	m_MovementComp->CapsuleComp = m_PlayerCapsule;
+	m_MovementComp->UpdatedComponent = RootComponent;
 
 }
 
 // Called when the game starts or when spawned
 void AEntity::BeginPlay()
 {
-	Super::BeginPlay();
-	
+
 	m_MovementComp->FrictionLerp = m_FrictionLerp;
 	m_MovementComp->Acceleration = m_Acceleration;
 	m_MovementComp->SprintSpeed = m_MaxWalkSpeed;
 	m_MovementComp->AirControl = m_AirControl;
 
+	Super::BeginPlay();
 	//TODO - GameState callers.
-
 }
 
 void AEntity::HandleCamera()
@@ -88,7 +87,7 @@ void AEntity::Strafe(float value)
 
 void AEntity::Interact()
 {
-	//TODO - Set up Interact (might remove and add to Child classes)
+	//LEAVE EMPTY, Will get overrided by child classes.
 }
 
 void AEntity::Jump()
@@ -137,6 +136,13 @@ void AEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	HandleCamera();
+
+	FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
+	if (!CombinedAccleration.IsNearlyZero() && m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
+	{
+		m_MovementComp->AddInputVector(CombinedAccleration);
+	}
 
 }
 
@@ -146,4 +152,3 @@ void AEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-

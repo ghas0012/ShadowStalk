@@ -9,7 +9,7 @@
 #include "Entity.generated.h"
 
 UCLASS()
-class SHADOWSTALK_API AEntity : public ACharacter
+class SHADOWSTALK_API AEntity : public APawn
 {
 	GENERATED_BODY()
 
@@ -22,51 +22,51 @@ public:
 	UPROPERTY()
 	class UEntityMovementComponent* m_MovementComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class USphereComponent* m_InteractComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 		class UCameraComponent* m_CameraComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		class USkeletalMeshComponent* m_MeshComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_MouseLook_X;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_MouseLook_Y;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_MouseLook_VerticalLookLimitAngle = 85.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_JumpStrength;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_FrictionLerp = 1;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_Acceleration;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_MaxWalkSpeed;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_AirControl;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_CapsuleRadius = 50.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 		float m_CapsuleHalfHeight = 100.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Interaction")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
 		float m_InteractRadius = 50.f;
-	
+
 
 	//Respawn won't have a function, however if we want to add this, the framework is here.
 	UFUNCTION()
@@ -92,7 +92,7 @@ protected:
 
 
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
