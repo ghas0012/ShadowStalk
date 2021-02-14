@@ -1,0 +1,10 @@
+{
+  "GameMaps": {
+    "maps": [
+      { "name":"Hospital", "info":[ "/Game/Maps/MainMap_Hospital/MapTest", "placeholder", "placeholder" ] },
+      { "name":"Hoos", "info":[ "/Game/Maps/MainMap_Hospital/Area_2_Waiting_Room.Area_2_Waiting_Room", "placeholder", "placeholder" ] },
+      { "name":"Map3", "info":[ "/Game/Levels/Sandbox/LV_Sandbox1", "placeholder" ] } ] 
+  }
+}
+
+
