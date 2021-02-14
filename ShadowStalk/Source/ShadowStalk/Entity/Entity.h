@@ -25,8 +25,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	class USphereComponent* m_InteractComp;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	//class USphereComponent* m_InteractComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 		class UCameraComponent* m_CameraComp;

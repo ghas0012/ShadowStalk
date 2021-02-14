@@ -23,15 +23,14 @@ AEntity::AEntity()
 	m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
 	m_PlayerCapsule->GetBodyInstance()->bLockXRotation;
 	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
-	m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SetRootComponent(m_PlayerCapsule);
 
-	m_InteractComp = CreateDefaultSubobject<USphereComponent>("Interact Comp");
-	m_InteractComp->SetSphereRadius(m_InteractRadius);
-	m_InteractComp->SetEnableGravity(false);
-	m_InteractComp->SetSimulatePhysics(false);
-	m_InteractComp->SetCollisionProfileName("OverlapAll");
-	m_InteractComp->SetupAttachment(m_PlayerCapsule);
+	//m_InteractComp = CreateDefaultSubobject<USphereComponent>("Interact Comp");
+	//m_InteractComp->SetSphereRadius(m_InteractRadius);
+	//m_InteractComp->SetEnableGravity(false);
+	//m_InteractComp->SetSimulatePhysics(false);
+	//m_InteractComp->SetCollisionProfileName("OverlapAll");
+	//m_InteractComp->SetupAttachment(m_PlayerCapsule);
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
 	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
@@ -42,23 +41,19 @@ AEntity::AEntity()
 	m_MeshComp->bHiddenInGame = false;
 
 	m_MovementComp = CreateDefaultSubobject<UEntityMovementComponent>("Movement Component");
-	m_MovementComp->UpdatedComponent = RootComponent;
 	m_MovementComp->CapsuleComp = m_PlayerCapsule;
-
+	m_MovementComp->UpdatedComponent = RootComponent;
+	m_MovementComp->FrictionLerp = m_FrictionLerp;
+	m_MovementComp->Acceleration = m_Acceleration;
+	m_MovementComp->SprintSpeed = m_MaxWalkSpeed;
+	m_MovementComp->AirControl = m_AirControl;
 }
 
 // Called when the game starts or when spawned
 void AEntity::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	m_MovementComp->FrictionLerp = m_FrictionLerp;
-	m_MovementComp->Acceleration = m_Acceleration;
-	m_MovementComp->SprintSpeed = m_MaxWalkSpeed;
-	m_MovementComp->AirControl = m_AirControl;
-
 	//TODO - GameState callers.
-
 }
 
 void AEntity::HandleCamera()
