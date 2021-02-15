@@ -6,21 +6,21 @@
 #include "GameFramework/Character.h"
 
 
-#include "Entity.generated.h"
+#include "STK_Entity.generated.h"
 
 UCLASS()
-class SHADOWSTALK_API AEntity : public APawn
+class SHADOWSTALK_API ASTK_Entity : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AEntity();
+	ASTK_Entity();
 
 	//TODO - make Editanywhere
 
 	UPROPERTY()
-	class UEntityMovementComponent* m_MovementComp;
+	class USTK_EntityMovementComponent* m_MovementComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;

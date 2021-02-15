@@ -3,24 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Entity.h"
-#include "EntityShade.generated.h"
+#include "STK_Entity.h"
+#include "STK_EntityShade.generated.h"
 
 /**
  *
  */
 UCLASS()
-class SHADOWSTALK_API AEntityShade : public AEntity
+class SHADOWSTALK_API ASTK_EntityShade : public ASTK_Entity
 {
     GENERATED_BODY()
 
-    
+
 public:
 
-    AEntityShade();
+    ASTK_EntityShade();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
-    class UEyeComponent* m_pEyes;
+    class USTK_EyeComponent* m_pEyes;
 
     // TODO: add eye lights thru code
     //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
