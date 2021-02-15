@@ -1,22 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EntityShade.h"
+#include "STK_EntityShade.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "EyeComponent.h"
+#include "STK_EyeComponent.h"
 
 // Sets default values
-AEntityShade::AEntityShade()
+ASTK_EntityShade::ASTK_EntityShade()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	m_pEyes = CreateDefaultSubobject<UEyeComponent>(TEXT("Eyes"));
+	m_pEyes = CreateDefaultSubobject<USTK_EyeComponent>(TEXT("Eyes"));
 	m_pEyes->SetupMesh(m_MeshComp);
 }
 
 // Called when the game starts or when spawned
-void AEntityShade::BeginPlay()
+void ASTK_EntityShade::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -33,7 +33,7 @@ void AEntityShade::BeginPlay()
 
 }
 
-void AEntityShade::Tick(float DeltaTime)
+void ASTK_EntityShade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

@@ -1,42 +1,42 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EntityMonsterController.h"
-#include "../Entity/EntityMonster.h"
+#include "STK_EntityMonsterController.h"
+#include "../Entity/STK_EntityMonster.h"
 
-void AEntityMonsterController::OnPossess(APawn* aPawn)
+void ASTK_EntityMonsterController::OnPossess(APawn* aPawn)
 {
     //Temp Code, depending on how Networking stuff works with Possession.
 
     Super::OnPossess(aPawn);
 
-    m_MonsterEntity = Cast<AEntityMonster>(aPawn);
+    m_MonsterEntity = Cast<ASTK_EntityMonster>(aPawn);
 
     GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Monster Name: " + m_MonsterEntity->GetName());
 
 }
 
-void AEntityMonsterController::OnUnPossess()
+void ASTK_EntityMonsterController::OnUnPossess()
 {
     //Temp Code, depending on how Networking stuff works with Possession.
     APawn* possessedPawn = Cast<APawn>(GetOwner());
     Super::OnUnPossess();
 }
 
-void AEntityMonsterController::SetupInputComponent()
+void ASTK_EntityMonsterController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
     if (InputComponent)
     {
-        InputComponent->BindAxis("Forward", this, &AEntityMonsterController::Forward);
-        InputComponent->BindAxis("Strafe", this, &AEntityMonsterController::Strafe);
-        InputComponent->BindAction("Jump", IE_Pressed, this, &AEntityMonsterController::Jump);
-        InputComponent->BindAction("Interact", IE_Pressed, this, &AEntityMonsterController::Interact);
+        InputComponent->BindAxis("Forward", this, &ASTK_EntityMonsterController::Forward);
+        InputComponent->BindAxis("Strafe", this, &ASTK_EntityMonsterController::Strafe);
+        InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityMonsterController::Jump);
+        InputComponent->BindAction("Interact", IE_Pressed, this, &ASTK_EntityMonsterController::Interact);
     }
 }
 
-void AEntityMonsterController::Forward(float value)
+void ASTK_EntityMonsterController::Forward(float value)
 {
     if (m_MonsterEntity)
     {
@@ -44,7 +44,7 @@ void AEntityMonsterController::Forward(float value)
     }
 }
 
-void AEntityMonsterController::Strafe(float value)
+void ASTK_EntityMonsterController::Strafe(float value)
 {
     if(m_MonsterEntity)
     {
@@ -52,7 +52,7 @@ void AEntityMonsterController::Strafe(float value)
     }
 }
 
-void AEntityMonsterController::Jump()
+void ASTK_EntityMonsterController::Jump()
 {
     if (m_MonsterEntity)
     {
@@ -60,7 +60,7 @@ void AEntityMonsterController::Jump()
     }
 }
 
-void AEntityMonsterController::Interact()
+void ASTK_EntityMonsterController::Interact()
 {
     if (m_MonsterEntity)
     {
@@ -68,7 +68,7 @@ void AEntityMonsterController::Interact()
     }
 }
 
-void AEntityMonsterController::MouseLook_Vertical(float value)
+void ASTK_EntityMonsterController::MouseLook_Vertical(float value)
 {
     if (m_MonsterEntity)
     {
@@ -76,7 +76,7 @@ void AEntityMonsterController::MouseLook_Vertical(float value)
     }
 }
 
-void AEntityMonsterController::MouseLook_Horizontal(float value)
+void ASTK_EntityMonsterController::MouseLook_Horizontal(float value)
 {
     if (m_MonsterEntity)
     {
