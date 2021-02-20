@@ -13,5 +13,8 @@ UCLASS()
 class SHADOWSTALK_API USTK_UserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	void Setup();
+	void Teardown();
 };

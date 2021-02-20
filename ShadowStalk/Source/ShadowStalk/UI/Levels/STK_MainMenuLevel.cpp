@@ -3,7 +3,6 @@
 
 #include "STK_MainMenuLevel.h"
 
-
 void ASTK_MainMenuLevel::BeginPlay()
 {
     Super::BeginPlay();
