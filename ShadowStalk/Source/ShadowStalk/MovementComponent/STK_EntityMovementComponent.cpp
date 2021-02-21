@@ -108,6 +108,8 @@ void USTK_EntityMovementComponent::Jump(float jumps) //TODO - FUCKING FIX THIS D
     if (bInputLocked)
         return;
 
+    JumpStrength = jumps;
+
     VelocityAtJump = VelocityVector;
 
     CapsuleComp->AddImpulse(FVector::UpVector * JumpStrength);

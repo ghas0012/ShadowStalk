@@ -75,9 +75,16 @@ void ASTK_Entity::HandleCamera()
 
 void ASTK_Entity::Forward(float value)
 {
-	ForwardAccelerationVector = GetActorForwardVector() * value;
-	ForwardInput = value;
+	if (value == 1 || value == -1)
+	{
+		ForwardAccelerationVector = GetActorForwardVector() * value;
+		ForwardInput = value;
 
+		AddMovementInput(GetActorForwardVector(), value);
+
+		m_MovementComp->Walk();
+
+	}
 }
 
 void ASTK_Entity::Strafe(float value)
@@ -97,6 +104,8 @@ void ASTK_Entity::Jump()
 		if (m_MovementComp->bIsGrounded)
 		{
 			m_MovementComp->Jump(m_JumpStrength);
+			m_PlayerCapsule->AddImpulse(GetActorUpVector() * m_JumpStrength);
+			m_MovementComp->bIsGrounded = false;
 		}
 	}
 }
