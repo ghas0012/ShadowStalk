@@ -15,7 +15,6 @@ ASTK_EntityMonster::ASTK_EntityMonster()
 void ASTK_EntityMonster::Forward(float value)
 {
     Super::Forward(value);
-
 }
 
 void ASTK_EntityMonster::Strafe(float value)

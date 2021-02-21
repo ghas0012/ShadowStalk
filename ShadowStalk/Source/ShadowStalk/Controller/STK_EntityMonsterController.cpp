@@ -31,6 +31,7 @@ void ASTK_EntityMonsterController::SetupInputComponent()
     {
         InputComponent->BindAxis("Forward", this, &ASTK_EntityMonsterController::Forward);
         InputComponent->BindAxis("Strafe", this, &ASTK_EntityMonsterController::Strafe);
+
         InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityMonsterController::Jump);
         InputComponent->BindAction("Interact", IE_Pressed, this, &ASTK_EntityMonsterController::Interact);
     }

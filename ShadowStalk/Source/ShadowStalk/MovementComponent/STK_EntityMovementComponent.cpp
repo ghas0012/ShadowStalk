@@ -3,6 +3,7 @@
 
 #include "STK_EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/Engine.h"
 
 
 
@@ -26,6 +27,8 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
     CollisionParameters.AddIgnoredComponent(CapsuleComp);
 
     FHitResult GroundCheck;
+
+    CurrentSpeed = WalkSpeed;
 
     FVector BottomOfCollider = CapsuleComp->GetRelativeLocation() - FVector::UpVector * CapsuleComp->GetScaledCapsuleHalfHeight();
 
@@ -57,8 +60,12 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
 
     InputAcceleration = ConsumeInputVector() * Acceleration * AirControlMultiplier;
 
+    GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Yellow, FString::Printf(TEXT("Vector: %f %f %f"), InputAcceleration.X, InputAcceleration.Y, InputAcceleration.Z));
+
     VelocityVector += InputAcceleration * DeltaTime;
     VelocityVector = VelocityVector.GetClampedToMaxSize2D(CurrentSpeed);
+
+    GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Red, FString::Printf(TEXT("CurrentSpeed: %f"), CurrentSpeed));
 
     if ((bIsGrounded) && InputAcceleration.SizeSquared() < 0.5f)
     {
@@ -67,6 +74,8 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
     }
 
     FVector DesiredMovementThisFrame = VelocityVector * DeltaTime;
+    
+    GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Purple, FString::Printf(TEXT("VelocityVector: %f %f %f"), VelocityVector.X, VelocityVector.Y, VelocityVector.Z));
 
     if (!DesiredMovementThisFrame.IsNearlyZero())
     {
@@ -112,7 +121,7 @@ void USTK_EntityMovementComponent::Jump(float jumps) //TODO - FUCKING FIX THIS D
 
     VelocityAtJump = VelocityVector;
 
-    CapsuleComp->AddImpulse(FVector::UpVector * JumpStrength);
+    CapsuleComp->AddImpulse(FVector::UpVector * jumps);
     bIsGrounded = false;
 }
 
