@@ -2,6 +2,7 @@
 
 #include "STK_UWMainMenu.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
 
 bool USTK_UWMainMenu::Initialize()
@@ -31,7 +32,13 @@ void USTK_UWMainMenu::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void USTK_UWMainMenu::PlayPressed()
 {
-    //TODO: Load test game map on button click.
+    UWorld* World = GetWorld();
+    if (!ensure(World != nullptr)) return;
+
+    APlayerController* PlayerController = World->GetFirstPlayerController();
+    if (!ensure(PlayerController != nullptr)) return;
+
+    UGameplayStatics::OpenLevel(World, "MapTest");
 }
 
 void USTK_UWMainMenu::OpenOptionsMenu()

@@ -17,4 +17,9 @@ class SHADOWSTALK_API USTK_UserWidget : public UUserWidget
 public:
 	void Setup();
 	void Teardown();
+
+	//void SetMenuInterface(IMenuInterface* MenuInterface);
+
+protected:
+	//IMenuInterface* MenuInterface;
 };
