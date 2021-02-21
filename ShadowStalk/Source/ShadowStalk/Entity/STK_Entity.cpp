@@ -25,12 +25,6 @@ ASTK_Entity::ASTK_Entity()
 	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
 	SetRootComponent(m_PlayerCapsule);
 
-	m_InteractComp = CreateDefaultSubobject<USphereComponent>("Interact Comp");
-	m_InteractComp->SetSphereRadius(m_InteractRadius);
-	m_InteractComp->SetEnableGravity(false);
-	m_InteractComp->SetSimulatePhysics(false);
-	m_InteractComp->SetCollisionProfileName("OverlapAll");
-	m_InteractComp->SetupAttachment(m_PlayerCapsule);
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
 	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
@@ -52,7 +46,8 @@ void ASTK_Entity::BeginPlay()
 
 	m_MovementComp->FrictionLerp = m_FrictionLerp;
 	m_MovementComp->Acceleration = m_Acceleration;
-	m_MovementComp->SprintSpeed = m_MaxWalkSpeed;
+	m_MovementComp->WalkSpeed = m_MaxWalkSpeed;
+	m_MovementComp->SprintSpeed = m_MaxSprintSpeed;
 	m_MovementComp->AirControl = m_AirControl;
 
 	Super::BeginPlay();
@@ -75,21 +70,18 @@ void ASTK_Entity::HandleCamera()
 
 void ASTK_Entity::Forward(float value)
 {
-	if (value == 1 || value == -1)
-	{
-		ForwardAccelerationVector = GetActorForwardVector() * value;
-		ForwardInput = value;
 
-		AddMovementInput(GetActorForwardVector(), value);
-
-		m_MovementComp->Walk();
-
-	}
+	ForwardAccelerationVector = GetActorForwardVector() * value;
+	AddMovementInput(GetActorForwardVector(), value);
 }
 
 void ASTK_Entity::Strafe(float value)
 {
 	RightAccelerationVector = GetActorRightVector() * value;
+}
+
+void ASTK_Entity::Sprint(float value)
+{
 }
 
 void ASTK_Entity::Interact()
@@ -104,7 +96,6 @@ void ASTK_Entity::Jump()
 		if (m_MovementComp->bIsGrounded)
 		{
 			m_MovementComp->Jump(m_JumpStrength);
-			m_PlayerCapsule->AddImpulse(GetActorUpVector() * m_JumpStrength);
 			m_MovementComp->bIsGrounded = false;
 		}
 	}
