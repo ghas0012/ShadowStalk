@@ -23,14 +23,16 @@ public:
     class USTK_EyeComponent* m_pEyes;
 
     // TODO: add eye lights thru code
-    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
-    //    class ASpotlight* m_pLSpotlight;
-    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
-    //    class ASpotlight* m_pRSpotlight;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+        class URectLightComponent* m_pLSpotlight;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+        class URectLightComponent* m_pRSpotlight;
 
     virtual void Tick(float DeltaTime) override;
 
 protected:
     // Called when the game starts
     virtual void BeginPlay() override;
+
+    void SetupEyes();
 };
