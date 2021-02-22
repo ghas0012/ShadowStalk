@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "STK_UWMainMenu.h"
-#include "UObject/ConstructorHelpers.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
+#include "ShadowStalk/GameInstance/STK_GameInstance.h"
 
 bool USTK_UWMainMenu::Initialize()
 {
@@ -32,23 +33,21 @@ void USTK_UWMainMenu::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void USTK_UWMainMenu::PlayPressed()
 {
-    UWorld* World = GetWorld();
-    if (!ensure(World != nullptr)) return;
+    auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
 
-    APlayerController* PlayerController = World->GetFirstPlayerController();
-    if (!ensure(PlayerController != nullptr)) return;
+    if (GameInstance == nullptr) return;
 
-    UGameplayStatics::OpenLevel(World, "MapTest");
+    GameInstance->LoadGameLevel();
 }
 
 void USTK_UWMainMenu::OpenOptionsMenu()
 {
-    //TODO: Open options menu (resolution, keybindings, etc);
+    //TODO - Open options menu (resolution, keybindings, etc);
 }
 
 void USTK_UWMainMenu::OpenCreditsPanel()
 {
-    //TODO: Open credits panel
+    //TODO - Open credits panel
 }
 
 void USTK_UWMainMenu::QuitPressed()

@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadMainMenuWidget();
 
+	UFUNCTION(BlueprintCallable)
+	void LoadGameLevel();
+
 private:
 	TSubclassOf<class UUserWidget> MainMenuClass;
 

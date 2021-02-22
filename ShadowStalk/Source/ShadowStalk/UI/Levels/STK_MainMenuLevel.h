@@ -17,4 +17,7 @@ class SHADOWSTALK_API ASTK_MainMenuLevel : public ALevelScriptActor
 protected:
     //Setup level specific code
     virtual void BeginPlay() override;
+
+    UFUNCTION()
+    void LoadMainMenu();
 };
