@@ -27,7 +27,8 @@ protected:
 	void Strafe(float value);
 
 	void Jump();
-	void Sprint();
+	void SetSprint();
+	void StopSprint();
 	void SetCrawl();
 	void UnsetCrawl();
 	void Interact();
