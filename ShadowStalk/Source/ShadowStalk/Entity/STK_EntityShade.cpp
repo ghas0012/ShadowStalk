@@ -22,6 +22,14 @@ ASTK_EntityShade::ASTK_EntityShade()
 	SetupEyes();
 
 	m_PlayerCapsule->OnComponentBeginOverlap.AddDynamic(this, &ASTK_EntityShade::OnBeginOverlap);
+
+	//Default Shade Stats. 
+	m_MaxWalkSpeed = 500.0f;
+	m_MaxSprintSpeed = 800.0f;
+	m_Acceleration = 3500.0f;
+	m_JumpStrength = 20000.0f;
+	m_CapsuleHalfHeight = 75.0f;
+	m_CapsuleRadius = 40.0f;
 }
 
 // Called when the game starts or when spawned
