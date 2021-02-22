@@ -25,14 +25,14 @@ ASTK_Entity::ASTK_Entity()
 	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
 	SetRootComponent(m_PlayerCapsule);
 
-
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
 	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
 	m_CameraComp->SetupAttachment(m_PlayerCapsule);
 
 	m_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh Comp");
-	m_MeshComp->SetupAttachment(m_PlayerCapsule);
 	m_MeshComp->bHiddenInGame = false;
+	m_MeshComp->SetRelativeRotation(FRotator(0, 180, 0));
+	m_MeshComp->SetupAttachment(m_PlayerCapsule);
 
 	m_MovementComp = CreateDefaultSubobject<USTK_EntityMovementComponent>("Movement Component");
 	m_MovementComp->CapsuleComp = m_PlayerCapsule;
@@ -51,11 +51,16 @@ void ASTK_Entity::BeginPlay()
 	m_MovementComp->AirControl = m_AirControl;
 
 	Super::BeginPlay();
+
+	MouseLookVector.Y = m_CameraComp->GetRelativeRotation().Pitch;
+	MouseLookVector.X = m_PlayerCapsule->GetRelativeRotation().Yaw;
+
 	//TODO - GameState callers.
 }
 
 void ASTK_Entity::HandleCamera()
 {
+
 	m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
 
 	if (abs(MouseLookVector.Y) < m_MouseLook_VerticalLookLimitAngle)
@@ -66,13 +71,15 @@ void ASTK_Entity::HandleCamera()
 	{
 		MouseLookVector.Y = -m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
 	}
+
+
 }
 
 void ASTK_Entity::Forward(float value)
 {
 
 	ForwardAccelerationVector = GetActorForwardVector() * value;
-	AddMovementInput(GetActorForwardVector(), value);
+	//AddMovementInput(GetActorForwardVector(), value);
 }
 
 void ASTK_Entity::Strafe(float value)
@@ -124,11 +131,15 @@ void ASTK_Entity::HideMouse()
 void ASTK_Entity::MouseLook_Vertical(float value)
 {
 	MouseLookVector.Y += m_MouseLook_Y * value;
+	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
+
 }
 
 void ASTK_Entity::MouseLook_Horizontal(float value)
 {
 	MouseLookVector.X += m_MouseLook_X * value;
+	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+
 }
 
 bool ASTK_Entity::GetIsGrounded()
@@ -148,7 +159,6 @@ void ASTK_Entity::Tick(float DeltaTime)
 	{
 		m_MovementComp->AddInputVector(CombinedAccleration);
 	}
-
 }
 
 // Called to bind functionality to input

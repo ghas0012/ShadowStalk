@@ -41,7 +41,7 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
                 BottomOfCollider,
                 FQuat::Identity,
                 ECollisionChannel::ECC_GameTraceChannel1,
-                FCollisionShape::MakeCapsule(CapsuleComp->GetScaledCapsuleRadius() * 0.5f, CapsuleComp->GetScaledCapsuleHalfHeight()-50),
+                FCollisionShape::MakeCapsule(CapsuleComp->GetScaledCapsuleRadius() * 0.5f, CapsuleComp->GetScaledCapsuleHalfHeight()+0.1f),
                 CollisionParameters
             )
            )

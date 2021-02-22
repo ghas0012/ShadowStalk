@@ -2,11 +2,16 @@
 
 #include "STK_EntityShade.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Camera/CameraComponent.h"
 #include "STK_Entity.h"
 
 //Eyes
 #include "Components/RectLightComponent.h"
 #include "STK_EyeComponent.h"
+
+//Pickups
+#include "ShadowStalk/Pickups/STK_PickupBase.h"
 
 // Sets default values
 ASTK_EntityShade::ASTK_EntityShade()
@@ -15,6 +20,8 @@ ASTK_EntityShade::ASTK_EntityShade()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SetupEyes();
+
+	m_PlayerCapsule->OnComponentBeginOverlap.AddDynamic(this, &ASTK_EntityShade::OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +46,38 @@ void ASTK_EntityShade::BeginPlay()
 void ASTK_EntityShade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+
+void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// Handle pickups
+	if (OtherActor->ActorHasTag("Pickup"))
+	{
+		EPickupType pickupType = Cast<ASTK_PickupBase>(OtherActor)->GetPickupType();
+		switch (pickupType)
+		{
+			case EPickupType::Undefined:
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("UNDEFINED PICKUP TYPE!"));
+				break;
+			}
+				
+			case EPickupType::Key:
+			{
+				// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+				OtherActor->Destroy();
+				break;
+			}
+
+			case EPickupType::Item:
+			{
+				// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+				OtherActor->Destroy();
+				break;
+			}
+		}
+	}
 }
 
 void ASTK_EntityShade::SetupEyes()
@@ -76,7 +115,6 @@ void ASTK_EntityShade::SetupEyes()
 	m_pRSpotlight->VolumetricScatteringIntensity = 0.01f;
 	m_pLSpotlight->VolumetricScatteringIntensity = 0.01f;
 
-	//FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(EAttachmentRule::KeepRelative, true);
 	m_pLSpotlight->AttachToComponent(m_MeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
 	m_pRSpotlight->AttachToComponent(m_MeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
 }
