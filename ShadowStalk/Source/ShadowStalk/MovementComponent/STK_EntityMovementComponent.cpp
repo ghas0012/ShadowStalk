@@ -107,7 +107,8 @@ void USTK_EntityMovementComponent::Reset()
 {
     bIsGrounded = false;
     VelocityVector = FVector::ZeroVector;
-    CapsuleComp->SetPhysicsAngularVelocity(FVector::ZeroVector);
+    CapsuleComp->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+
     VelocityAtJump = FVector::ZeroVector;
     LockInput(false);
 }
@@ -129,7 +130,7 @@ void USTK_EntityMovementComponent::LockInput(bool b)
 {
     bInputLocked = b;
     VelocityAtJump = FVector::ZeroVector;
-    CapsuleComp->SetPhysicsAngularVelocity(FVector::ZeroVector);
+    CapsuleComp->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 }
 
 void USTK_EntityMovementComponent::Sprint()
