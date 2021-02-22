@@ -2,6 +2,7 @@
 
 #include "STK_EntityShade.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "STK_Entity.h"
 
 //Eyes
 #include "Components/RectLightComponent.h"

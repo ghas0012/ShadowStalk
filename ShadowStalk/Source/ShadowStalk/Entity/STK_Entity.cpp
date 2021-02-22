@@ -110,6 +110,11 @@ void ASTK_Entity::Jump()
 	}
 }
 
+void ASTK_Entity::Sprint()
+{
+	//TODO - Will Do Later.
+}
+
 void ASTK_Entity::Crawl(bool IsCrawl)
 {
 	//TODO - Will Do Later.

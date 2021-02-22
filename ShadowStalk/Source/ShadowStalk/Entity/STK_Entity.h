@@ -105,6 +105,7 @@ public:
 	virtual void Strafe(float value);
 	virtual void Interact();
 	virtual void Jump();
+	virtual void Sprint();
 	virtual void Crawl(bool IsCrawl);
 
 	virtual void UnhideMouse();
