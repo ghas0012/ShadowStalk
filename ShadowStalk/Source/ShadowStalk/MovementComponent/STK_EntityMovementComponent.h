@@ -40,6 +40,11 @@ public:
 	void Walk();
 	void Crawl();
 	bool bInputLocked = false;
-	bool bIsGrounded = false;
+	bool bIsGrounded = true;
 
+	UFUNCTION(BlueprintCallable)
+		bool GetIsGrounded();
+
+	UFUNCTION(BlueprintCallable)
+		float GetForwardVelocity();
 };
