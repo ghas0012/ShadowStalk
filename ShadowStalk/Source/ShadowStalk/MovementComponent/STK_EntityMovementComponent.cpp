@@ -173,5 +173,5 @@ bool USTK_EntityMovementComponent::GetIsGrounded()
 
 float USTK_EntityMovementComponent::GetForwardVelocity()
 {
-    return FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector);
+    return FMath::Abs(FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector));
 }
