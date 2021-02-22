@@ -101,11 +101,10 @@ public:
 
 	virtual void Forward(float value);
 	virtual void Strafe(float value);
-	virtual void Sprint(float value); //TODO 
 
 	virtual void Interact();
 	virtual void Jump();
-	virtual void Sprint();
+	virtual void Sprint(bool IsSprint);
 	virtual void Crawl(bool IsCrawl);
 
 	virtual void UnhideMouse();

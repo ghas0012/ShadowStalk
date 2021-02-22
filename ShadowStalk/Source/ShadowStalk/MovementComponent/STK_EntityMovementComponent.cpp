@@ -28,8 +28,6 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
 
     FHitResult GroundCheck;
 
-    CurrentSpeed = WalkSpeed;
-
     FVector BottomOfCollider = CapsuleComp->GetRelativeLocation() - FVector::UpVector * CapsuleComp->GetScaledCapsuleHalfHeight();
 
     if
