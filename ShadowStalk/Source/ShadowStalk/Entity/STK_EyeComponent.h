@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "EyeComponent.generated.h"
+#include "STK_EyeComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SHADOWSTALK_API UEyeComponent : public UActorComponent
+class SHADOWSTALK_API USTK_EyeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
-	UEyeComponent();
+	USTK_EyeComponent();
 
 	void SetupMesh(USkeletalMeshComponent* meshptr);
 	class USkeletalMeshComponent* TargetMesh = nullptr;
@@ -28,7 +28,7 @@ protected:
 		float HoldDuration = 0.1f;		// How long do we hold a gesture?
 		float TransitionSpeed = 1.0f;	// How quickly do we transition to a gesture?
 		float fidget = 0.0f;			// How often/hard do we fidget that state?
-	
+
 		StateData& operator=(const StateData& sd)
 		{
 			// self-assignment check
@@ -70,10 +70,10 @@ protected:
 	float fidgetLerpSpeed = 2.0f;
 	float fidgetLerpFactor = 0.0f;
 
-public:	
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+
 	void Reset();
 
 	void Blink(float duration, float speed);

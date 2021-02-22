@@ -3,21 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Entity.h"
-#include "EntityMonster.generated.h"
+#include "STK_Entity.h"
+#include "STK_EntityMonster.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class SHADOWSTALK_API AEntityMonster : public AEntity
+class SHADOWSTALK_API ASTK_EntityMonster : public ASTK_Entity
 {
 	GENERATED_BODY()
 
 
 public:
 
-	AEntityMonster();
+	ASTK_EntityMonster();
 
 	virtual void Forward(float value) override;
 	virtual void Strafe(float value) override;

@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "ShadowStalkGameModeBase.generated.h"
+#include "STK_ShadowStalkGameModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class SHADOWSTALK_API AShadowStalkGameModeBase : public AGameModeBase
+class SHADOWSTALK_API ASTK_ShadowStalkGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
 };

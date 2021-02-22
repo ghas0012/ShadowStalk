@@ -6,71 +6,69 @@
 #include "GameFramework/Character.h"
 
 
-#include "Entity.generated.h"
+#include "STK_Entity.generated.h"
 
 UCLASS()
-class SHADOWSTALK_API AEntity : public APawn
+class SHADOWSTALK_API ASTK_Entity : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AEntity();
+	ASTK_Entity();
 
 	//TODO - make Editanywhere
 
 	UPROPERTY()
-	class UEntityMovementComponent* m_MovementComp;
+	class USTK_EntityMovementComponent* m_MovementComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	class USphereComponent* m_InteractComp;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-		class UCameraComponent* m_CameraComp;
+	class UCameraComponent* m_CameraComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		class USkeletalMeshComponent* m_MeshComp;
+	class USkeletalMeshComponent* m_MeshComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_MouseLook_X;
+	float m_MouseLook_X;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_MouseLook_Y;
+	float m_MouseLook_Y;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_MouseLook_VerticalLookLimitAngle = 85.f;
+	float m_MouseLook_VerticalLookLimitAngle = 85.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_JumpStrength;
+	float m_JumpStrength;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_FrictionLerp = 1;
+	float m_FrictionLerp = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_Acceleration;
+	float m_Acceleration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_MaxWalkSpeed;
+	float m_MaxWalkSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_AirControl;
+	float m_MaxSprintSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_CapsuleRadius = 50.f;
+	float m_AirControl;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-		float m_CapsuleHalfHeight = 100.f;
+	float m_CapsuleRadius = 50.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-		float m_InteractRadius = 50.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	float m_CapsuleHalfHeight = 100.f;
+
 
 
 	//Respawn won't have a function, however if we want to add this, the framework is here.
 	UFUNCTION()
-		virtual void Respawn() {}
+	virtual void Respawn() {}
 
 
 protected:
@@ -103,8 +101,11 @@ public:
 
 	virtual void Forward(float value);
 	virtual void Strafe(float value);
+	virtual void Sprint(float value); //TODO 
+
 	virtual void Interact();
 	virtual void Jump();
+	virtual void Sprint();
 	virtual void Crawl(bool IsCrawl);
 
 	virtual void UnhideMouse();

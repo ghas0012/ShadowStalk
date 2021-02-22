@@ -4,20 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PawnMovementComponent.h"
-#include "EntityMovementComponent.generated.h"
+#include "STK_EntityMovementComponent.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class SHADOWSTALK_API UEntityMovementComponent : public UPawnMovementComponent
+class SHADOWSTALK_API USTK_EntityMovementComponent : public UPawnMovementComponent
 {
 	GENERATED_BODY()
 
 public:
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+
 	class UCapsuleComponent* CapsuleComp;
 	FVector VelocityVector = FVector::ZeroVector;
 	FVector VelocityAtJump = FVector::ZeroVector;

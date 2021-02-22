@@ -1,5 +1,4 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "ShadowStalkGameModeBase.h"
-
+#include "STK_ShadowStalkGameModeBase.h"
