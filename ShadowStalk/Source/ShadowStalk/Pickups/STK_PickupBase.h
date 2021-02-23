@@ -32,7 +32,7 @@ public:
 		class USphereComponent* Collider;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup Base")
-		float Radius;
+		float Radius = 20;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
 		bool bAnimate = true;							   
@@ -44,16 +44,16 @@ public:
 		bool bRotate = true;							
 														
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
-		float bobFreq = 1.0f;							
+		float bobFreq = 0.1f;							
 														
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
-		float bobAmp = 1.0f;						
+		float bobAmp = 5.0f;						
 													
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
-		float rotFreq = 1.0f;						
+		float rotFreq = 0.05f;						
 													
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
-		FRotator RotDir;
+		FRotator RotDir = FRotator(0,1,0);
 
 protected:
 	// Called when the game starts or when spawned
