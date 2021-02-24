@@ -3,13 +3,14 @@
 #include "STK_MatchGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShadowStalk/Pickups/STK_PickupSpawn.h"
+#include "ShadowStalk/Gamestates/STK_MatchGameState.h"
 
 void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 {
 	switch (PickupSpawn->GetPickupType())
 	{
 		case EPickupType::Key:
-			PickupSpawn_Key.Add(PickupSpawn->GetActorLocation());
+			SpawnList_Key.Add(PickupSpawn->GetActorLocation());
 			break;
 		
 		//case EPickupType::Item:
@@ -18,19 +19,24 @@ void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 	}
 }
 
+void ASTK_MatchGameMode::RegisterPotentialExitDoor(ASTK_ExitDoor* ExitDoor)
+{
+	ExitDoorList.Add(ExitDoor);
+}
+
 void ASTK_MatchGameMode::BeginPlay()
 {
 	// What we do is we select randomly from our spawn locations and remove those as we go.
 	// If we run out of spawn locations, refill the temp array and print a warning.
 
-	if (PickupSpawn_Key.Num() == 0)
+	if (SpawnList_Key.Num() == 0)
 		return;
 
 	TArray <FVector> TempArray;
 
-	for (size_t i = 0; i < PickupSpawn_Key.Num(); i++)
+	for (size_t i = 0; i < SpawnList_Key.Num(); i++)
 	{
-		TempArray.Add(PickupSpawn_Key[i]);
+		TempArray.Add(SpawnList_Key[i]);
 	}
 	
 	FActorSpawnParameters SpawnParams;
@@ -39,9 +45,9 @@ void ASTK_MatchGameMode::BeginPlay()
 	{
 		if (TempArray.Num() == 0)
 		{
-			for (size_t j = 0; j < PickupSpawn_Key.Num(); j++)
+			for (size_t j = 0; j < SpawnList_Key.Num(); j++)
 			{
-				TempArray.Add(PickupSpawn_Key[j]);
+				TempArray.Add(SpawnList_Key[j]);
 			}
 			GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("THERE ARE MORE KEYS THAN KEY SPAWN POINTS!"));
 		}
@@ -61,4 +67,14 @@ void ASTK_MatchGameMode::BeginPlay()
 	//{
 	//
 	//}
+
+	ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
+
+	if (ExitDoorList.Num() > 0)
+	{
+		SelectedExitDoor = ExitDoorList[FMath::RandRange(0, ExitDoorList.Num() - 1)];
+		gamestate->Register_SelectedExitDoor(SelectedExitDoor);
+	}
+
+	gamestate->Register_MaxKeyCount(Pickup_Key_Count);
 }

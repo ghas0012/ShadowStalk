@@ -22,7 +22,11 @@ ASTK_Entity::ASTK_Entity()
 	m_PlayerCapsule->SetSimulatePhysics(true);
 	m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
 	m_PlayerCapsule->GetBodyInstance()->bLockXRotation;
-	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
+	m_PlayerCapsule->SetCollisionProfileName("Pawn");
+	m_PlayerCapsule->SetLinearDamping(0.5f);
+	m_PlayerCapsule->SetAngularDamping(1.0f);
+	m_PlayerCapsule->BodyInstance.bLockXRotation = true;
+	m_PlayerCapsule->BodyInstance.bLockYRotation = true;
 	SetRootComponent(m_PlayerCapsule);
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
