@@ -32,7 +32,7 @@ ASTK_PickupBase::ASTK_PickupBase()
 	ParticleFX->SetRelativeLocation(FVector(0, 0, -75));
 	ParticleFX->SetupAttachment(Collider);
 
-	Tags.Add("Pickup");
+	Tags.Add("Pickup"); // TODO maybe convert to "IsA..." in shade's on overlap function.
 }
 
 // Called when the game starts or when spawned
