@@ -47,4 +47,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		float GetForwardVelocity();
+
 };

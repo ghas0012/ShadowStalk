@@ -55,6 +55,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
 		FRotator RotDir = FRotator(0,1,0);
 
+	UFUNCTION()
+		virtual void Enable();
+
+	UFUNCTION()
+		virtual void Disable();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
