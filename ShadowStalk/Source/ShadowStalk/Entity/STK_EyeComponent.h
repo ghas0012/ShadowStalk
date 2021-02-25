@@ -24,10 +24,10 @@ protected:
 	struct StateData
 	{
 		TMap <FName, float> State;		// A list of all the morph targets and their values
-		FName activeState;				// The name of the activated state, for ease of access
+		FName ActiveState;				// The name of the activated state, for ease of access
 		float HoldDuration = 0.1f;		// How long do we hold a gesture?
 		float TransitionSpeed = 1.0f;	// How quickly do we transition to a gesture?
-		float fidget = 0.0f;			// How often/hard do we fidget that state?
+		float Fidget = 0.0f;			// How often/hard do we fidget that state?
 
 		StateData& operator=(const StateData& sd)
 		{
@@ -37,10 +37,10 @@ protected:
 
 			StateData* to_return = new StateData();
 			to_return->State = sd.State;
-			to_return->activeState = sd.activeState;
+			to_return->ActiveState = sd.ActiveState;
 			to_return->HoldDuration = sd.HoldDuration;
 			to_return->TransitionSpeed = sd.TransitionSpeed;
-			to_return->fidget = sd.fidget;
+			to_return->Fidget = sd.Fidget;
 
 			return *to_return;
 		};
@@ -70,6 +70,8 @@ protected:
 	float fidgetLerpSpeed = 2.0f;
 	float fidgetLerpFactor = 0.0f;
 
+	float GetValueOfSpecificMorphTarget(std::string name);
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -86,6 +88,5 @@ public:
 	void SetEmotion(std::string Name);
 
 	float GetCurrentEyeClosedLevel();
-	float GetValueOfSpecificMorphTarget(std::string name);
 
 };

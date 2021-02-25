@@ -13,5 +13,4 @@ UCLASS()
 class SHADOWSTALK_API ASTK_MainMenuGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-	
 };

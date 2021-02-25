@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "STK_EntityShade.h"
+#include "ShadowStalk/Gamestates/STK_MatchGameState.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
@@ -48,7 +49,6 @@ void ASTK_EntityShade::BeginPlay()
 	m_pEyes->SetEmotion("Sad"	, 0.6f, 5, 2.0f);
 	m_pEyes->SetEmotion("Sad"	, 1.0f, 5, 2.0f);
 	m_pEyes->SetEmotion("Close"	, 0.5f, 1, 2.0f, 0.5f);
-
 }
 
 void ASTK_EntityShade::Tick(float DeltaTime)
@@ -74,6 +74,7 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 			case EPickupType::Key:
 			{
 				// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+				GetWorld()->GetGameState<ASTK_MatchGameState>()->Register_KeyPickedUp();
 				OtherActor->Destroy();
 				break;
 			}

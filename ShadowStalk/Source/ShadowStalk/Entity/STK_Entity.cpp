@@ -25,7 +25,11 @@ ASTK_Entity::ASTK_Entity()
 	m_PlayerCapsule->SetSimulatePhysics(true);
 	m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
 	m_PlayerCapsule->GetBodyInstance()->bLockXRotation;
-	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
+	m_PlayerCapsule->SetCollisionProfileName("Pawn");
+	m_PlayerCapsule->SetLinearDamping(0.5f);
+	m_PlayerCapsule->SetAngularDamping(1.0f);
+	m_PlayerCapsule->BodyInstance.bLockXRotation = true;
+	m_PlayerCapsule->BodyInstance.bLockYRotation = true;
 	SetRootComponent(m_PlayerCapsule);
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
@@ -169,7 +173,7 @@ void ASTK_Entity::Tick(float DeltaTime)
 
 	//TODO Make Footsteps it's own function.
 	FootstepTimer += DeltaTime * FootstepFrequency * m_MovementComp->GetForwardVelocity();
-	if (FootstepTimer >= 1 && !AudioComponent->IsPlaying())
+	if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && !AudioComponent->IsPlaying())
 	{
 		FootstepTimer = 0;
 		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Emerald, TEXT("Footstep"));

@@ -17,7 +17,7 @@ USTK_EyeComponent::USTK_EyeComponent()
 	CurrentState->HoldDuration = 0.0f;
 	CurrentState->TransitionSpeed = 1.0f;
 	CurrentState->State = MakeGestureMap("Neutral", 1.0f);
-	CurrentState->activeState = FName("Neutral");
+	CurrentState->ActiveState = FName("Neutral");
 	//StatesQueue.Add(CurrentState);
 }
 
@@ -58,9 +58,9 @@ void USTK_EyeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	//float x;
 	//if (StatesQueue.Num() > 0)
-	//	x = StatesQueue[0]->fidget;
+	//	x = StatesQueue[0]->Fidget;
 	//else
-	//	x = CurrentState->fidget;
+	//	x = CurrentState->Fidget;
 
 	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, FString::Printf(TEXT("Angry: %f"), x));
 
@@ -145,7 +145,7 @@ void USTK_EyeComponent::LerpQueue(float DeltaTime)
 {
 	if (StatesQueue.Num() == 0)
 	{
-		if (CurrentState->fidget > 0)
+		if (CurrentState->Fidget > 0)
 		{
 			ApplyFidgeting(DeltaTime, CurrentState);
 
@@ -169,7 +169,7 @@ void USTK_EyeComponent::LerpQueue(float DeltaTime)
 			if (StatesQueue[0]->HoldDuration < 0)
 			{
 				CurrentState = StatesQueue[0];
-				CurrentState->fidget = StatesQueue[0]->fidget;
+				CurrentState->Fidget = StatesQueue[0]->Fidget;
 				StatesQueue.RemoveAt(0);
 				lerpValue = 0;
 				return;
@@ -177,7 +177,7 @@ void USTK_EyeComponent::LerpQueue(float DeltaTime)
 		}
 	}
 
-	if (StatesQueue[0]->fidget > 0)
+	if (StatesQueue[0]->Fidget > 0)
 	{
 		ApplyFidgeting(DeltaTime, StatesQueue[0]);
 	}
@@ -200,9 +200,9 @@ void USTK_EyeComponent::Blink(float duration, float speed)
 	StateData* blinkdata = new StateData();
 	blinkdata->State = MakeGestureMap("Close", 1.f);
 	blinkdata->HoldDuration = duration;
-	blinkdata->activeState = FName("Close");
+	blinkdata->ActiveState = FName("Close");
 	blinkdata->TransitionSpeed = speed;
-	blinkdata->fidget = 0;
+	blinkdata->Fidget = 0;
 
 	lerpValue = 0;
 
@@ -210,19 +210,19 @@ void USTK_EyeComponent::Blink(float duration, float speed)
 	*currentdata = *CurrentState; // Copy all the info
 
 	if (StatesQueue.Num() > 0)
-		currentdata->fidget = StatesQueue[0]->fidget;
+		currentdata->Fidget = StatesQueue[0]->Fidget;
 	else
-		currentdata->fidget = CurrentState->fidget;
+		currentdata->Fidget = CurrentState->Fidget;
 
 	currentdata->HoldDuration = CurrentState->HoldDuration;
 	currentdata->TransitionSpeed = speed;
-	currentdata->activeState = CurrentState->activeState;
+	currentdata->ActiveState = CurrentState->ActiveState;
 	currentdata->State = GetCurrentState(); // Read actual mesh state
 
 	CurrentState->State = currentdata->State;	// Update "currentstate" data to match mesh state cause it's what's actually used to lerp
 	CurrentState->HoldDuration = duration;	// Set blink duration and speed
 	CurrentState->TransitionSpeed = speed;
-	CurrentState->fidget = 0;
+	CurrentState->Fidget = 0;
 
 	StatesQueue.Insert(currentdata, 0); // Add em to the list. push current state to 1
 	StatesQueue.Insert(blinkdata, 0); // push blink to 0
@@ -257,22 +257,22 @@ void USTK_EyeComponent::ApplyFidgeting(float DeltaTime, StateData* StateToFidget
 	else
 		fidgetLerpFactor = 1;
 
-		StateToFidget->State[StateToFidget->activeState] = FMath::Lerp(
-		StateToFidget->State[StateToFidget->activeState],
+		StateToFidget->State[StateToFidget->ActiveState] = FMath::Lerp(
+		StateToFidget->State[StateToFidget->ActiveState],
 		fidgetRecordedIntensity,
 		fidgetLerpFactor
 		);
 
 	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, FString::Printf(TEXT("Fidgeted from %f to %f"), fidgetOriginalIntensity, fidgetRecordedIntensity));
 
-	if (fidgetTime > 1 / (5 * StateToFidget->fidget))
+	if (fidgetTime > 1 / (5 * StateToFidget->Fidget))
 	{
 		fidgetTime = 0;
 
 		if (FMath::RandRange(0, 512) < 128)
 		{
 			float newIntensity = fidgetOriginalIntensity;
-			newIntensity += FMath::RandRange(-0.5f, 0.5f) * sin(fidgetOriginalIntensity * PI)  * (StateToFidget->fidget);
+			newIntensity += FMath::RandRange(-0.5f, 0.5f) * sin(fidgetOriginalIntensity * PI)  * (StateToFidget->Fidget);
 			newIntensity = FMath::Clamp(newIntensity, 0.0f, 1.0f);
 
 			fidgetRecordedIntensity = newIntensity;
@@ -290,9 +290,9 @@ float USTK_EyeComponent::GetCurrentEyeClosedLevel()
 	// Modify this value based on what state we're in
 	// E.G. Happy at intensity 1 is way more open than Angry at intensity 1
 	if (StatesQueue.Num() > 0)
-		return StatesQueue[0]->State[StatesQueue[0]->activeState];
+		return StatesQueue[0]->State[StatesQueue[0]->ActiveState];
 	else
-		return CurrentState->State[CurrentState->activeState];
+		return CurrentState->State[CurrentState->ActiveState];
 }
 
 float USTK_EyeComponent::GetValueOfSpecificMorphTarget(std::string name)
@@ -313,8 +313,8 @@ void USTK_EyeComponent::SetEmotion(std::string Name, float intensity, float dura
 	statedata->State = MakeGestureMap(Name, intensity);
 	statedata->HoldDuration = duration;
 	statedata->TransitionSpeed = transitionSpeed;
-	statedata->activeState = Name.c_str();
-	statedata->fidget = fidget;
+	statedata->ActiveState = Name.c_str();
+	statedata->Fidget = fidget;
 
 	fidgetRecordedIntensity = intensity;
 	fidgetOriginalIntensity = intensity;

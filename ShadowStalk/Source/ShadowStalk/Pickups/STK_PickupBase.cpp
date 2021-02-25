@@ -21,15 +21,18 @@ ASTK_PickupBase::ASTK_PickupBase()
 	Collider->SetGenerateOverlapEvents(true);
 	Collider->SetCollisionProfileName("OverlapAll");
 	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Collider->SetRelativeLocation(FVector(0, 0, 75));
 	Collider->SetupAttachment(SceneRootComp);
 
-	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PlatformMesh");
+	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
+	PickupMesh->SetRelativeLocation(FVector(0, 0, -40));
 	PickupMesh->SetupAttachment(Collider);
 
 	ParticleFX = CreateDefaultSubobject<UParticleSystemComponent>("Particles");
+	ParticleFX->SetRelativeLocation(FVector(0, 0, -75));
 	ParticleFX->SetupAttachment(Collider);
 
-	Tags.Add("Pickup");
+	Tags.Add("Pickup"); // TODO maybe convert to "IsA..." in shade's on overlap function.
 }
 
 void ASTK_PickupBase::Enable()
