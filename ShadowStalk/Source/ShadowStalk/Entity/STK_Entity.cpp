@@ -8,6 +8,9 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "../MovementComponent/STK_EntityMovementComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASTK_Entity::ASTK_Entity()
@@ -37,6 +40,11 @@ ASTK_Entity::ASTK_Entity()
 	m_MovementComp = CreateDefaultSubobject<USTK_EntityMovementComponent>("Movement Component");
 	m_MovementComp->CapsuleComp = m_PlayerCapsule;
 	m_MovementComp->UpdatedComponent = RootComponent;
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SoundEmitter"));
+	AudioComponent->bAutoActivate = false;
+	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	AudioComponent->AttachTo(RootComponent);
 
 }
 
@@ -159,6 +167,20 @@ void ASTK_Entity::Tick(float DeltaTime)
 
 	HandleCamera();
 
+	//TODO Make Footsteps it's own function.
+	FootstepTimer += DeltaTime * FootstepFrequency * m_MovementComp->GetForwardVelocity();
+	if (FootstepTimer >= 1 && !AudioComponent->IsPlaying())
+	{
+		FootstepTimer = 0;
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Emerald, TEXT("Footstep"));
+
+		//AudioComponent->SetSound(FootstepsSound);
+
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
+	}
+
+
+	//TODO Put this stuff in it's own function.
 	FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
 	if (!CombinedAccleration.IsNearlyZero() && m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
 	{

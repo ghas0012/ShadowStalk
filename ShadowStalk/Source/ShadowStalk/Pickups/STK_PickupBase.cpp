@@ -32,6 +32,28 @@ ASTK_PickupBase::ASTK_PickupBase()
 	Tags.Add("Pickup");
 }
 
+void ASTK_PickupBase::Enable()
+{
+	if (PickupMesh)
+	{
+		this->SetActorHiddenInGame(false);
+		Collider->SetActive(true);
+
+		Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+}
+
+void ASTK_PickupBase::Disable()
+{
+	if (PickupMesh)
+	{
+		this->SetActorHiddenInGame(true);
+		Collider->SetActive(false);
+
+		Collider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
 // Called when the game starts or when spawned
 void ASTK_PickupBase::BeginPlay()
 {

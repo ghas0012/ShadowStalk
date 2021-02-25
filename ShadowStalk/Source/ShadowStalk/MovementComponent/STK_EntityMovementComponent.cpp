@@ -152,6 +152,8 @@ void USTK_EntityMovementComponent::Walk()
 
     CurrentSpeed = WalkSpeed;
     bIsCrawling = false;
+
+
 }
 
 void USTK_EntityMovementComponent::Crawl()

@@ -70,6 +70,7 @@ public:
 	UFUNCTION()
 	virtual void Respawn() {}
 
+	//void AddToInventory();
 
 protected:
 	// Called when the game starts or when spawned
@@ -88,7 +89,14 @@ protected:
 
 	float ForwardInput = 0.0f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+		class UAudioComponent* AudioComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+		class USoundBase* FootstepsSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+		float FootstepFrequency;
 
 public:
 	// Called every frame
@@ -115,5 +123,5 @@ public:
 
 	bool GetIsGrounded();
 
-
+	float FootstepTimer;
 };
