@@ -25,7 +25,8 @@ void ASTK_EntityShadeController::SetupInputComponent()
 		InputComponent->BindAxis("Forward", this, &ASTK_EntityShadeController::Forward);
 		InputComponent->BindAxis("Strafe", this, &ASTK_EntityShadeController::Strafe);
 		InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityShadeController::Jump);
-		InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityShadeController::Sprint);
+		InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityShadeController::SetSprint);
+		InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityShadeController::StopSprint);
 		InputComponent->BindAction("Crawl", IE_Pressed, this, &ASTK_EntityShadeController::SetCrawl);
 		InputComponent->BindAction("Crawl", IE_Released, this, &ASTK_EntityShadeController::UnsetCrawl);
 		InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityShadeController::MouseLook_Vertical);
@@ -57,11 +58,19 @@ void ASTK_EntityShadeController::Jump()
 	}
 }
 
-void ASTK_EntityShadeController::Sprint()
+void ASTK_EntityShadeController::SetSprint()
 {
 	if (m_ShadeEntity)
 	{
-		m_ShadeEntity->Sprint();
+		m_ShadeEntity->Sprint(true);
+	}
+}
+
+void ASTK_EntityShadeController::StopSprint()
+{
+	if (m_ShadeEntity)
+	{
+		m_ShadeEntity->Sprint(false);
 	}
 }
 

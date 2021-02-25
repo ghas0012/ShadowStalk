@@ -35,6 +35,9 @@ void ASTK_EntityMonsterController::SetupInputComponent()
         InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityMonsterController::Jump);
         InputComponent->BindAction("Interact", IE_Pressed, this, &ASTK_EntityMonsterController::Interact);
 
+        InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityMonsterController::SetSprint);
+        InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityMonsterController::StopSprint);
+
         InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityMonsterController::MouseLook_Vertical);
         InputComponent->BindAxis("MouseLook_Horizontal", this, &ASTK_EntityMonsterController::MouseLook_Horizontal);
     }
@@ -69,6 +72,22 @@ void ASTK_EntityMonsterController::Interact()
     if (m_MonsterEntity)
     {
         m_MonsterEntity->Interact();
+    }
+}
+
+void ASTK_EntityMonsterController::SetSprint()
+{
+    if (m_MonsterEntity)
+    {
+        m_MonsterEntity->Sprint(true);
+    }
+}
+
+void ASTK_EntityMonsterController::StopSprint()
+{
+    if (m_MonsterEntity)
+    {
+        m_MonsterEntity->Sprint(false);
     }
 }
 

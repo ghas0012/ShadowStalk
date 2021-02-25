@@ -22,7 +22,11 @@ ASTK_Entity::ASTK_Entity()
 	m_PlayerCapsule->SetSimulatePhysics(true);
 	m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
 	m_PlayerCapsule->GetBodyInstance()->bLockXRotation;
-	m_PlayerCapsule->SetCollisionProfileName("BlockAll");
+	m_PlayerCapsule->SetCollisionProfileName("Pawn");
+	m_PlayerCapsule->SetLinearDamping(0.5f);
+	m_PlayerCapsule->SetAngularDamping(1.0f);
+	m_PlayerCapsule->BodyInstance.bLockXRotation = true;
+	m_PlayerCapsule->BodyInstance.bLockYRotation = true;
 	SetRootComponent(m_PlayerCapsule);
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
@@ -49,6 +53,7 @@ void ASTK_Entity::BeginPlay()
 	m_MovementComp->WalkSpeed = m_MaxWalkSpeed;
 	m_MovementComp->SprintSpeed = m_MaxSprintSpeed;
 	m_MovementComp->AirControl = m_AirControl;
+	m_MovementComp->CurrentSpeed = m_MaxWalkSpeed;
 
 	Super::BeginPlay();
 
@@ -87,10 +92,6 @@ void ASTK_Entity::Strafe(float value)
 	RightAccelerationVector = GetActorRightVector() * value;
 }
 
-void ASTK_Entity::Sprint(float value)
-{
-}
-
 void ASTK_Entity::Interact()
 {
 	//LEAVE EMPTY, Will get overrided by child classes.
@@ -108,9 +109,17 @@ void ASTK_Entity::Jump()
 	}
 }
 
-void ASTK_Entity::Sprint()
+void ASTK_Entity::Sprint(bool IsSprint)
 {
-	//TODO - Will Do Later.
+	if (IsSprint == true)
+	{
+		m_MovementComp->Sprint();
+	}
+
+	else
+	{
+		m_MovementComp->Walk();
+	}
 }
 
 void ASTK_Entity::Crawl(bool IsCrawl)

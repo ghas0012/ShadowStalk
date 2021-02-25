@@ -28,8 +28,6 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
 
     FHitResult GroundCheck;
 
-    CurrentSpeed = WalkSpeed;
-
     FVector BottomOfCollider = CapsuleComp->GetRelativeLocation() - FVector::UpVector * CapsuleComp->GetScaledCapsuleHalfHeight();
 
     if
@@ -173,5 +171,5 @@ bool USTK_EntityMovementComponent::GetIsGrounded()
 
 float USTK_EntityMovementComponent::GetForwardVelocity()
 {
-    return FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector);
+    return FMath::Abs(FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector));
 }

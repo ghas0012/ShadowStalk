@@ -15,6 +15,7 @@ class SHADOWSTALK_API USTK_UWMainMenu : public USTK_UserWidget
 	GENERATED_BODY()
 
 public:
+	USTK_UWMainMenu();
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	class UButton* PlayButton = nullptr;
@@ -27,6 +28,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	class UButton* QuitButton = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "SoundFX")
+	class USoundBase* HoverSoundFX;
 
 protected:
 
@@ -46,4 +50,7 @@ private:
 
 	UFUNCTION()
 	void QuitPressed();
+
+	UFUNCTION()
+	void PlayerHoverSoundFX();
 };

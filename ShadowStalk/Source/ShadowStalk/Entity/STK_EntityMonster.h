@@ -19,13 +19,7 @@ public:
 
 	ASTK_EntityMonster();
 
-	virtual void Forward(float value) override;
-	virtual void Strafe(float value) override;
-	virtual void Jump() override;
 	virtual void Interact() override;
-
-	virtual void MouseLook_Vertical(float value) override;
-	virtual void MouseLook_Horizontal(float value) override;
 
 
 protected:
