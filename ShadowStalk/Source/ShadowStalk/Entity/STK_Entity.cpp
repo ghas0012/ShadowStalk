@@ -1,5 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+// Author: Christian Young
 
+// Changelog:
+// - Class init.
+// - Changed AttachTo to SetupAttachment
 
 #include "STK_Entity.h"
 #include "GameFramework/Controller.h"
@@ -48,7 +52,7 @@ ASTK_Entity::ASTK_Entity()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SoundEmitter"));
 	AudioComponent->bAutoActivate = false;
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	AudioComponent->AttachTo(RootComponent);
+	AudioComponent->SetupAttachment(RootComponent);
 
 }
 

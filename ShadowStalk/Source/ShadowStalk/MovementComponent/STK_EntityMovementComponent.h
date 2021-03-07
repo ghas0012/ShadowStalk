@@ -1,4 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+// Author: Christian Young, Hamidreza Ghasemi
+
+// Changelog:
+// - Class init.
 
 #pragma once
 
@@ -6,9 +10,6 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "STK_EntityMovementComponent.generated.h"
 
-/**
- *
- */
 UCLASS()
 class SHADOWSTALK_API USTK_EntityMovementComponent : public UPawnMovementComponent
 {
