@@ -25,6 +25,15 @@ void ASTK_EntityMonster::Interact()
 
 }
 
+E_MonsterState ASTK_EntityMonster::GetMonsterState()
+{
+    return CurrentState;
+}
+
+void ASTK_EntityMonster::SetMonsterState(E_MonsterState state)
+{
+    CurrentState = state;
+}
 
 void ASTK_EntityMonster::Tick(float DeltaTime)
 {

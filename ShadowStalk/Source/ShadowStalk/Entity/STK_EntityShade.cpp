@@ -38,6 +38,16 @@ ASTK_EntityShade::ASTK_EntityShade()
 	m_CapsuleRadius = 40.0f;
 }
 
+E_ShadeState ASTK_EntityShade::GetShadeState()
+{
+	return CurrentState;
+}
+
+void ASTK_EntityShade::SetShadeState(E_ShadeState state)
+{
+	CurrentState = state;
+}
+
 // Called when the game starts or when spawned
 void ASTK_EntityShade::BeginPlay()
 {

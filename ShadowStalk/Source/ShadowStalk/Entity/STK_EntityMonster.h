@@ -10,6 +10,12 @@
 #include "STK_Entity.h"
 #include "STK_EntityMonster.generated.h"
 
+UENUM(BlueprintType)
+enum class E_MonsterState : uint8 {
+	Default  UMETA(DisplayName = "Default"),
+	Stunned  UMETA(DisplayName = "Stunned")
+};
+
 UCLASS()
 class SHADOWSTALK_API ASTK_EntityMonster : public ASTK_Entity
 {
@@ -22,9 +28,15 @@ public:
 
 	virtual void Interact() override;
 
+	UFUNCTION(BlueprintCallable)
+		E_MonsterState GetMonsterState();
+
+	UFUNCTION(BlueprintCallable)
+		void SetMonsterState(E_MonsterState state);
 
 protected:
 
+	E_MonsterState CurrentState = E_MonsterState::Default;
 
 public:
 
