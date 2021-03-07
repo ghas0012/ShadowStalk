@@ -1,26 +1,30 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+// Author: Jeffrey Armstrong
+
+// Changelog:
+// - Class init.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "InventoryComponent.generated.h"
+#include "STK_InventoryComponent.generated.h"
 
 UENUM(BlueprintType)
-enum class EInventoryDirection : uint8
+enum class E_InventoryDirection : uint8
 {
 	NEXT = 0 UMETA(DisplayName = "NEXT"),
 	PREV = 1 UMETA(DisplayName = "PREV")
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SHADOWSTALK_API UInventoryComponent : public UActorComponent
+class SHADOWSTALK_API USTK_InventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UInventoryComponent();
+	USTK_InventoryComponent();
 
 	void AddToInventory(class ASTK_PickupBase* pickup);
 
@@ -48,7 +52,7 @@ protected:
 
 	void EquipNewInventoryItem(ASTK_PickupBase* NewItem);
 
-	void SelectInventory(EInventoryDirection direction);
+	void SelectInventory(E_InventoryDirection direction);
 
 public:	
 	// Called every frame

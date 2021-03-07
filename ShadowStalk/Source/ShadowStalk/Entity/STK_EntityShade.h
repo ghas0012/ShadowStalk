@@ -1,4 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+// Author: Hamidreza Ghasemi
+
+// Changelog:
+// - Class init.
 
 #pragma once
 
@@ -6,9 +10,6 @@
 #include "STK_Entity.h"
 #include "STK_EntityShade.generated.h"
 
-/**
- *
- */
 UCLASS()
 class SHADOWSTALK_API ASTK_EntityShade : public ASTK_Entity
 {

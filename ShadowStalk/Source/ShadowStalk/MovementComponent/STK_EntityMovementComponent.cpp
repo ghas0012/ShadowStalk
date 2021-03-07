@@ -1,5 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+// Author: Christian Young, Hamidreza Ghasemi
 
+// Changelog:
+// - Class init.
 
 #include "STK_EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -31,18 +34,18 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
     FVector BottomOfCollider = CapsuleComp->GetRelativeLocation() - FVector::UpVector * CapsuleComp->GetScaledCapsuleHalfHeight();
 
     if
+    (
+        GetWorld()->SweepSingleByChannel
         (
-            GetWorld()->SweepSingleByChannel
-            (
-                GroundCheck,
-                CapsuleComp->GetRelativeLocation(),
-                BottomOfCollider,
-                FQuat::Identity,
-                ECollisionChannel::ECC_GameTraceChannel1,
-                FCollisionShape::MakeCapsule(CapsuleComp->GetScaledCapsuleRadius() * 0.5f, CapsuleComp->GetScaledCapsuleHalfHeight()-50),
-                CollisionParameters
-            )
-           )
+            GroundCheck,
+            CapsuleComp->GetRelativeLocation(),
+            BottomOfCollider,
+            FQuat::Identity,
+            ECollisionChannel::ECC_GameTraceChannel1,
+            FCollisionShape::MakeCapsule(CapsuleComp->GetScaledCapsuleRadius() * 0.5f, CapsuleComp->GetScaledCapsuleHalfHeight()-50),
+            CollisionParameters
+        )
+    )
     {
         if (GroundCheck.bBlockingHit)
         {

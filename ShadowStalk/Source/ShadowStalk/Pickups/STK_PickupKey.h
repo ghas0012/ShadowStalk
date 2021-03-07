@@ -1,4 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+// Author: Hamidreza Ghasemi
+
+// Changelog:
+// - Class init.
 
 #pragma once
 

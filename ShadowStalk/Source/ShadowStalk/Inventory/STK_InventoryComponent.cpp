@@ -1,12 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+// Author: Jeffrey Armstrong
 
+// Changelog:
+// - Class init.
+// = Renamed class to add STK_ prefix
 
-#include "InventoryComponent.h"
+#include "STK_InventoryComponent.h"
 #include "../Pickups/STK_PickupBase.h"
 #include "../Entity/STK_Entity.h"
 
 // Sets default values for this component's properties
-UInventoryComponent::UInventoryComponent()
+USTK_InventoryComponent::USTK_InventoryComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -16,7 +20,7 @@ UInventoryComponent::UInventoryComponent()
 }
 
 // Called when the game starts
-void UInventoryComponent::BeginPlay()
+void USTK_InventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -24,39 +28,39 @@ void UInventoryComponent::BeginPlay()
 	
 }
 
-void UInventoryComponent::AddToInventory(ASTK_PickupBase* pickup)
+void USTK_InventoryComponent::AddToInventory(ASTK_PickupBase* pickup)
 {
 	Inventory.AddUnique(pickup);
 
 	pickup->Disable();
 }
 
-int UInventoryComponent::GetInventoryCount()
+int USTK_InventoryComponent::GetInventoryCount()
 {
 	return Inventory.Num();
 }
 
-void UInventoryComponent::NextInventoryItem()
+void USTK_InventoryComponent::NextInventoryItem()
 {
-	SelectInventory(EInventoryDirection::NEXT);
+	SelectInventory(E_InventoryDirection::NEXT);
 }
 
-void UInventoryComponent::PreviousInventoryItem()
+void USTK_InventoryComponent::PreviousInventoryItem()
 {
-	SelectInventory(EInventoryDirection::PREV);
+	SelectInventory(E_InventoryDirection::PREV);
 }
 
-ASTK_PickupBase* UInventoryComponent::GetCurrentInventory() const
+ASTK_PickupBase* USTK_InventoryComponent::GetCurrentInventory() const
 {
 	return CurrentInventoryItem;
 }
 
-void UInventoryComponent::ResetCurrentInventory()
+void USTK_InventoryComponent::ResetCurrentInventory()
 {
 	CurrentInventoryItem = nullptr;
 }
 
-void UInventoryComponent::EquipNewInventoryItem(ASTK_PickupBase* NewItem)
+void USTK_InventoryComponent::EquipNewInventoryItem(ASTK_PickupBase* NewItem)
 {
 	if (CurrentInventoryItem)
 	{
@@ -75,7 +79,7 @@ void UInventoryComponent::EquipNewInventoryItem(ASTK_PickupBase* NewItem)
 	CurrentInventoryItem = NewItem;
 }
 
-void UInventoryComponent::SelectInventory(EInventoryDirection direction)
+void USTK_InventoryComponent::SelectInventory(E_InventoryDirection direction)
 {
 	if (Inventory.Num() == 0)
 	{
@@ -84,13 +88,13 @@ void UInventoryComponent::SelectInventory(EInventoryDirection direction)
 
 	ASTK_PickupBase* InventoryItemToEquip = nullptr;
 
-	int32 Index = (direction == EInventoryDirection::NEXT ? 0 : Inventory.Num() - 1);
+	int32 Index = (direction == E_InventoryDirection::NEXT ? 0 : Inventory.Num() - 1);
 
 	if (CurrentInventoryItem)
 	{
 		Inventory.Find(CurrentInventoryItem, Index);
 
-		Index += (direction == EInventoryDirection::NEXT ? 1 : -1);
+		Index += (direction == E_InventoryDirection::NEXT ? 1 : -1);
 	}
 
 	if (Index < Inventory.Num() && Index > -1)
@@ -102,7 +106,7 @@ void UInventoryComponent::SelectInventory(EInventoryDirection direction)
 }
 
 // Called every frame
-void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void USTK_InventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
