@@ -31,6 +31,7 @@ protected:
 	void Strafe(float value);
 	void Jump();
 	void Interact();
+	void Attack();
 	void SetSprint();
 	void StopSprint();
 	void MouseLook_Vertical(float value);

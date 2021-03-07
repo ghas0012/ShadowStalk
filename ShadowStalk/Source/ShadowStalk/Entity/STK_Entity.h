@@ -3,13 +3,13 @@
 
 // Changelog:
 // - Class init.
+// - Added Type getters
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ShadowStalk/ShadowStalk.h"
 #include "GameFramework/Character.h"
-
-
 #include "STK_Entity.generated.h"
 
 UCLASS()
@@ -68,8 +68,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	float m_CapsuleHalfHeight = 100.f;
 
-
-
 	//Respawn won't have a function, however if we want to add this, the framework is here.
 	UFUNCTION()
 	virtual void Respawn() {}
@@ -87,7 +85,6 @@ protected:
 	FVector RightAccelerationVector;
 	FVector VelocityVector;
 
-
 	bool bIsGrounded;
 	bool bCanJump;
 
@@ -103,6 +100,9 @@ protected:
 		float FootstepFrequency;
 
 public:
+
+	virtual EEntityType GetEntityType();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

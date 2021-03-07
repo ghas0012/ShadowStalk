@@ -3,6 +3,8 @@
 
 // Changelog:
 // - Class init.
+// - Added States
+// - Added Health and relevant funcs
 
 #pragma once
 
@@ -11,7 +13,7 @@
 #include "STK_EntityShade.generated.h"
 
 UENUM(BlueprintType)
-enum class E_ShadeState : uint8 {
+enum class EShadeState : uint8 {
     Default  UMETA(DisplayName = "Default"),
     Dead	 UMETA(DisplayName = "Dead"),
     Hurt     UMETA(DisplayName = "Hurt")
@@ -25,6 +27,8 @@ class SHADOWSTALK_API ASTK_EntityShade : public ASTK_Entity
 
 public:
 
+    virtual EEntityType GetEntityType() override;
+
     ASTK_EntityShade();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
@@ -34,11 +38,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
         class URectLightComponent* m_pRSpotlight;
 
-    UFUNCTION(BlueprintCallable)
-        E_ShadeState GetShadeState();
 
-    UFUNCTION(BlueprintCallable)
-        void SetShadeState(E_ShadeState state);
 
 protected:
     // Called when the game starts
@@ -49,9 +49,25 @@ protected:
     UFUNCTION()
         void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-    E_ShadeState CurrentState = E_ShadeState::Default;
+    EShadeState CurrentState = EShadeState::Default;
+
+    int Health = 2;
 
 public:
+
+    void GetHurt(unsigned char damage);
+
+    UFUNCTION(BlueprintCallable)
+        int GetHealth();
+
+    UFUNCTION(BlueprintCallable)
+        void SetHealth(int health);
+
+    UFUNCTION(BlueprintCallable)
+        EShadeState GetShadeState();
+
+    UFUNCTION(BlueprintCallable)
+        void SetShadeState(EShadeState state);
 
     virtual void Tick(float DeltaTime) override;
 

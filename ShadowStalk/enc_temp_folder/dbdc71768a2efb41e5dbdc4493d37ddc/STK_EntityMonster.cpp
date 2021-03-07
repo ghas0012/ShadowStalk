@@ -45,7 +45,7 @@ void ASTK_EntityMonster::Attack()
                 Shades[i]->GetHurt(1);
 
                 if (Shades[i]->GetRootComponent()->IsSimulatingPhysics())
-                    Shades[i]->m_PlayerCapsule->AddImpulse((Shades[i]->GetActorLocation() - GetActorLocation()).GetSafeNormal() * 80000);
+                    Shades[i]->m_PlayerCapsule->AddImpulse((Shades[i]->GetActorLocation() - GetActorLocation()).GetSafeNormal() * 50000);
                 
             }
         }

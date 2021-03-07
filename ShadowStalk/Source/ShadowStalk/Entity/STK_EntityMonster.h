@@ -11,7 +11,7 @@
 #include "STK_EntityMonster.generated.h"
 
 UENUM(BlueprintType)
-enum class E_MonsterState : uint8 {
+enum class EMonsterState : uint8 {
 	Default  UMETA(DisplayName = "Default"),
 	Stunned  UMETA(DisplayName = "Stunned")
 };
@@ -26,19 +26,23 @@ public:
 
 	ASTK_EntityMonster();
 
-	virtual void Interact() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		class UAnimationAsset* AttackAnimation;
 
-	UFUNCTION(BlueprintCallable)
-		E_MonsterState GetMonsterState();
-
-	UFUNCTION(BlueprintCallable)
-		void SetMonsterState(E_MonsterState state);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		class UAnimationAsset* KillAnimation;
 
 protected:
 
-	E_MonsterState CurrentState = E_MonsterState::Default;
+	EMonsterState CurrentState = EMonsterState::Default;
+
+	class ASTK_MatchGameState* gamestate = nullptr;
+
+	virtual void BeginPlay() override;
 
 public:
+
+	virtual EEntityType GetEntityType() override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -46,4 +50,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
+		EMonsterState GetMonsterState();
+
+	UFUNCTION(BlueprintCallable)
+		void SetMonsterState(EMonsterState state);
+
+	virtual void Interact() override;
+
+
+	void Attack();
 };

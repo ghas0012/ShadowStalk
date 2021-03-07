@@ -38,12 +38,31 @@ ASTK_EntityShade::ASTK_EntityShade()
 	m_CapsuleRadius = 40.0f;
 }
 
-E_ShadeState ASTK_EntityShade::GetShadeState()
+void ASTK_EntityShade::GetHurt(unsigned char damage)
+{
+	Health = FMath::Clamp(Health - damage, 0, 2);
+
+	if (Health == 0)
+	SetShadeState(EShadeState::Dead);
+}
+
+int ASTK_EntityShade::GetHealth()
+{
+	return Health;
+}
+
+void ASTK_EntityShade::SetHealth(int health)
+{
+	health = FMath::Clamp(health, 0, 2);
+	Health = health;
+}
+
+EShadeState ASTK_EntityShade::GetShadeState()
 {
 	return CurrentState;
 }
 
-void ASTK_EntityShade::SetShadeState(E_ShadeState state)
+void ASTK_EntityShade::SetShadeState(EShadeState state)
 {
 	CurrentState = state;
 }
@@ -71,6 +90,10 @@ void ASTK_EntityShade::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+EEntityType ASTK_EntityShade::GetEntityType()
+{
+	return EEntityType::Shade;
+}
 
 void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

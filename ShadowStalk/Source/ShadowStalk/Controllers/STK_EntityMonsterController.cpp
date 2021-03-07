@@ -36,6 +36,7 @@ void ASTK_EntityMonsterController::SetupInputComponent()
         InputComponent->BindAxis("Strafe", this, &ASTK_EntityMonsterController::Strafe);
 
         InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityMonsterController::Jump);
+        InputComponent->BindAction("Attack", IE_Pressed, this, &ASTK_EntityMonsterController::Attack);
         InputComponent->BindAction("Interact", IE_Pressed, this, &ASTK_EntityMonsterController::Interact);
 
         InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityMonsterController::SetSprint);
@@ -75,6 +76,14 @@ void ASTK_EntityMonsterController::Interact()
     if (m_MonsterEntity)
     {
         m_MonsterEntity->Interact();
+    }
+}
+
+void ASTK_EntityMonsterController::Attack()
+{
+    if (m_MonsterEntity)
+    {
+        m_MonsterEntity->Attack();
     }
 }
 

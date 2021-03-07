@@ -168,6 +168,11 @@ bool ASTK_Entity::GetIsGrounded()
 	return bIsGrounded;
 }
 
+EEntityType ASTK_Entity::GetEntityType()
+{
+	return EEntityType::Undefined;
+}
+
 // Called every frame
 void ASTK_Entity::Tick(float DeltaTime)
 {

@@ -15,6 +15,7 @@
 class ASTK_PickupKey;
 class ASTK_ExitDoor;
 class ASTK_PickupSpawn;
+class ASTK_Entity;
 
 UCLASS()
 class SHADOWSTALK_API ASTK_MatchGameMode : public AGameModeBase
@@ -32,7 +33,6 @@ protected:
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Logistics")
 	//	TSubclassOf<class ASTK_PickupKey> Pickup_Item_Template;
-
 
 	ASTK_ExitDoor* SelectedExitDoor;
 	TArray <ASTK_ExitDoor*> ExitDoorList;
