@@ -32,6 +32,7 @@ ASTK_EntityShade::ASTK_EntityShade()
 	//Default Shade Stats. 
 	m_MaxWalkSpeed = 500.0f;
 	m_MaxSprintSpeed = 800.0f;
+	m_MaxCrawlSpeed = 200.0f;
 	m_Acceleration = 3500.0f;
 	m_JumpStrength = 20000.0f;
 	m_CapsuleHalfHeight = 75.0f;

@@ -38,6 +38,7 @@ ASTK_Entity::ASTK_Entity()
 
 	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
 	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
+	m_CameraComp->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	m_CameraComp->SetupAttachment(m_PlayerCapsule);
 
 	m_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh Comp");
@@ -64,6 +65,7 @@ void ASTK_Entity::BeginPlay()
 	m_MovementComp->Acceleration = m_Acceleration;
 	m_MovementComp->WalkSpeed = m_MaxWalkSpeed;
 	m_MovementComp->SprintSpeed = m_MaxSprintSpeed;
+	m_MovementComp->CrawlSpeed = m_MaxCrawlSpeed;
 	m_MovementComp->AirControl = m_AirControl;
 	m_MovementComp->CurrentSpeed = m_MaxWalkSpeed;
 
@@ -136,7 +138,15 @@ void ASTK_Entity::Sprint(bool IsSprint)
 
 void ASTK_Entity::Crawl(bool IsCrawl)
 {
-	//TODO - Will Do Later.
+	if (IsCrawl == true)
+	{
+
+		m_MovementComp->Crawl();
+	}
+	if (IsCrawl == false)
+	{
+		m_MovementComp->Walk();
+	}
 }
 
 void ASTK_Entity::UnhideMouse()

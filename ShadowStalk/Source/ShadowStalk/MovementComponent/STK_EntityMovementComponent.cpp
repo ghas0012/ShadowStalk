@@ -162,7 +162,9 @@ void USTK_EntityMovementComponent::Walk()
 void USTK_EntityMovementComponent::Crawl()
 {
     if (bInputLocked)
+    {
         return;
+    }
 
     CurrentSpeed = CrawlSpeed;
     bIsCrawling = true;
