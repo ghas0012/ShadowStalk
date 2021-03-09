@@ -56,6 +56,9 @@ public:
 	float m_MaxSprintSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	float m_MaxCrawlSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	float m_AirControl;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
