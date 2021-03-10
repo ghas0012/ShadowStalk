@@ -24,15 +24,24 @@ public:
 	FVector VelocityAtJump = FVector::ZeroVector;
 
 	float FrictionLerp = 1;
+	float AirControl = 1;
 	float Acceleration;
-	float WalkSpeed;
 	float CurrentSpeed;
+	float JumpStrength;
 	float SprintSpeed;
 	float CrawlSpeed;
-	float JumpStrength;
-	float AirControl = 0;
+	float WalkSpeed;
+
+	float CrawlTransitionSpeed = 2.f;
+	float CrawlTransitionPercentage = 0.f;
+	float CrawlTransitionInitHalfHeight;
+
+	float CapsuleStandingHalfHeight;
+	float CapsuleCrawlHalfHeight;
 
 	bool bIsCrawling = false;
+
+	void HandleCrawlTransition(float DeltaTime);
 
 	void Reset();
 	void Jump(float jumps); //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
@@ -48,5 +57,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		float GetForwardVelocity();
-
 };

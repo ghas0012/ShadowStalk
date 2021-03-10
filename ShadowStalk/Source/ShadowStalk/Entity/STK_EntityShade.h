@@ -13,17 +13,20 @@
 #include "STK_EntityShade.generated.h"
 
 UENUM(BlueprintType)
-enum class EShadeState : uint8 {
-    Default  UMETA(DisplayName = "Default"),
-    Dead	 UMETA(DisplayName = "Dead"),
-    Hurt     UMETA(DisplayName = "Hurt")
+enum class EShadeState : uint8 
+{
+    Execution   UMETA(DisplayName = "Execution"),
+    Default     UMETA(DisplayName = "Default"),
+    Downed      UMETA(DisplayName = "Downed"),
+    Hurt        UMETA(DisplayName = "Hurt"),
+    KnockedBack UMETA(DisplayName = "Hit"),
+    Dead	    UMETA(DisplayName = "Dead")
 };
 
 UCLASS()
 class SHADOWSTALK_API ASTK_EntityShade : public ASTK_Entity
 {
     GENERATED_BODY()
-
 
 public:
 
@@ -38,8 +41,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
         class URectLightComponent* m_pRSpotlight;
 
-
-
 protected:
     // Called when the game starts
     virtual void BeginPlay() override;
@@ -47,27 +48,50 @@ protected:
     void SetupEyes();
 
     UFUNCTION()
-        void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+    void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     EShadeState CurrentState = EShadeState::Default;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
     int Health = 2;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+        float DownedRecoveryTime = 10.0f;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+        float KnockbackRecoveryDuration = 1.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+        float KnockbackStandupDuration = 0.3f;
+
+    void RecoverFromDowned();
+
+    FTimerHandle DownedRecoveryHandle;
+    FTimerHandle DelayedStateChangeHandle;
+    EShadeState DelayedTargetState;
+
+    void DelayedStateChange();
 
 public:
 
-    void GetHurt(unsigned char damage);
+    void StartExecution(class ASTK_EntityMonster* Executioner);
+
+    void ApplyDamage(unsigned char damage, FVector knockback);
 
     UFUNCTION(BlueprintCallable)
         int GetHealth();
 
     UFUNCTION(BlueprintCallable)
-        void SetHealth(int health);
-
+        void SetHealth(int targetHealth);
+ 
     UFUNCTION(BlueprintCallable)
         EShadeState GetShadeState();
 
     UFUNCTION(BlueprintCallable)
         void SetShadeState(EShadeState state);
+ 
+
+    virtual void Interact() override;
 
     virtual void Tick(float DeltaTime) override;
 

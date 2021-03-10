@@ -14,6 +14,7 @@
 #include "GameFramework/Actor.h"
 #include "STK_PickupBase.generated.h"
 
+
 UCLASS()
 class SHADOWSTALK_API ASTK_PickupBase : public AActor
 {
@@ -60,10 +61,10 @@ public:
 		FRotator RotDir = FRotator(0,1,0);
 
 	UFUNCTION()
-		virtual void Enable();
+		virtual void Disable();
 
 	UFUNCTION()
-		virtual void Disable();
+		virtual void Enable();
 
 protected:
 	// Called when the game starts or when spawned

@@ -91,18 +91,30 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
         }
     }
 
-    //TODO - Temp Code, will update once we have actual sizes
-    if (bIsCrawling)
+    if (CrawlTransitionPercentage != 1.0f)
     {
-        CapsuleComp->SetCapsuleHalfHeight(35.0f);
-    }
-    else
-    {
-        CapsuleComp->SetCapsuleHalfHeight(70.0f);
+        HandleCrawlTransition(DeltaTime);
     }
 
     UpdateComponentVelocity();
 
+}
+
+void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
+{
+    CrawlTransitionPercentage += DeltaTime * CrawlTransitionSpeed;
+
+    if (CrawlTransitionPercentage >= 1.0f)
+        CrawlTransitionPercentage = 1.0f;
+
+    if (bIsCrawling)
+    {
+        CapsuleComp->SetCapsuleHalfHeight(FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleCrawlHalfHeight, CrawlTransitionPercentage));
+    }
+    else
+    {
+        CapsuleComp->SetCapsuleHalfHeight(FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleStandingHalfHeight, CrawlTransitionPercentage));
+    }
 }
 
 void USTK_EntityMovementComponent::Reset()
@@ -118,7 +130,9 @@ void USTK_EntityMovementComponent::Reset()
 void USTK_EntityMovementComponent::Jump(float jumps) //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
 {
     if (bInputLocked)
+    {
         return;
+    }
 
     JumpStrength = jumps;
 
@@ -142,28 +156,37 @@ void USTK_EntityMovementComponent::Sprint()
         return;
     }
 
+    CrawlTransitionInitHalfHeight = CapsuleComp->GetScaledCapsuleHalfHeight();
+    CrawlTransitionPercentage = 0;
     CurrentSpeed = SprintSpeed;
     bIsCrawling = false;
 }
 
 void USTK_EntityMovementComponent::Walk()
 {
+
     if (bInputLocked)
     {
         return;
     }
 
+    CrawlTransitionInitHalfHeight = CapsuleComp->GetScaledCapsuleHalfHeight();
+    CrawlTransitionPercentage = 0;
     CurrentSpeed = WalkSpeed;
     bIsCrawling = false;
-
 
 }
 
 void USTK_EntityMovementComponent::Crawl()
 {
-    if (bInputLocked)
-        return;
 
+    if (bInputLocked)
+    {
+        return;
+    }
+
+    CrawlTransitionInitHalfHeight = CapsuleComp->GetScaledCapsuleHalfHeight();
+    CrawlTransitionPercentage = 0;
     CurrentSpeed = CrawlSpeed;
     bIsCrawling = true;
 

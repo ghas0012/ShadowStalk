@@ -12,8 +12,9 @@
 
 UENUM(BlueprintType)
 enum class EMonsterState : uint8 {
-	Default  UMETA(DisplayName = "Default"),
-	Stunned  UMETA(DisplayName = "Stunned")
+	Default		UMETA(DisplayName = "Default"),
+	Executing	UMETA(DisplayName = "Executing"),
+	Stunned		UMETA(DisplayName = "Stunned")
 };
 
 UCLASS()
@@ -27,10 +28,22 @@ public:
 	ASTK_EntityMonster();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		class UAnimationAsset* AttackAnimation;
+		float GrabRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		class UAnimationAsset* KillAnimation;
+		float AttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		float AttackKnockbackStrength = 80000;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		float ExecutionTimeLength = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		float ExecutionPositioningDistance = 250;
+
+
+	FTimerHandle ExecutionTimerHandle;
 
 protected:
 
@@ -39,6 +52,7 @@ protected:
 	class ASTK_MatchGameState* gamestate = nullptr;
 
 	virtual void BeginPlay() override;
+
 
 public:
 
@@ -58,6 +72,9 @@ public:
 
 	virtual void Interact() override;
 
+	void ExecuteShade(class ASTK_EntityShade* TargetShade);
+
+	void OnExcecuteEnd();
 
 	void Attack();
 };

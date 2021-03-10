@@ -3,7 +3,10 @@
 
 // Changelog:
 // - Class init.
-// - Added Type getters
+// - Added entity type getters
+// - Added input locking
+// - Added camera override
+
 
 #pragma once
 
@@ -11,6 +14,8 @@
 #include "ShadowStalk/ShadowStalk.h"
 #include "GameFramework/Character.h"
 #include "STK_Entity.generated.h"
+
+
 
 UCLASS()
 class SHADOWSTALK_API ASTK_Entity : public APawn
@@ -54,10 +59,10 @@ public:
 	float m_Acceleration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	float m_MaxWalkSpeed;
+	float m_WalkSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	float m_MaxSprintSpeed;
+	float m_SprintSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	float m_AirControl;
@@ -68,17 +73,29 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	float m_CapsuleHalfHeight = 100.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	bool bCameraOverride = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	FVector CameraOverrideTarget;
+
 	//Respawn won't have a function, however if we want to add this, the framework is here.
 	UFUNCTION()
 	virtual void Respawn() {}
 
 	//void AddToInventory();
 
+	// position override variables
+	bool bPositionOverride = false;
+	float PositionOverridePercent;
+	FVector PositionOverrideTarget;
+	FVector PositionOverrideOrigin;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void HandleCamera();
+	virtual void HandleCamera(float DeltaTime);
 
 	FVector MouseLookVector = FVector::ZeroVector;
 	FVector ForwardAccelerationVector;
@@ -90,6 +107,10 @@ protected:
 
 	float ForwardInput = 0.0f;
 
+	float CameraOverrideSpeed = 10.f; // 0-1
+	float PositionOverrideSpeed = 30.0f; // 0-1
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
 		class UAudioComponent* AudioComponent;
 
@@ -99,20 +120,37 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
 		float FootstepFrequency;
 
+		float FootstepTimer;
+
+	uint8 InputLockFlags = 0;
+	
 public:
 
+	UFUNCTION(BlueprintCallable)
 	virtual EEntityType GetEntityType();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void HandlePosition(float DeltaTime);
+
+	void HandleFootstepSounds(float DeltaTime);
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void SetInputLock(EInputLockFlags flag, bool lock);
+	void SetInputLock(uint8 flag, bool lock);
 
 //	virtual UPawnMovementComponent* GetMovementComponent();
 
 	virtual void Forward(float value);
 	virtual void Strafe(float value);
+
+	void LockCameraLookat(FVector target);
+	void UnlockCameraLookat();
+	
+	void ForceMoveToPoint(FVector target);
 
 	virtual void Interact();
 	virtual void Jump();
@@ -127,5 +165,4 @@ public:
 
 	bool GetIsGrounded();
 
-	float FootstepTimer;
 };

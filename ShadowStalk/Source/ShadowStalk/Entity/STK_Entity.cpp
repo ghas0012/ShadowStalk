@@ -1,9 +1,13 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young
+// Author: Christian Young and Hamidreza Ghasemi
 
 // Changelog:
 // - Class init.
-// - Changed AttachTo to SetupAttachment
+// - Added entity type getters
+// - Added input locking
+// - Added camera override
+// - Added position override
+// - Cleaned up the Tick function
 
 #include "STK_Entity.h"
 #include "GameFramework/Controller.h"
@@ -15,6 +19,7 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ASTK_Entity::ASTK_Entity()
@@ -60,12 +65,14 @@ ASTK_Entity::ASTK_Entity()
 void ASTK_Entity::BeginPlay()
 {
 
-	m_MovementComp->FrictionLerp = m_FrictionLerp;
-	m_MovementComp->Acceleration = m_Acceleration;
-	m_MovementComp->WalkSpeed = m_MaxWalkSpeed;
-	m_MovementComp->SprintSpeed = m_MaxSprintSpeed;
+	m_MovementComp->WalkSpeed = m_WalkSpeed;
 	m_MovementComp->AirControl = m_AirControl;
-	m_MovementComp->CurrentSpeed = m_MaxWalkSpeed;
+	m_MovementComp->SprintSpeed = m_SprintSpeed;
+	m_MovementComp->CurrentSpeed = m_WalkSpeed;
+	m_MovementComp->Acceleration = m_Acceleration;
+	m_MovementComp->FrictionLerp = m_FrictionLerp;
+	m_MovementComp->CapsuleCrawlHalfHeight = m_CapsuleHalfHeight;
+	m_MovementComp->CapsuleStandingHalfHeight = m_CapsuleHalfHeight;
 
 	Super::BeginPlay();
 
@@ -75,25 +82,45 @@ void ASTK_Entity::BeginPlay()
 	//TODO - GameState callers.
 }
 
-void ASTK_Entity::HandleCamera()
+
+
+void ASTK_Entity::HandleCamera(float DeltaTime)
 {
-
-	m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
-
-	if (abs(MouseLookVector.Y) < m_MouseLook_VerticalLookLimitAngle)
+	if (!bCameraOverride)
 	{
-		m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
+		m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
+
+		if (abs(MouseLookVector.Y) < m_MouseLook_VerticalLookLimitAngle)
+		{
+			m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
+		}
+		else
+		{
+			MouseLookVector.Y = -m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
+		}
 	}
 	else
 	{
-		MouseLookVector.Y = -m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
+		FRotator Rot = (CameraOverrideTarget - m_CameraComp->GetComponentLocation()).GetSafeNormal().Rotation();
+		FRotator calcRot = FMath::RInterpTo(FRotator(MouseLookVector.Y, MouseLookVector.X, 0), Rot, DeltaTime, CameraOverrideSpeed);
+
+		//DrawDebugLine(GetWorld(), m_CameraComp->GetComponentLocation(), m_CameraComp->GetComponentLocation() + calcRot.Vector(), FColor::Green, false, 5.f, ECC_WorldStatic, 5.f);
+
+		MouseLookVector.X = calcRot.Yaw;
+		MouseLookVector.Y = calcRot.Pitch;
+
+		m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
+		m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
 	}
-
-
 }
 
 void ASTK_Entity::Forward(float value)
 {
+	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
+	{
+		RightAccelerationVector = FVector(0);
+		return;
+	}
 
 	ForwardAccelerationVector = GetActorForwardVector() * value;
 	//AddMovementInput(GetActorForwardVector(), value);
@@ -101,16 +128,43 @@ void ASTK_Entity::Forward(float value)
 
 void ASTK_Entity::Strafe(float value)
 {
+	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
+	{
+		RightAccelerationVector = FVector(0);
+		return;
+	}
+
 	RightAccelerationVector = GetActorRightVector() * value;
+}
+
+void ASTK_Entity::LockCameraLookat(FVector target)
+{
+	bCameraOverride = true;
+	CameraOverrideTarget = target;
+}
+
+void ASTK_Entity::UnlockCameraLookat()
+{
+	bCameraOverride = false;
+}
+
+void ASTK_Entity::ForceMoveToPoint(FVector target)
+{
+	bPositionOverride = true;
+	PositionOverrideTarget = target;
+	PositionOverrideOrigin = m_PlayerCapsule->GetRelativeLocation();
 }
 
 void ASTK_Entity::Interact()
 {
-	//LEAVE EMPTY, Will get overrided by child classes.
+	// LEAVE EMPTY, Will get overrided by child classes.
 }
 
 void ASTK_Entity::Jump()
 {
+	if (InputLockFlags & EInputLockFlags::Jump)
+		return;
+
 	if (m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
 	{
 		if (m_MovementComp->bIsGrounded)
@@ -123,6 +177,9 @@ void ASTK_Entity::Jump()
 
 void ASTK_Entity::Sprint(bool IsSprint)
 {
+	if (InputLockFlags & EInputLockFlags::Sprint)
+		return;
+
 	if (IsSprint == true)
 	{
 		m_MovementComp->Sprint();
@@ -136,28 +193,36 @@ void ASTK_Entity::Sprint(bool IsSprint)
 
 void ASTK_Entity::Crawl(bool IsCrawl)
 {
+	if (InputLockFlags & EInputLockFlags::Crawl)
+		return;
+
 	//TODO - Will Do Later.
 }
 
 void ASTK_Entity::UnhideMouse()
 {
-	//TODO - Have to create Controller (might have to be put in Child classes)
+	//TODO - Have to create Controller (might have to be put in Child classes) // AMENDMENT: ARI SAYS SHE'LL TAKE CARE OF THIS
 }
 
 void ASTK_Entity::HideMouse()
 {
-	//TODO - Have to create Controller (might have to be put in Child classes)
+	//TODO - Have to create Controller (might have to be put in Child classes) // AMENDMENT: ARI SAYS SHE'LL TAKE CARE OF THIS
 }
 
 void ASTK_Entity::MouseLook_Vertical(float value)
 {
+	if (InputLockFlags & EInputLockFlags::MouseLook)
+		return;
+
 	MouseLookVector.Y += m_MouseLook_Y * value;
 	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
-
 }
 
 void ASTK_Entity::MouseLook_Horizontal(float value)
 {
+	if (InputLockFlags & EInputLockFlags::MouseLook)
+		return;
+
 	MouseLookVector.X += m_MouseLook_X * value;
 	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
 
@@ -178,26 +243,47 @@ void ASTK_Entity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	HandleCamera();
+	HandleCamera(DeltaTime);
+	HandleFootstepSounds(DeltaTime);
+	HandlePosition(DeltaTime);
+}
 
-	//TODO Make Footsteps it's own function.
+void ASTK_Entity::HandlePosition(float DeltaTime)
+{
+	if (!bPositionOverride)
+	{
+		FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
+		if (!CombinedAccleration.IsNearlyZero() && m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
+		{
+			m_MovementComp->AddInputVector(CombinedAccleration);
+		}
+	}
+	else
+	{
+		PositionOverridePercent += DeltaTime * PositionOverrideSpeed;
+
+		if (PositionOverridePercent >= 1)
+		{
+			bPositionOverride = false;
+			PositionOverridePercent = 0;
+			RootComponent->SetRelativeLocation(PositionOverrideTarget);
+			return;
+		}
+
+		RootComponent->SetRelativeLocation(
+			FMath::Lerp(PositionOverrideOrigin, PositionOverrideTarget, PositionOverridePercent)
+		);
+	}
+}
+
+void ASTK_Entity::HandleFootstepSounds(float DeltaTime)
+{
 	FootstepTimer += DeltaTime * FootstepFrequency * m_MovementComp->GetForwardVelocity();
 	if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && !AudioComponent->IsPlaying())
 	{
 		FootstepTimer = 0;
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Emerald, TEXT("Footstep"));
-
 		//AudioComponent->SetSound(FootstepsSound);
-
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
-	}
-
-
-	//TODO Put this stuff in it's own function.
-	FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
-	if (!CombinedAccleration.IsNearlyZero() && m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
-	{
-		m_MovementComp->AddInputVector(CombinedAccleration);
 	}
 }
 
@@ -205,5 +291,19 @@ void ASTK_Entity::Tick(float DeltaTime)
 void ASTK_Entity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
+void ASTK_Entity::SetInputLock(EInputLockFlags flag, bool lock)
+{
+	SetInputLock(static_cast<uint8>(flag), lock);
+}
+
+void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
+{
+	if (flag & EInputLockFlags::Movement)
+	{
+		m_MovementComp->StopMovementImmediately();
+	}
+
+	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
 }
