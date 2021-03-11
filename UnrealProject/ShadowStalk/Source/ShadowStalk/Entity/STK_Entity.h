@@ -65,6 +65,9 @@ public:
 	float m_SprintSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	float m_CrawlSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	float m_AirControl;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -74,10 +77,12 @@ public:
 	float m_CapsuleHalfHeight = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	bool bCameraOverride = false;
+	float m_CrawlCapsuleHalfHeight = 50.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	FVector CameraOverrideTarget;
+	bool bCameraOverride = false;
+
+
 
 	//Respawn won't have a function, however if we want to add this, the framework is here.
 	UFUNCTION()
@@ -92,6 +97,7 @@ public:
 	FVector PositionOverrideOrigin;
 
 protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -107,6 +113,7 @@ protected:
 
 	float ForwardInput = 0.0f;
 
+	FVector CameraOverrideTarget;
 	float CameraOverrideSpeed = 10.f; // 0-1
 	float PositionOverrideSpeed = 30.0f; // 0-1
 
@@ -147,7 +154,7 @@ public:
 	virtual void Forward(float value);
 	virtual void Strafe(float value);
 
-	void LockCameraLookat(FVector target);
+	void LockCameraLookat(FVector Offset);
 	void UnlockCameraLookat();
 	
 	void ForceMoveToPoint(FVector target);

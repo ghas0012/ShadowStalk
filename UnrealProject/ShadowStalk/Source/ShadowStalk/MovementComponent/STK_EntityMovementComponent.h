@@ -32,7 +32,7 @@ public:
 	float CrawlSpeed;
 	float WalkSpeed;
 
-	float CrawlTransitionSpeed = 2.f;
+	float CrawlTransitionSpeed = 5.f;
 	float CrawlTransitionPercentage = 0.f;
 	float CrawlTransitionInitHalfHeight;
 

@@ -90,12 +90,17 @@ void ASTK_EntityMonster::Interact()
 
 void ASTK_EntityMonster::ExecuteShade(ASTK_EntityShade* TargetShade)
 { 
+    if (TargetShade == nullptr)
+        return;
+
     TargetShade->StartExecution(this);
     SetMonsterState(EMonsterState::Executing);
+    
     LockCameraLookat(TargetShade->m_CameraComp->GetComponentLocation());
     GetWorldTimerManager().SetTimer(ExecutionTimerHandle, this, &ASTK_EntityMonster::OnExcecuteEnd, ExecutionTimeLength, false);
-}
 
+}
+  
 void ASTK_EntityMonster::OnExcecuteEnd()
 {
     SetInputLock(EInputLockFlags::Everything, false);
@@ -107,7 +112,6 @@ EMonsterState ASTK_EntityMonster::GetMonsterState()
 {
     return CurrentState;
 }
-
 
 void ASTK_EntityMonster::SetMonsterState(EMonsterState state)
 {

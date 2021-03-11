@@ -19,6 +19,7 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/TargetPoint.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
@@ -71,8 +72,10 @@ void ASTK_Entity::BeginPlay()
 	m_MovementComp->CurrentSpeed = m_WalkSpeed;
 	m_MovementComp->Acceleration = m_Acceleration;
 	m_MovementComp->FrictionLerp = m_FrictionLerp;
-	m_MovementComp->CapsuleCrawlHalfHeight = m_CapsuleHalfHeight;
+	m_MovementComp->CapsuleCrawlHalfHeight = m_CrawlCapsuleHalfHeight;
 	m_MovementComp->CapsuleStandingHalfHeight = m_CapsuleHalfHeight;
+
+	m_MovementComp->CrawlSpeed = m_CrawlSpeed;
 
 	Super::BeginPlay();
 
@@ -101,16 +104,17 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 	}
 	else
 	{
-		FRotator Rot = (CameraOverrideTarget - m_CameraComp->GetComponentLocation()).GetSafeNormal().Rotation();
-		FRotator calcRot = FMath::RInterpTo(FRotator(MouseLookVector.Y, MouseLookVector.X, 0), Rot, DeltaTime, CameraOverrideSpeed);
 
-		//DrawDebugLine(GetWorld(), m_CameraComp->GetComponentLocation(), m_CameraComp->GetComponentLocation() + calcRot.Vector(), FColor::Green, false, 5.f, ECC_WorldStatic, 5.f);
+		FVector TargetPos = CameraOverrideTarget;
+		FRotator Rot = (TargetPos - m_CameraComp->GetComponentLocation()).GetSafeNormal().Rotation();
+		FRotator calcRot = FMath::RInterpTo(FRotator(MouseLookVector.Y, MouseLookVector.X, 0), Rot, DeltaTime, CameraOverrideSpeed);
 
 		MouseLookVector.X = calcRot.Yaw;
 		MouseLookVector.Y = calcRot.Pitch;
 
 		m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
 		m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
+
 	}
 }
 
@@ -137,10 +141,10 @@ void ASTK_Entity::Strafe(float value)
 	RightAccelerationVector = GetActorRightVector() * value;
 }
 
-void ASTK_Entity::LockCameraLookat(FVector target)
+void ASTK_Entity::LockCameraLookat(FVector Location)
 {
 	bCameraOverride = true;
-	CameraOverrideTarget = target;
+	CameraOverrideTarget = Location;
 }
 
 void ASTK_Entity::UnlockCameraLookat()
@@ -192,11 +196,18 @@ void ASTK_Entity::Sprint(bool IsSprint)
 }
 
 void ASTK_Entity::Crawl(bool IsCrawl)
-{
+{	
 	if (InputLockFlags & EInputLockFlags::Crawl)
 		return;
 
-	//TODO - Will Do Later.
+	if (IsCrawl == true)
+	{
+		m_MovementComp->Crawl();
+	}
+	if (IsCrawl == false)
+	{
+		m_MovementComp->Walk();
+	}
 }
 
 void ASTK_Entity::UnhideMouse()
@@ -243,10 +254,12 @@ void ASTK_Entity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 	HandleCamera(DeltaTime);
 	HandleFootstepSounds(DeltaTime);
 	HandlePosition(DeltaTime);
 }
+
 
 void ASTK_Entity::HandlePosition(float DeltaTime)
 {
@@ -282,9 +295,11 @@ void ASTK_Entity::HandleFootstepSounds(float DeltaTime)
 	if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && !AudioComponent->IsPlaying())
 	{
 		FootstepTimer = 0;
+
 		//AudioComponent->SetSound(FootstepsSound);
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
 	}
+
 }
 
 // Called to bind functionality to input
@@ -303,6 +318,8 @@ void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 	if (flag & EInputLockFlags::Movement)
 	{
 		m_MovementComp->StopMovementImmediately();
+		ForwardAccelerationVector = FVector(0);
+		RightAccelerationVector = FVector(0);
 	}
 
 	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;

@@ -109,11 +109,17 @@ void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
 
     if (bIsCrawling)
     {
-        CapsuleComp->SetCapsuleHalfHeight(FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleCrawlHalfHeight, CrawlTransitionPercentage));
+        float finalHalfHeight = FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleCrawlHalfHeight, CrawlTransitionPercentage);
+        float diff = CapsuleComp->GetScaledCapsuleHalfHeight() - finalHalfHeight;
+        CapsuleComp->SetCapsuleHalfHeight(finalHalfHeight);
+        CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
     }
     else
     {
-        CapsuleComp->SetCapsuleHalfHeight(FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleStandingHalfHeight, CrawlTransitionPercentage));
+        float finalHalfHeight = FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleStandingHalfHeight, CrawlTransitionPercentage);
+        float diff = CapsuleComp->GetScaledCapsuleHalfHeight() - finalHalfHeight;
+        CapsuleComp->SetCapsuleHalfHeight(finalHalfHeight);
+        CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
     }
 }
 

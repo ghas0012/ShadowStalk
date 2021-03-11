@@ -35,15 +35,23 @@ ASTK_EntityShade::ASTK_EntityShade()
 	//Default Shade Stats. 
 	m_WalkSpeed = 500.0f;
 	m_SprintSpeed = 800.0f;
+	m_CrawlSpeed = 200.0f;
 	m_Acceleration = 3500.0f;
 	m_JumpStrength = 20000.0f;
 	m_CapsuleHalfHeight = 75.0f;
+	m_CrawlCapsuleHalfHeight = 50.f;
 	m_CapsuleRadius = 40.0f;
 }
 
+/// <summary>
+/// prep the shade position and rotation for execution animation.
+/// </summary>
 void ASTK_EntityShade::StartExecution(ASTK_EntityMonster* Executioner)
 {
 	SetShadeState(EShadeState::Execution);
+	//FVector x = Executioner->GetActorLocation() + Executioner->m_CameraComp->GetComponentLocation();
+	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%f, %f, %f"), x.X,x.Y,x.Z));
+
 	LockCameraLookat(Executioner->m_CameraComp->GetComponentLocation());
 	ForceMoveToPoint(Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance);
 	
@@ -85,7 +93,7 @@ void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
 }
 
 /// <summary>
-/// Applies the recorded target state after knockback
+/// Helper function to apply a state change with a delay
 /// </summary>
 void ASTK_EntityShade::DelayedStateChange()
 {
@@ -248,7 +256,6 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("UNDEFINED PICKUP TYPE!"));
 				break;
 			}
-				
 
 			case EPickupType::Key:
 			{
