@@ -22,15 +22,21 @@ public:
 	USTK_UWMainMenu();
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+	class UImage* GameTitleImage = nullptr;
+
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+	class UVerticalBox* MainMenuButtons = nullptr;
+
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* PlayButton = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* OptionsButton = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* CreditsButton = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* QuitButton = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "SoundFX")
@@ -56,5 +62,5 @@ private:
 	void QuitPressed();
 
 	UFUNCTION()
-	void PlayerHoverSoundFX();
+	void PlayHoverSoundFX();
 };
