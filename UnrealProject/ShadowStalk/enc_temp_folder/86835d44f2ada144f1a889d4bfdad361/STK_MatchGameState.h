@@ -28,13 +28,13 @@ public:
 	void Register_MaxKeyCount(uint8 count);
 
 	uint8 GetCurrentKeyCount();
-
 	void Register_KeyPickedUp();
 	void Register_KeyDropped(uint8 count);
 	void Register_SelectedExitDoor(class ASTK_ExitDoor* ExitDoor);
 
 	void OnAllKeysPickedUp();
 	void OnKeysDropped();
+
 
 protected:
 
