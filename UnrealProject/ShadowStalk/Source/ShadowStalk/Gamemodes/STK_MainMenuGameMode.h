@@ -5,7 +5,7 @@
   Date Modified: 3/12/2021
   Comment/Description: Base Game Mode for Main Menu interface.
   ChangeLog:
-  3/12/2021: Modified GameMode to have no default pawn (In Engine modification).
+  A 3/12/2021: Modified GameMode to have no default pawn (In Engine modification).
   */
 
 #pragma once

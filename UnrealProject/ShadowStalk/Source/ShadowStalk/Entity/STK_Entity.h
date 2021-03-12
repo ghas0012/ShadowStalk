@@ -1,12 +1,13 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young
 
-// Changelog:
-// - Class init.
-// - Added entity type getters
-// - Added input locking
-// - Added camera override
-
+/*
+  Author: Christian Young, Hamidreza Ghasemi
+  Date Modified: 3/12/2021
+  Comment/Description: *Description of Class*
+  ChangeLog:
+  C 3/12/2021: Created the base entity class, added movement variables, implemented skeletal mesh.
+  H 3/12/2021: Added entity type getters, input locking, camera and position override, and cleaned up Tick function.
+*/
 
 #pragma once
 
@@ -14,8 +15,6 @@
 #include "ShadowStalk/ShadowStalk.h"
 #include "GameFramework/Character.h"
 #include "STK_Entity.generated.h"
-
-
 
 UCLASS()
 class SHADOWSTALK_API ASTK_Entity : public APawn
@@ -82,8 +81,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	bool bCameraOverride = false;
 
-
-
 	//Respawn won't have a function, however if we want to add this, the framework is here.
 	UFUNCTION()
 	virtual void Respawn() {}
@@ -149,7 +146,7 @@ public:
 	void SetInputLock(EInputLockFlags flag, bool lock);
 	void SetInputLock(uint8 flag, bool lock);
 
-//	virtual UPawnMovementComponent* GetMovementComponent();
+    // virtual UPawnMovementComponent* GetMovementComponent();
 
 	virtual void Forward(float value);
 	virtual void Strafe(float value);
@@ -171,5 +168,4 @@ public:
 	virtual void MouseLook_Horizontal(float value);
 
 	bool GetIsGrounded();
-
 };

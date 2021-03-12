@@ -1,10 +1,7 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young
-
-// Changelog:
-// - Class init.
 
 #include "STK_EntityMonsterController.h"
+
 #include "../Entity/STK_EntityMonster.h"
 
 void ASTK_EntityMonsterController::OnPossess(APawn* aPawn)

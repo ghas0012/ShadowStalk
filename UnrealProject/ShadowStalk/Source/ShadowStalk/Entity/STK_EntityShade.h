@@ -1,10 +1,23 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Hamidreza Ghasemi
+
+/*
+  Author: Hamidreza Ghasemi
+  Date Modified: 3/12/2021
+  Comment/Description: *Description of Class*
+  ChangeLog:
+  H 3/12/2021: *Description of Change.
+*/
 
 // Changelog:
 // - Class init.
 // - Added States
 // - Added Health and relevant funcs
+
+// Changelog:
+// - Class init.
+// - Added eye component. Also use example.
+// - Added input locks.
+// - Added states and getting hurt.
 
 #pragma once
 

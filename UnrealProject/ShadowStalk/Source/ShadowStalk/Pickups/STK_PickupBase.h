@@ -1,8 +1,12 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Hamidreza Ghasemi
 
-// Changelog:
-// - Class init.
+/*
+  Author: Hamidreza Ghasemi
+  Date Modified: 3/12/2021
+  Comment/Description: *Description of Class*
+  ChangeLog:
+  H 3/12/2021: *Description of Change*
+*/
 
 #pragma once
 

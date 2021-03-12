@@ -1,8 +1,14 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young, Hamidreza Ghasemi
 
-// Changelog:
-// - Class init.
+/*
+  Author: Christian Young, Hamidreza Ghasemi, Jeffrey Armstrong
+  Date Modified: 3/12/2021
+  Comment/Description: *Description of Class*
+  ChangeLog:
+  C 3/12/2021: *Description of Change*
+  H 3/12/2021: *Description of Change*
+  J 3/12/2021: *Description of Change*
+*/
 
 #pragma once
 
@@ -53,8 +59,8 @@ public:
 	bool bIsGrounded = true;
 
 	UFUNCTION(BlueprintCallable)
-		bool GetIsGrounded();
+    bool GetIsGrounded();
 
 	UFUNCTION(BlueprintCallable)
-		float GetForwardVelocity();
+	float GetForwardVelocity();
 };

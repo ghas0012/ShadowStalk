@@ -1,8 +1,4 @@
-// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Hamidreza Ghasemi
-
-// Changelog:
-// - Class init.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved
 
 #include "STK_EyeComponent.h"
 #include "Components/SkeletalMeshComponent.h"

@@ -1,13 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young and Hamidreza Ghasemi
-
-// Changelog:
-// - Class init.
-// - Added entity type getters
-// - Added input locking
-// - Added camera override
-// - Added position override
-// - Cleaned up the Tick function
 
 #include "STK_Entity.h"
 #include "GameFramework/Controller.h"

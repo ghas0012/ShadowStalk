@@ -1,8 +1,13 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young
 
-// Changelog:
-// - Class init.
+/*
+  Author: Christian Young, Hamidreza Ghasemi
+  Date Modified: 3/12/2021
+  Comment/Description: *Description of Class*
+  ChangeLog:
+  C 3/12/2021: Created the base entity monster class.
+  H 3/12/2021: Added basic attack logic and input locking.
+*/
 
 #pragma once
 
@@ -28,20 +33,19 @@ public:
 	ASTK_EntityMonster();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		float GrabRange;
+	float GrabRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		float AttackRange;
+	float AttackRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		float AttackKnockbackStrength = 80000;
+	float AttackKnockbackStrength = 80000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		float ExecutionTimeLength = 1;
+	float ExecutionTimeLength = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-		float ExecutionPositioningDistance = 250;
-
+	float ExecutionPositioningDistance = 250;
 
 	FTimerHandle ExecutionTimerHandle;
 
@@ -65,10 +69,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-		EMonsterState GetMonsterState();
+	EMonsterState GetMonsterState();
 
 	UFUNCTION(BlueprintCallable)
-		void SetMonsterState(EMonsterState state);
+	void SetMonsterState(EMonsterState state);
 
 	virtual void Interact() override;
 

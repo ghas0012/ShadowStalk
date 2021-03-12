@@ -1,10 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young, Hamidreza Ghasemi
-
-// Changelog:
-// - Class init.
-// - Added basic attack logic.
-// - Added input locking
 
 #include "STK_EntityMonster.h"
 #include "Components/CapsuleComponent.h"

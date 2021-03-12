@@ -1,8 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Hamidreza Ghasemi
-
-// Changelog:
-// - Class init.
 
 #include "STK_PickupSpawn.h"
 #include "ShadowStalk/GameModes/STK_MatchGameMode.h"

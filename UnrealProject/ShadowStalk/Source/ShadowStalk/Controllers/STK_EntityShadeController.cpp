@@ -1,10 +1,7 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Jeff Armstrong
-
-// Changelog:
-// - Class init.
 
 #include "STK_EntityShadeController.h"
+
 #include "../Entity/STK_EntityShade.h"
 
 void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
@@ -17,7 +14,8 @@ void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
 void ASTK_EntityShadeController::OnUnPossess()
 {
 	APawn* possessedPawn = Cast<APawn>(GetOwner());
-	Super::OnUnPossess();
+
+    Super::OnUnPossess();
 }
 
 void ASTK_EntityShadeController::SetupInputComponent()

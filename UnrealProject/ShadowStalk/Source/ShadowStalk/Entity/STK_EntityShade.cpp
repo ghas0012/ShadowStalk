@@ -1,11 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Hamidreza Ghasemi
-
-// Changelog:
-// - Class init.
-// - Added eye component. Also use example.
-// - Added input locks.
-// - Added states and getting hurt.
 
 #include "STK_EntityShade.h"
 #include "ShadowStalk/Gamestates/STK_MatchGameState.h"
