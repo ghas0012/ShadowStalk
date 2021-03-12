@@ -1,11 +1,10 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Arianne Fennell
-
-// Changelog:
-// - Class init.
 
 #include "STK_UserWidget.h"
 
+/// <summary>
+/// Adds the specific User Widget to the viewport and modifies the player input for UI navigation.
+/// </summary>
 void USTK_UserWidget::Setup()
 {
     this->AddToViewport();
@@ -25,6 +24,9 @@ void USTK_UserWidget::Setup()
     PlayerController->bShowMouseCursor = true;
 }
 
+/// <summary>
+/// Removes the specific User Widget from the viewport and modifies the player input for Game navigation.
+/// </summary>
 void USTK_UserWidget::Teardown()
 {
     this->RemoveFromViewport();

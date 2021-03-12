@@ -1,8 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Arianne Fennell
-
-// Changelog:
-// - Class init.
 
 #include "STK_MainMenuLevel.h"
 
@@ -15,6 +11,9 @@ void ASTK_MainMenuLevel::BeginPlay()
     LoadMainMenu();
 }
 
+/// <summary>
+/// Loads the Main Menu widget from the Game Instance.
+/// </summary>
 void ASTK_MainMenuLevel::LoadMainMenu()
 {
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());

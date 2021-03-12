@@ -1,8 +1,12 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Arianne Fennell
 
-// Changelog:
-// - Class init.
+ /*
+  Author: Arianne Fennell
+  Date Modified: 3/12/2021
+  Comment/Description: Base Game Instance for the game.
+  ChangeLog:
+  3/12/2021: Implemented base functions to work with UWMainMenu.
+  */
 
 #pragma once
 
@@ -10,9 +14,6 @@
 #include "Engine/GameInstance.h"
 #include "STK_GameInstance.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SHADOWSTALK_API USTK_GameInstance : public UGameInstance
 {
