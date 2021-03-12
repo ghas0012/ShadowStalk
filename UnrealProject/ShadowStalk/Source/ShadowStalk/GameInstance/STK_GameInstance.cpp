@@ -1,9 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Arianne Fennell
-
-// Changelog:
-// - Class init.
-
 
 #include "STK_GameInstance.h"
 
@@ -21,6 +16,9 @@ USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer
     MainMenuClass = MainMenuBPClass.Class;
 }
 
+/// <summary>
+/// Loads the Main Menu User Widget into the game.
+/// </summary>
 void USTK_GameInstance::LoadMainMenuWidget()
 {
     if (!ensure(MainMenuClass != nullptr)) return;
@@ -31,6 +29,9 @@ void USTK_GameInstance::LoadMainMenuWidget()
     UWMainMenu->Setup();
 }
 
+/// <summary>
+/// Removes the Main Menu User Widget from the game and loads the game's default level.
+/// </summary>
 void USTK_GameInstance::LoadGameLevel()
 {
     UWorld* World = GetWorld();

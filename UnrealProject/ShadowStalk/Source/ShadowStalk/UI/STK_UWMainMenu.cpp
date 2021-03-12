@@ -1,8 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Arianne Fennell
-
-// Changelog:
-// - Class init.
 
 #include "STK_UWMainMenu.h"
 
@@ -31,18 +27,22 @@ bool USTK_UWMainMenu::Initialize()
     if (!ensure(GameTitleImage != nullptr)) return false;
     if (!ensure(MainMenuButtons != nullptr)) return false;
 
+    //Setup Input for Play Button
     if (!ensure(PlayButton != nullptr)) return false;
     PlayButton->OnClicked.AddDynamic(this, &USTK_UWMainMenu::PlayPressed);
     PlayButton->OnHovered.AddDynamic(this, &USTK_UWMainMenu::PlayHoverSoundFX);
 
+    //Setup Input for Options Button
     if (!ensure(OptionsButton != nullptr)) return false;
     OptionsButton->OnClicked.AddDynamic(this, &USTK_UWMainMenu::OpenOptionsMenu);
     OptionsButton->OnHovered.AddDynamic(this, &USTK_UWMainMenu::PlayHoverSoundFX);
 
+    //Setup Input for Credits Button
     if (!ensure(CreditsButton != nullptr)) return false;
     CreditsButton->OnClicked.AddDynamic(this, &USTK_UWMainMenu::OpenCreditsPanel);
     CreditsButton->OnHovered.AddDynamic(this, &USTK_UWMainMenu::PlayHoverSoundFX);
 
+    //Setup Input for Quit Button
     if (!ensure(QuitButton != nullptr)) return false;
     QuitButton->OnClicked.AddDynamic(this, &USTK_UWMainMenu::QuitPressed);
     QuitButton->OnHovered.AddDynamic(this, &USTK_UWMainMenu::PlayHoverSoundFX);
@@ -55,6 +55,9 @@ void USTK_UWMainMenu::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
     Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
+/// <summary>
+/// Allows the player to enter the game level map.
+/// </summary>
 void USTK_UWMainMenu::PlayPressed()
 {
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
@@ -66,15 +69,17 @@ void USTK_UWMainMenu::PlayPressed()
 
 void USTK_UWMainMenu::OpenOptionsMenu()
 {
-    //TODO - Open options menu (resolution, keybindings, etc);
+    //TODO: Open options menu (resolution, keybindings, etc);
 }
 
 void USTK_UWMainMenu::OpenCreditsPanel()
 {
-    //TODO - Open credits window
-
+    //TODO: Open credits window
 }
 
+/// <summary>
+/// Allows the player to exit and close the game window.
+/// </summary>
 void USTK_UWMainMenu::QuitPressed()
 {
     UWorld* World = GetWorld();
@@ -86,6 +91,9 @@ void USTK_UWMainMenu::QuitPressed()
     PlayerController->ConsoleCommand("quit");
 }
 
+/// <summary>
+/// Plays a sound effect on button hover.
+/// </summary>
 void USTK_UWMainMenu::PlayHoverSoundFX()
 {
     UGameplayStatics::PlaySound2D(GetWorld(), HoverSoundFX);
