@@ -5,7 +5,7 @@
   Date Modified: 3/12/2021
   Comment/Description: LevelScriptActor associated with the Main Menu Level.
   ChangeLog:
-  3/12/2021: Implemented base functions to work with UWMainMenu.
+  A 3/12/2021: Implemented base functions to work with UWMainMenu.
   */
 
 #pragma once

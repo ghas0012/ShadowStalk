@@ -1,8 +1,12 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young
 
-// Changelog:
-// - Class init.
+ /*
+  Author: Christian Young
+  Date Modified: 3/12/2021
+  Comment/Description: *Description of Class*
+  ChangeLog:
+  3/12/2021: *Description of Change*
+  */
 
 #pragma once
 
@@ -10,9 +14,6 @@
 #include "GameFramework/PlayerController.h"
 #include "STK_EntityMonsterController.generated.h"
 
-/**
- *
- */
 UCLASS()
 class SHADOWSTALK_API ASTK_EntityMonsterController : public APlayerController
 {

@@ -1,8 +1,4 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Hamidreza Ghasemi
-
-// Changelog:
-// - Class init.
 
 #include "STK_MatchGameState.h"
 #include "ShadowStalk/GameModes/STK_MatchGameMode.h"
@@ -12,7 +8,6 @@
 #include "ShadowStalk/Entity/STK_EntityMonster.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShadowStalk/ShadowStalk.h"
-
 
 void ASTK_MatchGameState::Register_KeyPickedUp()
 {

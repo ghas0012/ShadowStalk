@@ -5,7 +5,7 @@
   Date Modified: 3/12/2021
   Comment/Description: Base user widget responsible for the Main Menu interface.
   ChangeLog:
-  3/12/2021: Implemented basic play and quit button functionality.
+  A 3/12/2021: Implemented basic play and quit button functionality.
   */
 
 #pragma once

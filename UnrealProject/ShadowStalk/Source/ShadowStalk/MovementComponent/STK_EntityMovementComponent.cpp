@@ -1,14 +1,8 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Christian Young, Hamidreza Ghasemi
-
-// Changelog:
-// - Class init.
 
 #include "STK_EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/Engine.h"
-
-
 
 void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
