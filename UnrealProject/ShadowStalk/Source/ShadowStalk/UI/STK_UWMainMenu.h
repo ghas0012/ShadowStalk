@@ -39,7 +39,6 @@ public:
 protected:
 
 	virtual bool Initialize() override;
-	//virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
 
