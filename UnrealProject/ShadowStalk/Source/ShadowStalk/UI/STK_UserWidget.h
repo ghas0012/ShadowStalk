@@ -20,6 +20,22 @@ class SHADOWSTALK_API USTK_UserWidget : public UUserWidget
     GENERATED_BODY()
 
 public:
+    USTK_UserWidget(const FObjectInitializer& ObjectInitializer);
+
+    UPROPERTY(BlueprintReadOnly, Category = "SoundFX")
+    class USoundBase* HoverSoundFX;
+
+public:
+
+    //Optionally override the Blueprint "Event Construct" event
+    virtual void NativeConstruct() override;
+
+    // Optionally override the tick event
+    virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
     void Setup();
     void Teardown();
+
+    UFUNCTION()
+    void PlayHoverSoundFX();
 };

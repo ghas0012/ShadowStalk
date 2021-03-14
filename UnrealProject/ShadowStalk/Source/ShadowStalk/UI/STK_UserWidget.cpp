@@ -2,6 +2,33 @@
 
 #include "STK_UserWidget.h"
 
+#include "UObject/UObjectGlobals.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
+
+USTK_UserWidget::USTK_UserWidget(const FObjectInitializer& ObjectInitializer) :
+    Super(ObjectInitializer)
+{
+    //Find and set HoverSoundFX
+    {
+        ConstructorHelpers::FObjectFinder<USoundBase> HoverSound(TEXT("/Game/Custom_Audio/LightFlicker"));
+        if (!ensure(HoverSound.Object != nullptr)) return;
+
+        HoverSoundFX = HoverSound.Object;
+    }
+}
+
+void USTK_UserWidget::NativeConstruct()
+{
+    Super::NativeConstruct();
+}
+
+void USTK_UserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+    Super::NativeTick(MyGeometry, InDeltaTime);
+}
+
 /// <summary>
 /// Adds the specific User Widget to the viewport and modifies the player input for UI navigation.
 /// </summary>
@@ -41,4 +68,12 @@ void USTK_UserWidget::Teardown()
 
     PlayerController->SetInputMode(InputModeData);
     PlayerController->bShowMouseCursor = false;
+}
+
+/// <summary>
+/// Plays a sound effect on button hover.
+/// </summary>
+void USTK_UserWidget::PlayHoverSoundFX()
+{
+    UGameplayStatics::PlaySound2D(GetWorld(), HoverSoundFX);
 }
