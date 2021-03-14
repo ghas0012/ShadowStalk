@@ -51,6 +51,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
 public:
 
 	void RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn);

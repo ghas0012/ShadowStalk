@@ -27,10 +27,11 @@ public:
 
 	//TODO - make Editanywhere
 
+
 	UPROPERTY()
 	class USTK_EntityMovementComponent* m_MovementComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -98,10 +99,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Restart() override;
+
+	virtual void PostInitializeComponents() override;
+
 	virtual void HandleCamera(float DeltaTime);
 
 	FVector MouseLookVector = FVector::ZeroVector;
+
+	UPROPERTY(Replicated)
 	FVector ForwardAccelerationVector;
+
 	FVector RightAccelerationVector;
 	FVector VelocityVector;
 
@@ -147,8 +155,11 @@ public:
 	void SetInputLock(uint8 flag, bool lock);
 
     // virtual UPawnMovementComponent* GetMovementComponent();
-
 	virtual void Forward(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Forward(float value);
+
 	virtual void Strafe(float value);
 
 	void LockCameraLookat(FVector Offset);

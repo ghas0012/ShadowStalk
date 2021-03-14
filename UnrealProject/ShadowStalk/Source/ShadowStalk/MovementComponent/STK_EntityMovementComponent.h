@@ -26,13 +26,16 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	class UCapsuleComponent* CapsuleComp;
+
 	FVector VelocityVector = FVector::ZeroVector;
 	FVector VelocityAtJump = FVector::ZeroVector;
 
 	float FrictionLerp = 1;
 	float AirControl = 1;
 	float Acceleration;
+
 	float CurrentSpeed;
+
 	float JumpStrength;
 	float SprintSpeed;
 	float CrawlSpeed;

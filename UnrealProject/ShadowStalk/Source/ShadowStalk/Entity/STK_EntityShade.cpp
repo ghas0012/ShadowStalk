@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "STK_Entity.h"
+#include "Net/UnrealNetwork.h"
 
 //Eyes
 #include "Components/RectLightComponent.h"
@@ -34,6 +35,8 @@ ASTK_EntityShade::ASTK_EntityShade()
 	m_CapsuleHalfHeight = 75.0f;
 	m_CrawlCapsuleHalfHeight = 50.f;
 	m_CapsuleRadius = 40.0f;
+
+	SetReplicates(true);
 }
 
 /// <summary>

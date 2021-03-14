@@ -78,3 +78,8 @@ void ASTK_MatchGameMode::BeginPlay()
 
 	gamestate->Register_MaxKeyCount(Pickup_Key_Count);
 }
+
+void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	
+}

@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/TargetPoint.h"
 #include "DrawDebugHelpers.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASTK_Entity::ASTK_Entity()
@@ -51,6 +52,8 @@ ASTK_Entity::ASTK_Entity()
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	AudioComponent->SetupAttachment(RootComponent);
 
+	SetReplicates(true);
+	SetReplicatingMovement(true);
 }
 
 // Called when the game starts or when spawned
@@ -76,7 +79,18 @@ void ASTK_Entity::BeginPlay()
 	//TODO - GameState callers.
 }
 
+void ASTK_Entity::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%d"), GetWorld()->GetNumPlayerControllers()));
+	
+}
+
+void ASTK_Entity::Restart()
+{
+	Super::Restart();
+}
 
 void ASTK_Entity::HandleCamera(float DeltaTime)
 {
@@ -111,6 +125,11 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 
 void ASTK_Entity::Forward(float value)
 {
+	Server_Forward(value);
+}
+
+void ASTK_Entity::Server_Forward_Implementation(float value)
+{
 	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
 	{
 		RightAccelerationVector = FVector(0);
@@ -119,6 +138,11 @@ void ASTK_Entity::Forward(float value)
 
 	ForwardAccelerationVector = GetActorForwardVector() * value;
 	//AddMovementInput(GetActorForwardVector(), value);
+}
+
+bool ASTK_Entity::Server_Forward_Validate(float value)
+{
+	return true;
 }
 
 void ASTK_Entity::Strafe(float value)
@@ -314,4 +338,11 @@ void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 	}
 
 	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
+}
+
+void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASTK_Entity, m_PlayerCapsule);
 }

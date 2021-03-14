@@ -9,6 +9,7 @@ void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
 	Super::OnPossess(aPawn);
 
 	m_ShadeEntity = Cast<ASTK_EntityShade>(aPawn);
+
 }
 
 void ASTK_EntityShadeController::OnUnPossess()
