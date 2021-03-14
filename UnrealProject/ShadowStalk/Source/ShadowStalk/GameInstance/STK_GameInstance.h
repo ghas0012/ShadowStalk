@@ -6,6 +6,7 @@
   Comment/Description: Base Game Instance for the game.
   ChangeLog:
   A 3/12/2021: Implemented base functions to work with UWMainMenu.
+  A 3/13/2021: Added SetupCreditWidget() to work with UWCreditsPanel.
   */
 
 #pragma once
@@ -23,13 +24,25 @@ public:
 	USTK_GameInstance(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable)
-	void LoadMainMenuWidget();
+	void SetupMainMenuWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void SetupOptionsWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void SetupCreditsWidget();
 
 	UFUNCTION(BlueprintCallable)
 	void LoadGameLevel();
 
 private:
 	TSubclassOf<class UUserWidget> MainMenuClass;
+    class USTK_UWMainMenu* UWMainMenu;
 
-	class USTK_UWMainMenu* UWMainMenu;
+	TSubclassOf<class UUserWidget> OptionsPanelClass;
+	class USTK_UWOptionsPanel* UWOptionsPanel;
+
+	TSubclassOf<class UUserWidget> CreditsPanelClass;
+	class USTK_UWCreditsPanel* UWCreditsPanel;
+
 };
