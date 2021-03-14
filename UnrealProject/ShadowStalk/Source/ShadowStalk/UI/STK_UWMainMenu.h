@@ -20,10 +20,6 @@ class SHADOWSTALK_API USTK_UWMainMenu : public USTK_UserWidget
 	GENERATED_BODY()
 
 public:
-	USTK_UWMainMenu();
-
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
-	class UImage* GameTitleImage = nullptr;
 
     UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	class UVerticalBox* MainMenuButtons = nullptr;
@@ -40,13 +36,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton* QuitButton = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, Category = "SoundFX")
-	class USoundBase* HoverSoundFX;
-
 protected:
 
 	virtual bool Initialize() override;
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
 
@@ -61,7 +53,4 @@ private:
 
 	UFUNCTION()
 	void QuitPressed();
-
-	UFUNCTION()
-	void PlayHoverSoundFX();
 };

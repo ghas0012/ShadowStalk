@@ -20,5 +20,5 @@ void ASTK_MainMenuLevel::LoadMainMenu()
 
     if (GameInstance == nullptr) return;
 
-    GameInstance->LoadMainMenuWidget();
+    GameInstance->SetupMainMenuWidget();
 }

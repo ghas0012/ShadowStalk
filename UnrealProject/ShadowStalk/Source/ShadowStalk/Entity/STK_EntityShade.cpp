@@ -39,6 +39,48 @@ ASTK_EntityShade::ASTK_EntityShade()
 	SetReplicates(true);
 }
 
+// Called when the game starts or when spawned
+void ASTK_EntityShade::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// here's how to use the eyes. each new emotion gets added to a queue to be emoted.
+	// order is: Emotion name, Emotion intensity, Duration, Transition speed, and fidgeting intensity.
+
+	//m_pEyes->SetEmotion("Close"	, 1.0f, 1, 2.0f);
+	//m_pEyes->SetEmotion("Angry"	, 0.6f, 5, 2.0f);
+	//m_pEyes->SetEmotion("Happy"	, 1.0f, 2, 2.0f);
+	//m_pEyes->SetEmotion("Angry"	, 1.0f, 5, 2.0f);
+	//m_pEyes->SetEmotion("Happy"	, 1.0f, 5, 2.0f);
+	//m_pEyes->SetEmotion("Sad"	, 0.6f, 5, 2.0f);
+	//m_pEyes->SetEmotion("Sad"	, 1.0f, 5, 2.0f);
+	//m_pEyes->SetEmotion("Close"	, 0.5f, 1, 2.0f, 0.5f);
+}
+
+// Called every frame
+void ASTK_EntityShade::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	//switch (CurrentState)
+	//{
+	//case EShadeState::Downed:
+	//	break;
+	//
+	//case EShadeState::Hurt:
+	//	break;
+	//
+	//case EShadeState::Dead:
+	//	break;
+	//
+	//case EShadeState::Execution:
+	//	break;
+	//
+	//default:
+	//	break;
+	//}
+}
+
 /// <summary>
 /// prep the shade position and rotation for execution animation.
 /// </summary>
@@ -177,47 +219,7 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 	CurrentState = state;
 }
 
-// Called when the game starts or when spawned
-void ASTK_EntityShade::BeginPlay()
-{
-	Super::BeginPlay();
 
-	// here's how to use the eyes. each new emotion gets added to a queue to be emoted.
-	// order is: Emotion name, Emotion intensity, Duration, Transition speed, and fidgeting intensity.
-
-	//m_pEyes->SetEmotion("Close"	, 1.0f, 1, 2.0f);
-	//m_pEyes->SetEmotion("Angry"	, 0.6f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Happy"	, 1.0f, 2, 2.0f);
-	//m_pEyes->SetEmotion("Angry"	, 1.0f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Happy"	, 1.0f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Sad"	, 0.6f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Sad"	, 1.0f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Close"	, 0.5f, 1, 2.0f, 0.5f);
-}
-
-// Called every frame
-void ASTK_EntityShade::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	//switch (CurrentState)
-	//{
-	//case EShadeState::Downed:
-	//	break;
-	//
-	//case EShadeState::Hurt:
-	//	break;
-	//
-	//case EShadeState::Dead:
-	//	break;
-	//
-	//case EShadeState::Execution:
-	//	break;
-	//
-	//default:
-	//	break;
-	//}
-}
 
 /// <summary>
 /// Returns the entity's type
