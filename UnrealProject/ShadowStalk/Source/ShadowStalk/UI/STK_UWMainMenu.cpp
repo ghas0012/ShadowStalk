@@ -36,11 +36,6 @@ bool USTK_UWMainMenu::Initialize()
     return true;
 }
 
-//void USTK_UWMainMenu::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-//{
-//    Super::NativeTick(MyGeometry, InDeltaTime);
-//}
-
 /// <summary>
 /// Allows the player to enter the game level map.
 /// </summary>
