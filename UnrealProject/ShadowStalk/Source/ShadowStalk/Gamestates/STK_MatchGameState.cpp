@@ -9,6 +9,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "ShadowStalk/ShadowStalk.h"
 
+/// <summary>
+/// Informs the gamestate of a new key being picked up.
+/// If enough keys are picked up, call OnAllKeysPickedUp().
+/// </summary>
 void ASTK_MatchGameState::Register_KeyPickedUp()
 {
     // safety so it doesn't go above 255
@@ -25,6 +29,11 @@ void ASTK_MatchGameState::Register_KeyPickedUp()
     }
 }
 
+
+/// <summary>
+/// Informs the gamestate of a key being dropped.
+/// Calls OnKeysDropped().
+/// </summary>
 void ASTK_MatchGameState::Register_KeyDropped(uint8 count)
 {
     // safety so it doesn't go below 0
@@ -37,6 +46,10 @@ void ASTK_MatchGameState::Register_KeyDropped(uint8 count)
     OnKeysDropped();
 }
 
+
+/// <summary>
+/// A gameplay scripting helper function to get all the Shade instances in the map.
+/// </summary>
 TArray<class ASTK_EntityShade*> ASTK_MatchGameState::GetShades()
 {
     TArray<class ASTK_EntityShade*> to_return;
@@ -50,6 +63,10 @@ TArray<class ASTK_EntityShade*> ASTK_MatchGameState::GetShades()
     return to_return;
 }
 
+
+/// <summary>
+/// A gameplay scripting helper function to get all the Entities in the map.
+/// </summary>
 TArray<ASTK_Entity*> ASTK_MatchGameState::GetEntities()
 {
     TArray<AActor*> found;
@@ -65,6 +82,10 @@ TArray<ASTK_Entity*> ASTK_MatchGameState::GetEntities()
     return Entities;
 }
 
+
+/// <summary>
+/// A gameplay scripting helper function to get the first Monster entity if finds in the map.
+/// </summary>
 ASTK_EntityMonster* ASTK_MatchGameState::GetMonster()
 {
     for (size_t i = 0; i < Entities.Num(); i++)
@@ -76,22 +97,38 @@ ASTK_EntityMonster* ASTK_MatchGameState::GetMonster()
     return nullptr;
 }
 
+
+/// <summary>
+/// A gameplay scripting helper function to get the first Monster entity if finds in the map.
+/// </summary>
 void ASTK_MatchGameState::Register_MaxKeyCount(uint8 count)
 {
     Max_Key_Count = count;
 }
 
+
+/// <summary>
+/// Store the specific door to open.
+/// </summary>
 void ASTK_MatchGameState::Register_SelectedExitDoor(ASTK_ExitDoor* ExitDoor)
 {
     Selected_Exit_Door = ExitDoor;
 }
 
+
+/// <summary>
+/// Opens the selected door if all keys are picked up.
+/// </summary>
 void ASTK_MatchGameState::OnAllKeysPickedUp()
 {
     if (Selected_Exit_Door)
         Selected_Exit_Door->DoorOpen();
 }
 
+
+/// <summary>
+/// Closes the selected door if a key was dropped.
+/// </summary>
 void ASTK_MatchGameState::OnKeysDropped()
 {
     if (Selected_Exit_Door)
@@ -100,8 +137,13 @@ void ASTK_MatchGameState::OnKeysDropped()
     //GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, FString::Printf(TEXT("Gamestate: Attempting to close door"), Current_Key_Count));
 }
 
+
+/// <summary>
+/// Get all the entities in the map on beginplay. MUST BE UPDATED.
+/// </summary>
 void ASTK_MatchGameState::BeginPlay()
 {
+    // TODO: MAKE THE GAMEMODE UPDATE THE ACTIVE ENTITIES IN THE MAP ON THE GAMESTATE. THIS WILL ALLOW NEW PLAYERS TO BE COUNTED.
     Super::BeginPlay();
     GetEntities();
 }

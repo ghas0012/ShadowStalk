@@ -20,19 +20,28 @@ USTK_EyeComponent::USTK_EyeComponent()
 	//StatesQueue.Add(CurrentState);
 }
 
-// Called when the game starts. It registers the mesh to be modified.
+
+/// <summary>
+/// Called when the game starts. It registers the mesh to be modified.
+/// </summary>
 void USTK_EyeComponent::SetupMesh(USkeletalMeshComponent* meshptr)
 {
 	TargetMesh = meshptr;
 }
 
-// Called when the game starts
+
+/// <summary>
+/// Called when the game starts
+/// </summary>
 void USTK_EyeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
+
+/// <summary>
+/// Called every frame. Calls LerpQueue which handles the queue of emotions to process.
+/// </summary>
 void USTK_EyeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	RandomBlinkLogic(DeltaTime);
@@ -71,8 +80,12 @@ void USTK_EyeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	LerpQueue(DeltaTime);
 }
 
-// generate a random number every x amount of time.
-// based on that number, Call blink within a range of speed and duration.
+
+
+/// <summary>
+/// generate a random number every x amount of time.
+/// based on that number, Call blink within a range of speed and duration.
+/// </summary>
 void USTK_EyeComponent::RandomBlinkLogic(float DeltaTime)
 {
 	blinkTimer += DeltaTime;
@@ -91,7 +104,10 @@ void USTK_EyeComponent::RandomBlinkLogic(float DeltaTime)
 	}
 }
 
-// Resets the face and removes all gestures immediately.
+
+/// <summary>
+/// Resets the face and removes all gestures immediately.
+/// </summary>
 void USTK_EyeComponent::Reset()
 {
 	for (size_t i = 0; i < GestureNames.Num(); i++)
@@ -107,7 +123,10 @@ void USTK_EyeComponent::Reset()
 	StatesQueue.Add(CurrentState);
 }
 
-// Returns a map of gestures mapped to values, based on what gesture is requested, and how intense it is.
+
+/// <summary>
+/// Returns a map of gestures mapped to values, based on what gesture is requested, and how intense it is.
+/// </summary>
 TMap <FName, float> USTK_EyeComponent::MakeGestureMap(std::string targetGesture, float percent)
 {
 	TMap <FName, float> TargetEyeStates;
@@ -126,7 +145,10 @@ TMap <FName, float> USTK_EyeComponent::MakeGestureMap(std::string targetGesture,
 	return TargetEyeStates;
 }
 
-// Reads the current state of the mesh and returns a map of gesture values.
+
+/// <summary>
+/// Reads the current state of the mesh and returns a map of gesture values.
+/// </summary>
 TMap <FName, float> USTK_EyeComponent::GetCurrentState()
 {
 	TMap <FName, float> state;
@@ -139,7 +161,9 @@ TMap <FName, float> USTK_EyeComponent::GetCurrentState()
 	return state;
 }
 
-// Function to process the queue of gestures to display.
+/// <summary>
+/// Function to process the queue of gestures to display.
+/// </summary>
 void USTK_EyeComponent::LerpQueue(float DeltaTime)
 {
 	if (StatesQueue.Num() == 0)
@@ -190,7 +214,10 @@ void USTK_EyeComponent::LerpQueue(float DeltaTime)
 	}
 }
 
-// Blink. Doesn't overwrite current emotion.
+
+/// <summary>
+/// Blink. Doesn't overwrite current emotion.
+/// </summary>
 void USTK_EyeComponent::Blink(float duration, float speed)
 {
 	if (duration < 0 || speed < 0)
@@ -227,7 +254,10 @@ void USTK_EyeComponent::Blink(float duration, float speed)
 	StatesQueue.Insert(blinkdata, 0); // push blink to 0
 }
 
-// Add a blank expression to the gesture queue.
+
+/// <summary>
+/// Add a blank expression to the gesture queue.
+/// </summary>
 void USTK_EyeComponent::BlankFace(float duration, float speed)
 {
 	if (duration < 0 || speed < 0)
@@ -242,7 +272,11 @@ void USTK_EyeComponent::BlankFace(float duration, float speed)
 	StatesQueue.Add(statedata);
 }
 
-// Fidgeting works best with simple single emotional states.
+
+/// <summary>
+/// Fidgets the intensity of the current emotion to inject some life.
+/// Fidgeting works best with simple single emotional states.
+/// </summary>
 void USTK_EyeComponent::ApplyFidgeting(float DeltaTime, StateData* StateToFidget)
 {
 
@@ -282,7 +316,10 @@ void USTK_EyeComponent::ApplyFidgeting(float DeltaTime, StateData* StateToFidget
 	}
 }
 
-// Get how closed the eyes are at the moment. 0 is open, 1 is closed. Can be improved.
+
+/// <summary>
+/// Get how closed the eyes are at the moment. 0 is open, 1 is closed. Can be improved.
+/// </summary>
 float USTK_EyeComponent::GetCurrentEyeClosedLevel()
 {
 	// TODO, LOW PRIORITY
@@ -294,6 +331,10 @@ float USTK_EyeComponent::GetCurrentEyeClosedLevel()
 		return CurrentState->State[CurrentState->ActiveState];
 }
 
+
+/// <summary>
+/// Get how intense a specific morph target currently is.
+/// </summary>
 float USTK_EyeComponent::GetValueOfSpecificMorphTarget(std::string name)
 {
 	if (StatesQueue.Num() > 0)
@@ -302,7 +343,10 @@ float USTK_EyeComponent::GetValueOfSpecificMorphTarget(std::string name)
 		return CurrentState->State[name.c_str()];
 }
 
-// Overloaded. Add an emotion to the gesture queue.
+
+/// <summary>
+/// Overloaded. Add an emotion to the gesture queue.
+/// </summary>
 void USTK_EyeComponent::SetEmotion(std::string Name, float intensity, float duration, float transitionSpeed, float fidget)
 {
 	if (duration < 0 || transitionSpeed < 0)
@@ -324,25 +368,37 @@ void USTK_EyeComponent::SetEmotion(std::string Name, float intensity, float dura
 	StatesQueue.Add(statedata);
 }
 
-// Overloaded. Add an emotion to the gesture queue.
+
+/// <summary>
+/// Overloaded. Add an emotion to the gesture queue.
+/// </summary>
 void USTK_EyeComponent::SetEmotion(std::string Name, float intensity, float duration, float transitionSpeed)
 {
 	SetEmotion(Name, intensity, duration, transitionSpeed, 0.0f); // <- default fidget
 }
 
-// Overloaded. Add an emotion to the gesture queue.
+
+/// <summary>
+/// Overloaded. Add an emotion to the gesture queue.
+/// </summary>
 void USTK_EyeComponent::SetEmotion(std::string Name, float intensity, float duration)
 {
 	SetEmotion(Name, intensity, duration, 2.0f); // <- default transition speed
 }
 
-// Overloaded. Add an emotion to the gesture queue.
+
+/// <summary>
+/// Overloaded. Add an emotion to the gesture queue.
+/// </summary>
 void USTK_EyeComponent::SetEmotion(std::string Name, float intensity)
 {
 	SetEmotion(Name, intensity, 1.f); // <- default duration
 }
 
-// Overloaded. Add an emotion to the gesture queue.
+
+/// <summary>
+/// Overloaded. Add an emotion to the gesture queue.
+/// </summary>
 void USTK_EyeComponent::SetEmotion(std::string Name)
 {
 	SetEmotion(Name, 1.f); // <- default intensity

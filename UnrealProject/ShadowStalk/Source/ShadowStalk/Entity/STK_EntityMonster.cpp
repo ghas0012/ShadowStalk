@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
 
+
 ASTK_EntityMonster::ASTK_EntityMonster()
 {
     //Default Monster Stats 
@@ -25,6 +26,16 @@ void ASTK_EntityMonster::BeginPlay()
     gamestate = GetWorld()->GetGameState<ASTK_MatchGameState>();
 }
 
+
+void ASTK_EntityMonster::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
+
+
+/// <summary>
+/// Basic function to allow the monster to attack shades. Will be updated to have a cooldown, and be dependent on the monster's animation.
+/// </summary>
 void ASTK_EntityMonster::Attack()
 {
     if (InputLockFlags & EInputLockFlags::Attack)
@@ -52,6 +63,9 @@ void ASTK_EntityMonster::Attack()
 }
 
 
+/// <summary>
+/// Allows the monster to interact with the world by firing a Line Trace. Currently, it's only used to execute downed shades.
+/// </summary>
 void ASTK_EntityMonster::Interact()
 {
     if (InputLockFlags & EInputLockFlags::Interact)
@@ -68,7 +82,6 @@ void ASTK_EntityMonster::Interact()
         queryParams.AddIgnoredActor(this);
 
         //DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Red, false, 5.f, ECC_Pawn, 2.f);
-        //FCollisionResponseParams responseParams;
 
         if (World->LineTraceSingleByChannel(hit, RayStart, RayEnd, trace, queryParams))
         {
@@ -86,12 +99,18 @@ void ASTK_EntityMonster::Interact()
     }
 }
 
+
+/// <summary>
+/// Initiate execution of downed shades. It locks both the shade and monster's input, forces them to look at each other, and it sets their state for the animation blueprint to use.
+/// </summary>
 void ASTK_EntityMonster::ExecuteShade(ASTK_EntityShade* TargetShade)
 { 
     if (TargetShade == nullptr)
         return;
 
     TargetShade->StartExecution(this);
+
+    SetInputLock(EInputLockFlags::Everything, true);
     SetMonsterState(EMonsterState::Executing);
     
     LockCameraLookat(TargetShade->m_CameraComp->GetComponentLocation());
@@ -99,6 +118,10 @@ void ASTK_EntityMonster::ExecuteShade(ASTK_EntityShade* TargetShade)
 
 }
   
+
+/// <summary>
+/// Unlocks the monster's input and resets their state after an execution.
+/// </summary>
 void ASTK_EntityMonster::OnExcecuteEnd()
 {
     SetInputLock(EInputLockFlags::Everything, false);
@@ -106,11 +129,16 @@ void ASTK_EntityMonster::OnExcecuteEnd()
     UnlockCameraLookat();
 }
 
+
 EMonsterState ASTK_EntityMonster::GetMonsterState()
 {
     return CurrentState;
 }
 
+
+/// <summary>
+/// Sets the monster's state. Also allows for custom functionality to apply when a certain state change occurs.
+/// </summary>
 void ASTK_EntityMonster::SetMonsterState(EMonsterState state)
 {
 
@@ -120,7 +148,6 @@ void ASTK_EntityMonster::SetMonsterState(EMonsterState state)
         break;
 
     case EMonsterState::Executing:
-        SetInputLock(EInputLockFlags::Everything, true);
         break;
 
     case EMonsterState::Stunned:
@@ -134,15 +161,12 @@ void ASTK_EntityMonster::SetMonsterState(EMonsterState state)
 
 }
 
+
 EEntityType ASTK_EntityMonster::GetEntityType()
 {
     return EEntityType::MistWalker;
 }
 
-void ASTK_EntityMonster::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-}
 
 void ASTK_EntityMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

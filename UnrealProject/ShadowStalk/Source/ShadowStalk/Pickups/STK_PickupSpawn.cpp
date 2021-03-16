@@ -6,7 +6,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
-// Sets default values
+
+/// <summary>
+/// Applies the proper icon to the sprite component in the editor.
+/// Ensures the icon is hidden in-game.
+/// </summary>
 ASTK_PickupSpawn::ASTK_PickupSpawn()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -48,7 +52,10 @@ ASTK_PickupSpawn::ASTK_PickupSpawn()
 	}
 }
 
-// Called when the game starts or when spawned
+
+/// <summary>
+/// Register this spawn point with MatchGameMode.
+/// </summary>
 void ASTK_PickupSpawn::BeginPlay()
 {
 	
@@ -68,6 +75,9 @@ void ASTK_PickupSpawn::BeginPlay()
 }
  
 
+/// <summary>
+/// Update editor sprite when level loads.
+/// </summary>
 void ASTK_PickupSpawn::PostLoad()
 {
 	Super::PostLoad();
@@ -87,6 +97,9 @@ void ASTK_PickupSpawn::PostLoad()
 }
 
 
+/// <summary>
+/// Update editor sprite when the spawn type changes.
+/// </summary>
 void ASTK_PickupSpawn::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	switch (SpawnType)
@@ -104,6 +117,7 @@ void ASTK_PickupSpawn::PostEditChangeProperty(FPropertyChangedEvent& PropertyCha
 
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
+
 
 EPickupType ASTK_PickupSpawn::GetPickupType()
 {

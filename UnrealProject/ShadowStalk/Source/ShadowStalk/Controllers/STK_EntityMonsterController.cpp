@@ -4,6 +4,10 @@
 
 #include "../Entity/STK_EntityMonster.h"
 
+
+/// <summary>
+/// Grab the posessing pawn to send input to.
+/// </summary>
 void ASTK_EntityMonsterController::OnPossess(APawn* aPawn)
 {
     //Temp Code, depending on how Networking stuff works with Possession.
@@ -16,6 +20,7 @@ void ASTK_EntityMonsterController::OnPossess(APawn* aPawn)
 
 }
 
+
 void ASTK_EntityMonsterController::OnUnPossess()
 {
     //Temp Code, depending on how Networking stuff works with Possession.
@@ -23,6 +28,9 @@ void ASTK_EntityMonsterController::OnUnPossess()
     Super::OnUnPossess();
 }
 
+/// <summary>
+/// Binds relevant input from the engine into the entity class.
+/// </summary>
 void ASTK_EntityMonsterController::SetupInputComponent()
 {
     Super::SetupInputComponent();
@@ -44,6 +52,7 @@ void ASTK_EntityMonsterController::SetupInputComponent()
     }
 }
 
+
 void ASTK_EntityMonsterController::Forward(float value)
 {
     if (m_MonsterEntity)
@@ -51,6 +60,7 @@ void ASTK_EntityMonsterController::Forward(float value)
         m_MonsterEntity->Forward(value);
     }
 }
+
 
 void ASTK_EntityMonsterController::Strafe(float value)
 {
@@ -60,6 +70,7 @@ void ASTK_EntityMonsterController::Strafe(float value)
     }
 }
 
+
 void ASTK_EntityMonsterController::Jump()
 {
     if (m_MonsterEntity)
@@ -67,6 +78,7 @@ void ASTK_EntityMonsterController::Jump()
         m_MonsterEntity->Jump();
     }
 }
+
 
 void ASTK_EntityMonsterController::Interact()
 {
@@ -76,6 +88,7 @@ void ASTK_EntityMonsterController::Interact()
     }
 }
 
+
 void ASTK_EntityMonsterController::Attack()
 {
     if (m_MonsterEntity)
@@ -83,6 +96,7 @@ void ASTK_EntityMonsterController::Attack()
         m_MonsterEntity->Attack();
     }
 }
+
 
 void ASTK_EntityMonsterController::SetSprint()
 {
@@ -92,6 +106,7 @@ void ASTK_EntityMonsterController::SetSprint()
     }
 }
 
+
 void ASTK_EntityMonsterController::StopSprint()
 {
     if (m_MonsterEntity)
@@ -100,6 +115,7 @@ void ASTK_EntityMonsterController::StopSprint()
     }
 }
 
+
 void ASTK_EntityMonsterController::MouseLook_Vertical(float value)
 {
     if (m_MonsterEntity)
@@ -107,6 +123,7 @@ void ASTK_EntityMonsterController::MouseLook_Vertical(float value)
         m_MonsterEntity->MouseLook_Vertical(value);
     }
 }
+
 
 void ASTK_EntityMonsterController::MouseLook_Horizontal(float value)
 {

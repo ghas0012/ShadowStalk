@@ -34,6 +34,10 @@ ASTK_PickupBase::ASTK_PickupBase()
 	Tags.Add("Pickup"); // TODO maybe convert to "IsA..." in shade's on overlap function.
 }
 
+
+/// <summary>
+/// Enables the visuals and collider of the pickup item.
+/// </summary>
 void ASTK_PickupBase::Enable()
 {
 	if (PickupMesh)
@@ -45,6 +49,10 @@ void ASTK_PickupBase::Enable()
 	}
 }
 
+
+/// <summary>
+/// Disables the visuals and collider of the pickup item.
+/// </summary>
 void ASTK_PickupBase::Disable()
 {
 	if (PickupMesh)
@@ -56,6 +64,7 @@ void ASTK_PickupBase::Disable()
 	}
 }
 
+
 // Called when the game starts or when spawned
 void ASTK_PickupBase::BeginPlay()
 {
@@ -63,7 +72,10 @@ void ASTK_PickupBase::BeginPlay()
 	Origin = Collider->GetRelativeLocation();
 }
 
-// Called every frame
+
+/// <summary>
+/// A simple rotating and bobbing animation for pickup items.
+/// </summary>
 void ASTK_PickupBase::Tick(float DeltaTime)
 {
 	if (!bAnimate)
@@ -94,6 +106,7 @@ void ASTK_PickupBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
 
 EPickupType ASTK_PickupBase::GetPickupType()
 {

@@ -3,9 +3,10 @@
  /*
   Author: Christian Young
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description:: A controller for the Monster pawn. Doesn't allow crawling.
   ChangeLog:
-  3/12/2021: *Description of Change*
+  C 3/12/2021: Initialized class and populated input.
+  H 3/16/2021: Added a class description and summaries to pertinent functions.
   */
 
 #pragma once
@@ -30,13 +31,14 @@ protected:
 
 	void Forward(float value);
 	void Strafe(float value);
+
 	void Jump();
-	void Interact();
-	void Attack();
 	void SetSprint();
 	void StopSprint();
+	void Interact();
 	void MouseLook_Vertical(float value);
 	void MouseLook_Horizontal(float value);
+	void Attack();
 
 	class ASTK_EntityMonster* m_MonsterEntity;
 };

@@ -3,10 +3,10 @@
 /*
   Author: Christian Young, Jeffrey Armstrong
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: A controller for the Shade pawn. Doesn't allow attacking.
   ChangeLog:
-  C 3/12/2021: *Description of Change*
-  J 3/12/2021: *Description of Change*
+  J 3/12/2021: Initialized class and populated input.
+  H 3/16/2021: Added a class description and summaries to pertinent functions.
 */
 
 #pragma once
@@ -35,11 +35,11 @@ protected:
     void Jump();
     void SetSprint();
     void StopSprint();
-    void SetCrawl();
-    void UnsetCrawl();
     void Interact();
     void MouseLook_Vertical(float value);
     void MouseLook_Horizontal(float value);
+    void SetCrawl();
+    void UnsetCrawl();
 
     class ASTK_EntityShade* m_ShadeEntity;
 };

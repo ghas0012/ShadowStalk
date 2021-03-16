@@ -12,6 +12,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/TargetPoint.h"
 #include "DrawDebugHelpers.h"
+
+
 // Sets default values
 ASTK_Entity::ASTK_Entity()
 {
@@ -52,6 +54,7 @@ ASTK_Entity::ASTK_Entity()
 
 }
 
+
 // Called when the game starts or when spawned
 void ASTK_Entity::BeginPlay()
 {
@@ -72,11 +75,189 @@ void ASTK_Entity::BeginPlay()
 	MouseLookVector.Y = m_CameraComp->GetRelativeRotation().Pitch;
 	MouseLookVector.X = m_PlayerCapsule->GetRelativeRotation().Yaw;
 
-	//TODO - GameState callers.
 }
 
 
+/// <summary>
+/// The Tick function handles camera rotation, position, and footstep sounds.
+/// </summary>
+void ASTK_Entity::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 
+	HandleCamera(DeltaTime);
+	HandleFootstepSounds(DeltaTime);
+	HandlePosition(DeltaTime);
+}
+
+
+/// <summary>
+/// Record forward acceleration value. Lockable.
+/// </summary>
+void ASTK_Entity::Forward(float value)
+{
+	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
+	{
+		RightAccelerationVector = FVector(0);
+		return;
+	}
+
+	ForwardAccelerationVector = GetActorForwardVector() * value;
+	//AddMovementInput(GetActorForwardVector(), value);
+}
+
+
+/// <summary>
+/// Record side acceleration value. Lockable.
+/// </summary>
+void ASTK_Entity::Strafe(float value)
+{
+	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
+	{
+		RightAccelerationVector = FVector(0);
+		return;
+	}
+
+	RightAccelerationVector = GetActorRightVector() * value;
+}
+
+
+/// <summary>
+/// Forces the camera to look at a location.
+/// </summary>
+void ASTK_Entity::LockCameraLookat(FVector Location)
+{
+	bCameraOverride = true;
+	CameraOverrideTarget = Location;
+}
+
+
+/// <summary>
+/// Releases the camera if it's locked.
+/// </summary>
+void ASTK_Entity::UnlockCameraLookat()
+{
+	bCameraOverride = false;
+}
+
+
+/// <summary>
+/// Overrides the entity's position, moving it to a specified point.
+/// </summary>
+void ASTK_Entity::ForceMoveToPoint(FVector target)
+{
+	bPositionOverride = true;
+	PositionOverrideTarget = target;
+	PositionOverrideOrigin = m_PlayerCapsule->GetRelativeLocation();
+}
+
+
+void ASTK_Entity::Interact()
+{
+	// LEAVE EMPTY, Will get overridden by child classes.
+}
+
+
+/// <summary>
+/// Passes the jump request to the movement component. Lockable.
+/// </summary>
+void ASTK_Entity::Jump()
+{
+	if (InputLockFlags & EInputLockFlags::Jump)
+		return;
+
+	if (m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
+	{
+		if (m_MovementComp->bIsGrounded)
+		{
+			m_MovementComp->Jump(m_JumpStrength);
+			m_MovementComp->bIsGrounded = false;
+		}
+	}
+}
+
+
+/// <summary>
+/// Passes the sprint requests to the movement component. Lockable and Toggleable.
+/// </summary>
+void ASTK_Entity::Sprint(bool IsSprint)
+{
+	if (InputLockFlags & EInputLockFlags::Sprint)
+		return;
+
+	if (IsSprint == true)
+	{
+		m_MovementComp->Sprint();
+	}
+
+	else
+	{
+		m_MovementComp->Walk();
+	}
+}
+
+
+/// <summary>
+/// Passes the crawl requests to the movement component. Lockable and Toggleable.
+/// </summary>
+void ASTK_Entity::Crawl(bool IsCrawl)
+{	
+	if (InputLockFlags & EInputLockFlags::Crawl)
+		return;
+
+	if (IsCrawl == true)
+	{
+		m_MovementComp->Crawl();
+	}
+	if (IsCrawl == false)
+	{
+		m_MovementComp->Walk();
+	}
+}
+
+
+/// <summary>
+/// Records vertical mouse input for HandleCamera(). Lockable.
+/// </summary>
+void ASTK_Entity::MouseLook_Vertical(float value)
+{
+	if (InputLockFlags & EInputLockFlags::MouseLook)
+		return;
+
+	MouseLookVector.Y += m_MouseLook_Y * value;
+	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
+}
+
+
+/// <summary>
+/// Records horizontal mouse input for HandleCamera(). Lockable. 
+/// </summary>
+void ASTK_Entity::MouseLook_Horizontal(float value)
+{
+	if (InputLockFlags & EInputLockFlags::MouseLook)
+		return;
+
+	MouseLookVector.X += m_MouseLook_X * value;
+	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+}
+
+
+bool ASTK_Entity::GetIsGrounded()
+{
+	return bIsGrounded;
+}
+
+
+EEntityType ASTK_Entity::GetEntityType()
+{
+	return EEntityType::Undefined;
+}
+
+
+/// <summary>
+/// This function applies camera and collider rotation based on MouseLookVector.
+/// If the camera's rotation is being overridden, it rotates the camera to face CamOverrideTarget.
+/// </summary>
 void ASTK_Entity::HandleCamera(float DeltaTime)
 {
 	if (!bCameraOverride)
@@ -110,148 +291,11 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 	}
 }
 
-void ASTK_Entity::Forward(float value)
-{
-	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
-	{
-		RightAccelerationVector = FVector(0);
-		return;
-	}
 
-	ForwardAccelerationVector = GetActorForwardVector() * value;
-	//AddMovementInput(GetActorForwardVector(), value);
-}
-
-void ASTK_Entity::Strafe(float value)
-{
-	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
-	{
-		RightAccelerationVector = FVector(0);
-		return;
-	}
-
-	RightAccelerationVector = GetActorRightVector() * value;
-}
-
-void ASTK_Entity::LockCameraLookat(FVector Location)
-{
-	bCameraOverride = true;
-	CameraOverrideTarget = Location;
-}
-
-void ASTK_Entity::UnlockCameraLookat()
-{
-	bCameraOverride = false;
-}
-
-void ASTK_Entity::ForceMoveToPoint(FVector target)
-{
-	bPositionOverride = true;
-	PositionOverrideTarget = target;
-	PositionOverrideOrigin = m_PlayerCapsule->GetRelativeLocation();
-}
-
-void ASTK_Entity::Interact()
-{
-	// LEAVE EMPTY, Will get overrided by child classes.
-}
-
-void ASTK_Entity::Jump()
-{
-	if (InputLockFlags & EInputLockFlags::Jump)
-		return;
-
-	if (m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
-	{
-		if (m_MovementComp->bIsGrounded)
-		{
-			m_MovementComp->Jump(m_JumpStrength);
-			m_MovementComp->bIsGrounded = false;
-		}
-	}
-}
-
-void ASTK_Entity::Sprint(bool IsSprint)
-{
-	if (InputLockFlags & EInputLockFlags::Sprint)
-		return;
-
-	if (IsSprint == true)
-	{
-		m_MovementComp->Sprint();
-	}
-
-	else
-	{
-		m_MovementComp->Walk();
-	}
-}
-
-void ASTK_Entity::Crawl(bool IsCrawl)
-{	
-	if (InputLockFlags & EInputLockFlags::Crawl)
-		return;
-
-	if (IsCrawl == true)
-	{
-		m_MovementComp->Crawl();
-	}
-	if (IsCrawl == false)
-	{
-		m_MovementComp->Walk();
-	}
-}
-
-void ASTK_Entity::UnhideMouse()
-{
-	//TODO - Have to create Controller (might have to be put in Child classes) // AMENDMENT: ARI SAYS SHE'LL TAKE CARE OF THIS
-}
-
-void ASTK_Entity::HideMouse()
-{
-	//TODO - Have to create Controller (might have to be put in Child classes) // AMENDMENT: ARI SAYS SHE'LL TAKE CARE OF THIS
-}
-
-void ASTK_Entity::MouseLook_Vertical(float value)
-{
-	if (InputLockFlags & EInputLockFlags::MouseLook)
-		return;
-
-	MouseLookVector.Y += m_MouseLook_Y * value;
-	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
-}
-
-void ASTK_Entity::MouseLook_Horizontal(float value)
-{
-	if (InputLockFlags & EInputLockFlags::MouseLook)
-		return;
-
-	MouseLookVector.X += m_MouseLook_X * value;
-	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
-
-}
-
-bool ASTK_Entity::GetIsGrounded()
-{
-	return bIsGrounded;
-}
-
-EEntityType ASTK_Entity::GetEntityType()
-{
-	return EEntityType::Undefined;
-}
-
-// Called every frame
-void ASTK_Entity::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	HandleCamera(DeltaTime);
-	HandleFootstepSounds(DeltaTime);
-	HandlePosition(DeltaTime);
-}
-
-
+/// <summary>
+/// This function passes the input acceleration to the movement component.
+/// If the collider's position is being overridden, it moves the collider to PositionOverrideTarget.
+/// </summary>
 void ASTK_Entity::HandlePosition(float DeltaTime)
 {
 	if (!bPositionOverride)
@@ -280,6 +324,10 @@ void ASTK_Entity::HandlePosition(float DeltaTime)
 	}
 }
 
+
+/// <summary>
+/// This function handles footstep sounds. Will be updated to sync with the entity's animation.
+/// </summary>
 void ASTK_Entity::HandleFootstepSounds(float DeltaTime)
 {
 	FootstepTimer += DeltaTime * FootstepFrequency * m_MovementComp->GetForwardVelocity();
@@ -293,17 +341,10 @@ void ASTK_Entity::HandleFootstepSounds(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void ASTK_Entity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
 
-void ASTK_Entity::SetInputLock(EInputLockFlags flag, bool lock)
-{
-	SetInputLock(static_cast<uint8>(flag), lock);
-}
-
+/// <summary>
+/// This function allows for input locking using flags. Look at EInputLockFlags in Shadowstalk.h for more info.
+/// </summary>
 void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 {
 	if (flag & EInputLockFlags::Movement)
@@ -314,4 +355,20 @@ void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 	}
 
 	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
+}
+
+
+/// <summary>
+/// This function allows for input locking using flags. Look at EInputLockFlags in Shadowstalk.h for more info.
+/// </summary>
+void ASTK_Entity::SetInputLock(EInputLockFlags flag, bool lock)
+{
+	SetInputLock(static_cast<uint8>(flag), lock);
+}
+
+
+// Called to bind functionality to input
+void ASTK_Entity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

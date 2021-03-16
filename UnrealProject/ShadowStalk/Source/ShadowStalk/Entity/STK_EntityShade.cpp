@@ -15,6 +15,7 @@
 //Pickups
 #include "ShadowStalk/Pickups/STK_PickupBase.h"
 
+
 // Sets default values
 ASTK_EntityShade::ASTK_EntityShade()
 {
@@ -58,24 +59,6 @@ void ASTK_EntityShade::BeginPlay()
 void ASTK_EntityShade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//switch (CurrentState)
-	//{
-	//case EShadeState::Downed:
-	//	break;
-	//
-	//case EShadeState::Hurt:
-	//	break;
-	//
-	//case EShadeState::Dead:
-	//	break;
-	//
-	//case EShadeState::Execution:
-	//	break;
-	//
-	//default:
-	//	break;
-	//}
 }
 
 /// <summary>
@@ -128,28 +111,25 @@ void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
 }
 
 /// <summary>
-/// Helper function to apply a state change with a delay
+/// Helper function to apply a state change with a delay.
 /// </summary>
 void ASTK_EntityShade::DelayedStateChange()
 {
 	SetShadeState(DelayedTargetState);
 }
 
-/// <summary>
-/// Returns health value
-/// </summary>
+
 int ASTK_EntityShade::GetHealth()
 {
 	return Health;
 }
 
-/// <summary>
-/// Set health value
-/// </summary>
+
 void ASTK_EntityShade::SetHealth(int targetHealth)
 {
 	Health = FMath::Clamp(targetHealth, 0, 2);
 }
+
 
 /// <summary>
 /// Returns this shade's state
@@ -158,6 +138,7 @@ EShadeState ASTK_EntityShade::GetShadeState()
 {
 	return CurrentState;
 }
+
 
 /// <summary>
 /// Interact with the environment.
@@ -168,16 +149,14 @@ void ASTK_EntityShade::Interact()
 		return;
 }
 
+
 /// <summary>
-/// Handle shade state change
+/// Sets the Shade's state. Also allows for custom functionality to apply when a certain state change occurs.
 /// </summary>
 void ASTK_EntityShade::SetShadeState(EShadeState state)
 {
-
-
 	switch (state)
 	{
-
 		case EShadeState::Hurt:
 			// TODO: Apply cracked eye effects
 			break;
@@ -186,16 +165,15 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 
 			// Lock everything but keep mouselook and blinking
 			SetInputLock(EInputLockFlags::Everything & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
-
 			GetWorldTimerManager().SetTimer(DownedRecoveryHandle, this, &ASTK_EntityShade::RecoverFromDowned, DownedRecoveryTime, false);
 
-			// TODO: detach mesh from camera so it doesn't rotate with the horizontal rotation of the camera
+			// TODO: detach mesh from camera so it doesn't rotate with the horizontal rotation of the camera while downed.
 			break;
 
 		case EShadeState::Dead:
 			SetInputLock(Everything, true);
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HE'S DEAD, JIM!"));
-
+			GetWorldTimerManager().ClearAllTimersForObject(this);
 			// TODO: ragdoll
 			// TODO: change eye material brightness to 0
 
@@ -203,7 +181,6 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 
 		case EShadeState::Execution:
 			SetInputLock(EInputLockFlags::Everything, true);
-
 			break;
 
 		default:
@@ -217,14 +194,11 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 }
 
 
-
-/// <summary>
-/// Returns the entity's type
-/// </summary>
 EEntityType ASTK_EntityShade::GetEntityType()
 {
 	return EEntityType::Shade;
 }
+
 
 /// <summary>
 /// Get back up if downed
@@ -235,8 +209,9 @@ void ASTK_EntityShade::RecoverFromDowned()
 	SetShadeState(EShadeState::Default);
 }
 
+
 /// <summary>
-/// Handle overlap
+/// Handle overlap with other components.
 /// </summary>
 void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -272,7 +247,7 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 
 
 /// <summary>
-/// Sets up the lights and their positioning, as well as the blinking component.
+/// Sets up the lights and their positioning, as well as the blinking component. Numbers hard-coded to ensure no loss of effort in case of a blueprint reset.
 /// </summary>
 void ASTK_EntityShade::SetupEyes()
 {
