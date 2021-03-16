@@ -14,7 +14,7 @@
 #include "Blueprint/UserWidget.h"
 #include "STK_UserWidget.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class SHADOWSTALK_API USTK_UserWidget : public UUserWidget
 {
     GENERATED_BODY()

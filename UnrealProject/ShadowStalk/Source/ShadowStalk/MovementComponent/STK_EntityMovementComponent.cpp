@@ -48,7 +48,7 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
         }
     }
 
-    GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Emerald, FString::Printf(TEXT("Grounded: %d"), bIsGrounded));
+    //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Emerald, FString::Printf(TEXT("Grounded: %d"), bIsGrounded));
 
     FVector InputAcceleration;
 
@@ -56,12 +56,12 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
 
     InputAcceleration = ConsumeInputVector() * Acceleration * AirControlMultiplier;
 
-    GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Yellow, FString::Printf(TEXT("Vector: %f %f %f"), InputAcceleration.X, InputAcceleration.Y, InputAcceleration.Z));
+    //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Yellow, FString::Printf(TEXT("Vector: %f %f %f"), InputAcceleration.X, InputAcceleration.Y, InputAcceleration.Z));
 
     VelocityVector += InputAcceleration * DeltaTime;
     VelocityVector = VelocityVector.GetClampedToMaxSize2D(CurrentSpeed);
 
-    GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Red, FString::Printf(TEXT("CurrentSpeed: %f"), CurrentSpeed));
+    //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Red, FString::Printf(TEXT("CurrentSpeed: %f"), CurrentSpeed));
 
     if ((bIsGrounded) && InputAcceleration.SizeSquared() < 0.5f)
     {
@@ -71,7 +71,7 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
 
     FVector DesiredMovementThisFrame = VelocityVector * DeltaTime;
     
-    GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Purple, FString::Printf(TEXT("VelocityVector: %f %f %f"), VelocityVector.X, VelocityVector.Y, VelocityVector.Z));
+    //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Purple, FString::Printf(TEXT("VelocityVector: %f %f %f"), VelocityVector.X, VelocityVector.Y, VelocityVector.Z));
 
     if (!DesiredMovementThisFrame.IsNearlyZero())
     {

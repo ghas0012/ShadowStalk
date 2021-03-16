@@ -12,7 +12,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/TargetPoint.h"
 #include "DrawDebugHelpers.h"
-
 // Sets default values
 ASTK_Entity::ASTK_Entity()
 {
@@ -82,6 +81,7 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 {
 	if (!bCameraOverride)
 	{
+
 		m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
 
 		if (abs(MouseLookVector.Y) < m_MouseLook_VerticalLookLimitAngle)
@@ -92,6 +92,7 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 		{
 			MouseLookVector.Y = -m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
 		}
+
 	}
 	else
 	{
@@ -217,7 +218,7 @@ void ASTK_Entity::MouseLook_Vertical(float value)
 		return;
 
 	MouseLookVector.Y += m_MouseLook_Y * value;
-	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
+	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
 }
 
 void ASTK_Entity::MouseLook_Horizontal(float value)
@@ -226,7 +227,7 @@ void ASTK_Entity::MouseLook_Horizontal(float value)
 		return;
 
 	MouseLookVector.X += m_MouseLook_X * value;
-	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
 
 }
 
@@ -244,7 +245,6 @@ EEntityType ASTK_Entity::GetEntityType()
 void ASTK_Entity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 
 	HandleCamera(DeltaTime);
 	HandleFootstepSounds(DeltaTime);

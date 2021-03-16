@@ -32,19 +32,23 @@ void ASTK_EntityMonster::Attack()
 
     TArray<ASTK_EntityShade*> Shades = gamestate->GetShades();
 
-    for (size_t i = 0; i < Shades.Num(); i++)
+    if (Shades.Num() > 0)
     {
-        EShadeState state = Shades[i]->GetShadeState();
-        if (state == EShadeState::Default || state == EShadeState::Hurt)
+        for (size_t i = 0; i < Shades.Num(); i++)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Yellow, FString::Printf(TEXT("AttackDistance: %f"), FVector::Distance(Shades[i]->GetActorLocation(), GetActorLocation() + FVector::ForwardVector + FVector::ForwardVector * 200)));
-
-            if (FVector::Distance(Shades[i]->GetActorLocation(), GetActorLocation() + FVector::ForwardVector + FVector::ForwardVector * 200) < 500)
+            EShadeState state = Shades[i]->GetShadeState();
+            if (state == EShadeState::Default || state == EShadeState::Hurt)
             {
-                Shades[i]->ApplyDamage(1, (Shades[i]->GetActorLocation() - GetActorLocation()).GetSafeNormal() * AttackKnockbackStrength);
+                //GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Yellow, FString::Printf(TEXT("AttackDistance: %f"), FVector::Distance(Shades[i]->GetActorLocation(), GetActorLocation() + FVector::ForwardVector + FVector::ForwardVector * 200)));
+
+                if (FVector::Distance(Shades[i]->GetActorLocation(), GetActorLocation() + m_CameraComp->GetForwardVector() * AttackRange) < ExecutionPositioningDistance)
+                {
+                    Shades[i]->ApplyDamage(1, (Shades[i]->GetActorLocation() - GetActorLocation()).GetSafeNormal() * AttackKnockbackStrength);
+                }
             }
         }
     }
+
 }
 
 
@@ -63,7 +67,7 @@ void ASTK_EntityMonster::Interact()
         FCollisionQueryParams queryParams;
         queryParams.AddIgnoredActor(this);
 
-        DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Red, false, 5.f, ECC_Pawn, 2.f);
+        //DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Red, false, 5.f, ECC_Pawn, 2.f);
         //FCollisionResponseParams responseParams;
 
         if (World->LineTraceSingleByChannel(hit, RayStart, RayEnd, trace, queryParams))
