@@ -25,8 +25,6 @@ public:
 	// Sets default values for this character's properties
 	ASTK_Entity();
 
-	//TODO - make Editanywhere
-
 	UPROPERTY()
 	class USTK_EntityMovementComponent* m_MovementComp;
 

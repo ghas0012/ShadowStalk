@@ -5,7 +5,8 @@
   Date Modified: 3/12/2021
   Comment/Description: *Description of Class*
   ChangeLog:
-  H 3/12/2021: *Description of Change*
+  H 3/12/2021: *Init*
+  H 3/15/2021: Added Super::BeginPlay() to resolve a bug.
 */
 
 #pragma once
