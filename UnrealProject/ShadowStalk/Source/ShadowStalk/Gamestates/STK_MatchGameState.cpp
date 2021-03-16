@@ -21,7 +21,7 @@ void ASTK_MatchGameState::Register_KeyPickedUp()
     if (Current_Key_Count >= Max_Key_Count)
     {
         OnAllKeysPickedUp();
-        GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Gamestate: Attempting to open door."));
+        //GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Gamestate: Attempting to open door."));
     }
 }
 
@@ -97,13 +97,13 @@ void ASTK_MatchGameState::OnKeysDropped()
     if (Selected_Exit_Door)
         Selected_Exit_Door->DoorClose();
 
-    GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, FString::Printf(TEXT("Gamestate: Attempting to close door"), Current_Key_Count));
+    //GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, FString::Printf(TEXT("Gamestate: Attempting to close door"), Current_Key_Count));
 }
 
 void ASTK_MatchGameState::BeginPlay()
 {
+    Super::BeginPlay();
     GetEntities();
 
     //Super::BeginPlay();
 }
-

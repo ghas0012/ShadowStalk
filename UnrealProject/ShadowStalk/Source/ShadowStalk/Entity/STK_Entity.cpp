@@ -96,6 +96,7 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 {
 	if (!bCameraOverride)
 	{
+
 		m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
 
 		if (abs(MouseLookVector.Y) < m_MouseLook_VerticalLookLimitAngle)
@@ -106,6 +107,7 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 		{
 			MouseLookVector.Y = -m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
 		}
+
 	}
 	else
 	{
@@ -327,7 +329,6 @@ EEntityType ASTK_Entity::GetEntityType()
 void ASTK_Entity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 
 	HandleCamera(DeltaTime);
 	HandleFootstepSounds(DeltaTime);

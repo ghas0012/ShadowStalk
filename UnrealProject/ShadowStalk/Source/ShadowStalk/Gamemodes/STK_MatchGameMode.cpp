@@ -4,6 +4,159 @@
 #include "Kismet/GameplayStatics.h"
 #include "ShadowStalk/Pickups/STK_PickupSpawn.h"
 #include "ShadowStalk/Gamestates/STK_MatchGameState.h"
+#include "GameFramework/SpectatorPawn.h"
+
+#include "ShadowStalk/Controllers/STK_EntityShadeController.h"
+#include "ShadowStalk/Controllers/STK_EntityMonsterController.h"
+
+#include "Engine/LevelStreaming.h"
+
+ASTK_MatchGameMode::ASTK_MatchGameMode()
+{
+
+	// Get all our required bps and controllers
+	static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityMonster"));
+	static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_MonsterController"));
+	static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityShade"));
+	static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ShadeController"));
+
+	if (MonsterPawnBP_Getter.Class != NULL)
+	{
+		pMonsterBP = MonsterPawnBP_Getter.Class;
+	}
+
+	if (MonsterControllerBP_Getter.Class != NULL)
+	{
+		pMonsterControllerBP = MonsterControllerBP_Getter.Class;
+	}
+
+	if (ShadePawnBP_Getter.Class != NULL)
+	{
+		pShadeBP = ShadePawnBP_Getter.Class;
+	}
+
+	if (ShadeControllerBP_Getter.Class != NULL)
+	{
+		pShadeControllerBP = ShadeControllerBP_Getter.Class;
+	}
+
+	bStartPlayersAsSpectators = true;
+
+}
+
+
+
+APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
+{
+	
+	DefaultPawnClass = ASpectatorPawn::StaticClass();
+
+	if (PlayAsMonster)
+	{
+		PlayerControllerClass = pMonsterControllerBP;
+	}
+	else
+	{
+		PlayerControllerClass = pShadeControllerBP;
+	}
+
+	return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
+
+}
+
+
+
+void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
+
+	PlayerCount++;
+
+	PlayerControllerList.Add(NewPlayer);
+	NewPlayer->bBlockInput = true;
+
+	Super::PostLogin(NewPlayer);
+
+	if (!bLevelHasLoaded)
+	{
+		DelaySpawnUntilLevelLoaded();
+	}
+	else
+	{
+		SpawnPawnAndPosess(NewPlayer);
+	}
+}
+
+
+
+void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("Checking level loaded to spawn."));
+
+	TArray<ULevelStreaming*> levels = GetWorld()->GetStreamingLevels();
+	int LoadedCount = 0;
+
+	if (levels.Num() != 0)
+	{
+		for (size_t i = 0; i < GetWorld()->GetStreamingLevels().Num(); i++)
+		{
+			if(levels[i]->GetCurrentState() == ULevelStreaming::ECurrentState::LoadedVisible)
+			LoadedCount += 1;
+		}
+	}
+
+	bLevelHasLoaded = LoadedCount == GetWorld()->GetStreamingLevels().Num();
+
+	if (bLevelHasLoaded)
+	{
+		// Spawn all shade players.
+		for (size_t i = 0; i < PlayerControllerList.Num(); i++)
+		{
+			SpawnPawnAndPosess(PlayerControllerList[i]);
+		}
+
+		GetWorldTimerManager().ClearTimer(SpawnDelayHandle);
+
+		return;
+	}
+
+	GetWorldTimerManager().SetTimer(SpawnDelayHandle, this, &ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded, 0.5f, false);
+}
+
+
+
+void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
+{
+	if (ASTK_EntityMonsterController* monsterController = dynamic_cast<ASTK_EntityMonsterController*>(NewPlayer))
+	{
+		APawn* oldPawn = monsterController->GetPawnOrSpectator();
+
+		monsterController->UnPossess();
+
+		DefaultPawnClass = pMonsterBP;
+		RestartPlayer(monsterController);
+
+		if (oldPawn)
+			oldPawn->Destroy();
+
+		monsterController->bBlockInput = false;
+	}
+	else if (ASTK_EntityShadeController* shadeController = dynamic_cast<ASTK_EntityShadeController*>(NewPlayer))
+	{
+		APawn* oldPawn = shadeController->GetPawnOrSpectator();
+
+
+		shadeController->UnPossess();
+
+		DefaultPawnClass = pShadeBP;
+		RestartPlayer(shadeController);
+
+		if (oldPawn)
+			oldPawn->Destroy();
+
+		shadeController->bBlockInput = false;
+	}
+}
+
+
 
 void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 {
@@ -19,13 +172,18 @@ void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 	}
 }
 
+
+
 void ASTK_MatchGameMode::RegisterPotentialExitDoor(ASTK_ExitDoor* ExitDoor)
 {
 	ExitDoorList.Add(ExitDoor);
 }
 
+
+
 void ASTK_MatchGameMode::BeginPlay()
 {
+
 	// What we do is we select randomly from our spawn locations and remove those as we go.
 	// If we run out of spawn locations, refill the temp array and print a warning.
 

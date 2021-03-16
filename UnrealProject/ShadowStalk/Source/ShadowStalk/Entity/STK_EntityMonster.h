@@ -7,6 +7,7 @@
   ChangeLog:
   C 3/12/2021: Created the base entity monster class.
   H 3/12/2021: Added basic attack logic and input locking.
+  H 3/15/2021: Added entity safety check on attack logic. Fi 
 */
 
 #pragma once
@@ -26,7 +27,6 @@ UCLASS()
 class SHADOWSTALK_API ASTK_EntityMonster : public ASTK_Entity
 {
 	GENERATED_BODY()
-
 
 public:
 

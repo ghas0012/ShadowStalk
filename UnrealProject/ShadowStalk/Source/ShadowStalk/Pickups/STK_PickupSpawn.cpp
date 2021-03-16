@@ -51,7 +51,7 @@ ASTK_PickupSpawn::ASTK_PickupSpawn()
 // Called when the game starts or when spawned
 void ASTK_PickupSpawn::BeginPlay()
 {
-
+	
 	ASTK_MatchGameMode* pGameMode = nullptr;
 
 	if (GetWorld())
@@ -64,7 +64,7 @@ void ASTK_PickupSpawn::BeginPlay()
 		pGameMode->RegisterPickupSpawnPoint(this);
 	}
 
-	//Super::BeginPlay();
+	Super::BeginPlay();
 
 }
  
