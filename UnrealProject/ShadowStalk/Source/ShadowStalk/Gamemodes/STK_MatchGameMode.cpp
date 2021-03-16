@@ -83,5 +83,5 @@ void ASTK_MatchGameMode::BeginPlay()
 
 void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	
+	Super::PostLogin(NewPlayer);
 }
