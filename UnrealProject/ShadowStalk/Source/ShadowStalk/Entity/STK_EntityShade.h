@@ -3,21 +3,17 @@
 /*
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+  
+    The main driver of the Shade players’ character.
+    It reacts to user input, picks up pickup instances, interacts with the Inventory Module, controls the Shade’s eyes,
+    and accepts requests to take damage or be executed.
+  
   ChangeLog:
-  H 3/12/2021: *Description of Change.
+  H 3/12/2021: Class init. Added eye component and example use case.
+  H 3/12/2021: Added States, health and relevant methods for recieving attacks and being executed.
+  H 3/16/2021: Added a class description and summaries to relevant methods.
 */
-
-// Changelog:
-// - Class init.
-// - Added States
-// - Added Health and relevant funcs
-
-// Changelog:
-// - Class init.
-// - Added eye component. Also use example.
-// - Added input locks.
-// - Added states and getting hurt.
 
 #pragma once
 

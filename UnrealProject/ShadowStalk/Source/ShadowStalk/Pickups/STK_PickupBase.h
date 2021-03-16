@@ -3,9 +3,15 @@
 /*
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+
+	Base class for pickups in the game.
+	It has an enum to identify the pickup type, a Collider, a Mesh, a Particle System, 
+	and variables for basic bobbing and rotation animation.
+
   ChangeLog:
-  H 3/12/2021: *Description of Change*
+  H 3/12/2021: Class init.
+  H 3/16/2021: Added a class description and summaries to relevant methods.
 */
 
 #pragma once

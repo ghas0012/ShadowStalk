@@ -3,9 +3,13 @@
 /*
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+	
+	Inherits from STK_PickupBase. Overrides the pickup type.
+
   ChangeLog:
-  H 3/12/2021: *Description of Change*
+  H 3/12/2021: Class init.
+  H 3/16/2021: Added a class description.
 */
 
 #pragma once
