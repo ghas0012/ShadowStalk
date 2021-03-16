@@ -41,5 +41,6 @@ protected:
     void MouseLook_Vertical(float value);
     void MouseLook_Horizontal(float value);
 
+    UPROPERTY(Replicated)
     class ASTK_EntityShade* m_ShadeEntity;
 };

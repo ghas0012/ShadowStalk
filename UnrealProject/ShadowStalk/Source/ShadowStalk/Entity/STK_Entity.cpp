@@ -147,6 +147,11 @@ bool ASTK_Entity::Server_Forward_Validate(float value)
 
 void ASTK_Entity::Strafe(float value)
 {
+	Server_Strafe(value);
+}
+
+void ASTK_Entity::Server_Strafe_Implementation(float value)
+{
 	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
 	{
 		RightAccelerationVector = FVector(0);
@@ -154,6 +159,11 @@ void ASTK_Entity::Strafe(float value)
 	}
 
 	RightAccelerationVector = GetActorRightVector() * value;
+}
+
+bool ASTK_Entity::Server_Strafe_Validate(float value)
+{
+	return true;
 }
 
 void ASTK_Entity::LockCameraLookat(FVector Location)
@@ -181,6 +191,11 @@ void ASTK_Entity::Interact()
 
 void ASTK_Entity::Jump()
 {
+	Server_Jump();
+}
+
+void ASTK_Entity::Server_Jump_Implementation()
+{
 	if (InputLockFlags & EInputLockFlags::Jump)
 		return;
 
@@ -194,7 +209,17 @@ void ASTK_Entity::Jump()
 	}
 }
 
+bool ASTK_Entity::Server_Jump_Validate()
+{
+	return true;
+}
+
 void ASTK_Entity::Sprint(bool IsSprint)
+{
+	Server_Sprint(IsSprint);
+}
+
+void ASTK_Entity::Server_Sprint_Implementation(bool IsSprint)
 {
 	if (InputLockFlags & EInputLockFlags::Sprint)
 		return;
@@ -210,8 +235,18 @@ void ASTK_Entity::Sprint(bool IsSprint)
 	}
 }
 
+bool ASTK_Entity::Server_Sprint_Validate(bool IsSprint)
+{
+	return true;
+}
+
 void ASTK_Entity::Crawl(bool IsCrawl)
 {	
+	Server_Crawl(IsCrawl);
+}
+
+void ASTK_Entity::Server_Crawl_Implementation(bool IsCrawl)
+{
 	if (InputLockFlags & EInputLockFlags::Crawl)
 		return;
 
@@ -223,6 +258,11 @@ void ASTK_Entity::Crawl(bool IsCrawl)
 	{
 		m_MovementComp->Walk();
 	}
+}
+
+bool ASTK_Entity::Server_Crawl_Validate(bool IsCrawl)
+{
+	return true;
 }
 
 void ASTK_Entity::UnhideMouse()
@@ -237,21 +277,40 @@ void ASTK_Entity::HideMouse()
 
 void ASTK_Entity::MouseLook_Vertical(float value)
 {
+	Server_MouseLook_Vertical(value);
+}
+
+void ASTK_Entity::Server_MouseLook_Vertical_Implementation(float value)
+{
 	if (InputLockFlags & EInputLockFlags::MouseLook)
 		return;
 
 	MouseLookVector.Y += m_MouseLook_Y * value;
-	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
+	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
+}
+
+bool ASTK_Entity::Server_MouseLook_Vertical_Validate(float value)
+{
+	return true;
 }
 
 void ASTK_Entity::MouseLook_Horizontal(float value)
+{
+	Server_MouseLook_Horizontal(value);
+}
+
+void ASTK_Entity::Server_MouseLook_Horizontal_Implementation(float value)
 {
 	if (InputLockFlags & EInputLockFlags::MouseLook)
 		return;
 
 	MouseLookVector.X += m_MouseLook_X * value;
-	GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+}
 
+bool ASTK_Entity::Server_MouseLook_Horizontal_Validate(float value)
+{
+	return true;
 }
 
 bool ASTK_Entity::GetIsGrounded()
@@ -344,5 +403,7 @@ void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ASTK_Entity, m_PlayerCapsule);
+	DOREPLIFETIME(ASTK_Entity, m_MovementComp);
+	DOREPLIFETIME(ASTK_Entity, MouseLookVector);
+
 }

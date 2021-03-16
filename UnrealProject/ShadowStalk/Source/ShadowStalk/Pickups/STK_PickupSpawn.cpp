@@ -64,6 +64,8 @@ void ASTK_PickupSpawn::BeginPlay()
 		pGameMode->RegisterPickupSpawnPoint(this);
 	}
 
+	//Super::BeginPlay();
+
 }
  
 

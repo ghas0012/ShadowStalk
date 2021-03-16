@@ -25,6 +25,7 @@ public:
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(Replicated)
 	class UCapsuleComponent* CapsuleComp;
 
 	FVector VelocityVector = FVector::ZeroVector;
@@ -34,6 +35,7 @@ public:
 	float AirControl = 1;
 	float Acceleration;
 
+	UPROPERTY(Replicated)
 	float CurrentSpeed;
 
 	float JumpStrength;
@@ -53,11 +55,16 @@ public:
 	void HandleCrawlTransition(float DeltaTime);
 
 	void Reset();
-	void Jump(float jumps); //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
+	void Jump(float jumpS);
+
 	void LockInput(bool b);
+
 	void Sprint();
+
 	void Walk();
+
 	void Crawl();
+
 	bool bInputLocked = false;
 	bool bIsGrounded = true;
 

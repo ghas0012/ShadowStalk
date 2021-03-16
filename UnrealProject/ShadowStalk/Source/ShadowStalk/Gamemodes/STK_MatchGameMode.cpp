@@ -29,6 +29,8 @@ void ASTK_MatchGameMode::BeginPlay()
 	// What we do is we select randomly from our spawn locations and remove those as we go.
 	// If we run out of spawn locations, refill the temp array and print a warning.
 
+	Super::BeginPlay();
+
 	if (SpawnList_Key.Num() == 0)
 		return;
 

@@ -103,5 +103,7 @@ void ASTK_MatchGameState::OnKeysDropped()
 void ASTK_MatchGameState::BeginPlay()
 {
     GetEntities();
+
+    //Super::BeginPlay();
 }
 

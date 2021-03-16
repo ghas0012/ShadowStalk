@@ -3,6 +3,7 @@
 #include "STK_EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/Engine.h"
+#include "Net/UnrealNetwork.h"
 
 void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -127,18 +128,18 @@ void USTK_EntityMovementComponent::Reset()
     LockInput(false);
 }
 
-void USTK_EntityMovementComponent::Jump(float jumps) //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
+void USTK_EntityMovementComponent::Jump(float jumpS) //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
 {
     if (bInputLocked)
     {
         return;
     }
 
-    JumpStrength = jumps;
+    JumpStrength = jumpS;
 
     VelocityAtJump = VelocityVector;
 
-    CapsuleComp->AddImpulse(FVector::UpVector * jumps);
+    CapsuleComp->AddImpulse(FVector::UpVector * jumpS);
     bIsGrounded = false;
 }
 
@@ -200,4 +201,13 @@ bool USTK_EntityMovementComponent::GetIsGrounded()
 float USTK_EntityMovementComponent::GetForwardVelocity()
 {
     return FMath::Abs(FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector));
+}
+
+void USTK_EntityMovementComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(USTK_EntityMovementComponent, CapsuleComp);
+    DOREPLIFETIME(USTK_EntityMovementComponent, CurrentSpeed);
+
 }

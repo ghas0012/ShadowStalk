@@ -3,6 +3,7 @@
 #include "STK_EntityShadeController.h"
 
 #include "../Entity/STK_EntityShade.h"
+#include "Net/UnrealNetwork.h"
 
 void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
 {
@@ -115,4 +116,11 @@ void ASTK_EntityShadeController::MouseLook_Horizontal(float value)
 	{
 		m_ShadeEntity->MouseLook_Horizontal(value);
 	}
+}
+
+void ASTK_EntityShadeController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASTK_EntityShadeController, m_ShadeEntity);
 }

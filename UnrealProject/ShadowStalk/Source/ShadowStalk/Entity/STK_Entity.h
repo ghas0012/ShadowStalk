@@ -28,10 +28,10 @@ public:
 	//TODO - make Editanywhere
 
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	class USTK_EntityMovementComponent* m_MovementComp;
 
-	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -105,9 +105,9 @@ protected:
 
 	virtual void HandleCamera(float DeltaTime);
 
+	UPROPERTY(Replicated)
 	FVector MouseLookVector = FVector::ZeroVector;
 
-	UPROPERTY(Replicated)
 	FVector ForwardAccelerationVector;
 
 	FVector RightAccelerationVector;
@@ -162,21 +162,44 @@ public:
 
 	virtual void Strafe(float value);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Strafe(float value);
+
 	void LockCameraLookat(FVector Offset);
 	void UnlockCameraLookat();
 	
 	void ForceMoveToPoint(FVector target);
 
 	virtual void Interact();
+
 	virtual void Jump();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Jump();
+
 	virtual void Sprint(bool IsSprint);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Sprint(bool IsSprint);
+
+
 	virtual void Crawl(bool IsCrawl);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Crawl(bool IsCrawl);
 
 	virtual void UnhideMouse();
 	virtual void HideMouse();
 
 	virtual void MouseLook_Vertical(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MouseLook_Vertical(float value);
+
 	virtual void MouseLook_Horizontal(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MouseLook_Horizontal(float value);
 
 	bool GetIsGrounded();
 };

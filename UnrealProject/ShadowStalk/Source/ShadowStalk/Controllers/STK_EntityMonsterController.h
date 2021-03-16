@@ -38,5 +38,6 @@ protected:
 	void MouseLook_Vertical(float value);
 	void MouseLook_Horizontal(float value);
 
+	UPROPERTY(Replicated)
 	class ASTK_EntityMonster* m_MonsterEntity;
 };
