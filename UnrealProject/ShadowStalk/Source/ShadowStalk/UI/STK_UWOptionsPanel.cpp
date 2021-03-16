@@ -12,7 +12,7 @@ bool USTK_UWOptionsPanel::Initialize()
     //Setup Input for Exit Button
     if (!ensure(ExitButton != nullptr)) return false;
     ExitButton->OnClicked.AddDynamic(this, &USTK_UWOptionsPanel::ExitPressed);
-    ExitButton->OnClicked.AddDynamic(this, &USTK_UserWidget::PlayHoverSoundFX);
+    ExitButton->OnHovered.AddDynamic(this, &USTK_UserWidget::PlayHoverSoundFX);
 
     return true;
 }
