@@ -34,12 +34,14 @@ protected:
 
     void Jump();
     void SetSprint();
-    void StopSprint();
+    //void StopSprint();
     void SetCrawl();
     void UnsetCrawl();
     void Interact();
     void MouseLook_Vertical(float value);
     void MouseLook_Horizontal(float value);
+
+    bool isSprint;
 
     UPROPERTY(Replicated)
     class ASTK_EntityShade* m_ShadeEntity;

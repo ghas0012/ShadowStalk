@@ -53,7 +53,7 @@ ASTK_Entity::ASTK_Entity()
 	AudioComponent->SetupAttachment(RootComponent);
 
 	SetReplicates(true);
-	SetReplicatingMovement(true);
+	//SetReplicatingMovement(true);
 }
 
 // Called when the game starts or when spawned

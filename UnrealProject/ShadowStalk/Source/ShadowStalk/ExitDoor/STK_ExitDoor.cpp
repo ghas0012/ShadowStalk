@@ -23,6 +23,8 @@ ASTK_ExitDoor::ASTK_ExitDoor()
 
 	ParticleFX = CreateDefaultSubobject<UParticleSystemComponent>("Particles");
 	ParticleFX->SetupAttachment(SceneComp);
+
+	SetReplicates(true);
 }
 
 void ASTK_ExitDoor::BeginPlay()

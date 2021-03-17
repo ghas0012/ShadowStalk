@@ -32,6 +32,8 @@ ASTK_PickupBase::ASTK_PickupBase()
 	ParticleFX->SetupAttachment(Collider);
 
 	Tags.Add("Pickup"); // TODO maybe convert to "IsA..." in shade's on overlap function.
+
+	SetReplicates(true);
 }
 
 void ASTK_PickupBase::Enable()
