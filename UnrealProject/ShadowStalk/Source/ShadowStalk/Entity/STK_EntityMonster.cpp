@@ -6,7 +6,11 @@
 #include "ShadowStalk/Entity/STK_EntityShade.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
+//Sounds
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
 ASTK_EntityMonster::ASTK_EntityMonster()
 {
@@ -40,6 +44,9 @@ void ASTK_EntityMonster::Attack()
 {
     if (InputLockFlags & EInputLockFlags::Attack)
         return;
+
+    //Play the sound
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), MonsterAttackScream, GetActorLocation());
 
     TArray<ASTK_EntityShade*> Shades = gamestate->GetShades();
 
@@ -151,6 +158,7 @@ void ASTK_EntityMonster::SetMonsterState(EMonsterState state)
         break;
 
     case EMonsterState::Stunned:
+
         break;
 
     default:
