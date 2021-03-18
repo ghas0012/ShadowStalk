@@ -338,6 +338,11 @@ void ASTK_Entity::Tick(float DeltaTime)
 
 void ASTK_Entity::HandlePosition(float DeltaTime)
 {
+	Server_HandlePosition(DeltaTime);
+}
+
+void ASTK_Entity::Server_HandlePosition_Implementation(float DeltaTime)
+{
 	if (!bPositionOverride)
 	{
 		FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
@@ -362,6 +367,11 @@ void ASTK_Entity::HandlePosition(float DeltaTime)
 			FMath::Lerp(PositionOverrideOrigin, PositionOverrideTarget, PositionOverridePercent)
 		);
 	}
+}
+
+bool ASTK_Entity::Server_HandlePosition_Validate(float DeltaTime)
+{
+	return true;
 }
 
 void ASTK_Entity::HandleFootstepSounds(float DeltaTime)

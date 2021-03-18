@@ -146,6 +146,9 @@ public:
 
 	void HandlePosition(float DeltaTime);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_HandlePosition(float DeltaTime);
+
 	void HandleFootstepSounds(float DeltaTime);
 
 	// Called to bind functionality to input
