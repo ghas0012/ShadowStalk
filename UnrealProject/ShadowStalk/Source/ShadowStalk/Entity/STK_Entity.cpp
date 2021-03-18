@@ -460,7 +460,9 @@ void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 
 	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
 }
-
+/// <summary>
+/// Replicated Variables for the class
+/// </summary>
 void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
