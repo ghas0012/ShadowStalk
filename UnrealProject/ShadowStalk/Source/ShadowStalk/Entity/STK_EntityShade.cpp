@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "STK_Entity.h"
+#include "Kismet/GameplayStatics.h"
 
 //Eyes
 #include "Components/RectLightComponent.h"
@@ -14,6 +15,10 @@
 
 //Pickups
 #include "ShadowStalk/Pickups/STK_PickupBase.h"
+
+//Sounds
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
 
 // Sets default values
@@ -158,14 +163,20 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 	switch (state)
 	{
 		case EShadeState::Hurt:
+			//TODO: Find proper place for this sound effect to play
+			//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeHitScream, GetActorLocation());
+
 			// TODO: Apply cracked eye effects
 			break;
 
 		case EShadeState::Downed:
+			//Play the sound
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeDownGroundHit, GetActorLocation());
 
 			// Lock everything but keep mouselook and blinking
 			SetInputLock(EInputLockFlags::Everything & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
 			GetWorldTimerManager().SetTimer(DownedRecoveryHandle, this, &ASTK_EntityShade::RecoverFromDowned, DownedRecoveryTime, false);
+			
 
 			// TODO: detach mesh from camera so it doesn't rotate with the horizontal rotation of the camera while downed.
 			break;
@@ -218,6 +229,9 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	// Handle pickups
 	if (OtherActor->ActorHasTag("Pickup"))
 	{
+		//TODO Find item pickup sound effect
+		//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeItemPickupSound, GetActorLocation());
+
 		EPickupType pickupType = Cast<ASTK_PickupBase>(OtherActor)->GetPickupType();
 		switch (pickupType)
 		{
