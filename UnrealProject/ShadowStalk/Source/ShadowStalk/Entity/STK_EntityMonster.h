@@ -54,6 +54,14 @@ public:
 
 	FTimerHandle ExecutionTimerHandle;
 
+	//Sound
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+		class USoundBase* MonsterAttackScream;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+		class USoundBase* MonsterStunned;
+
 protected:
 
 	EMonsterState CurrentState = EMonsterState::Default;
