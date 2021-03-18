@@ -12,7 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/TargetPoint.h"
 #include "DrawDebugHelpers.h"
-
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASTK_Entity::ASTK_Entity()
@@ -52,6 +52,8 @@ ASTK_Entity::ASTK_Entity()
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	AudioComponent->SetupAttachment(RootComponent);
 
+	SetReplicates(true);
+	//SetReplicatingMovement(true);
 }
 
 
@@ -77,6 +79,18 @@ void ASTK_Entity::BeginPlay()
 
 }
 
+void ASTK_Entity::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%d"), GetWorld()->GetNumPlayerControllers()));
+	
+}
+
+void ASTK_Entity::Restart()
+{
+	Super::Restart();
+}
 
 /// <summary>
 /// The Tick function handles camera rotation, position, and footstep sounds.
@@ -96,6 +110,11 @@ void ASTK_Entity::Tick(float DeltaTime)
 /// </summary>
 void ASTK_Entity::Forward(float value)
 {
+	Server_Forward(value);
+}
+
+void ASTK_Entity::Server_Forward_Implementation(float value)
+{
 	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
 	{
 		RightAccelerationVector = FVector(0);
@@ -106,11 +125,21 @@ void ASTK_Entity::Forward(float value)
 	//AddMovementInput(GetActorForwardVector(), value);
 }
 
+bool ASTK_Entity::Server_Forward_Validate(float value)
+{
+	return true;
+}
+
 
 /// <summary>
 /// Record side acceleration value. Lockable.
 /// </summary>
 void ASTK_Entity::Strafe(float value)
+{
+	Server_Strafe(value);
+}
+
+void ASTK_Entity::Server_Strafe_Implementation(float value)
 {
 	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
 	{
@@ -120,6 +149,12 @@ void ASTK_Entity::Strafe(float value)
 
 	RightAccelerationVector = GetActorRightVector() * value;
 }
+
+bool ASTK_Entity::Server_Strafe_Validate(float value)
+{
+	return true;
+}
+
 
 
 /// <summary>
@@ -163,6 +198,11 @@ void ASTK_Entity::Interact()
 /// </summary>
 void ASTK_Entity::Jump()
 {
+	Server_Jump();
+}
+
+void ASTK_Entity::Server_Jump_Implementation()
+{
 	if (InputLockFlags & EInputLockFlags::Jump)
 		return;
 
@@ -176,11 +216,21 @@ void ASTK_Entity::Jump()
 	}
 }
 
+bool ASTK_Entity::Server_Jump_Validate()
+{
+	return true;
+}
+
 
 /// <summary>
 /// Passes the sprint requests to the movement component. Lockable and Toggleable.
 /// </summary>
 void ASTK_Entity::Sprint(bool IsSprint)
+{
+	Server_Sprint(IsSprint);
+}
+
+void ASTK_Entity::Server_Sprint_Implementation(bool IsSprint)
 {
 	if (InputLockFlags & EInputLockFlags::Sprint)
 		return;
@@ -196,12 +246,22 @@ void ASTK_Entity::Sprint(bool IsSprint)
 	}
 }
 
+bool ASTK_Entity::Server_Sprint_Validate(bool IsSprint)
+{
+	return true;
+}
+
 
 /// <summary>
 /// Passes the crawl requests to the movement component. Lockable and Toggleable.
 /// </summary>
 void ASTK_Entity::Crawl(bool IsCrawl)
 {	
+	Server_Crawl(IsCrawl);
+}
+
+void ASTK_Entity::Server_Crawl_Implementation(bool IsCrawl)
+{
 	if (InputLockFlags & EInputLockFlags::Crawl)
 		return;
 
@@ -215,11 +275,30 @@ void ASTK_Entity::Crawl(bool IsCrawl)
 	}
 }
 
+bool ASTK_Entity::Server_Crawl_Validate(bool IsCrawl)
+{
+	return true;
+}
+
+void ASTK_Entity::UnhideMouse()
+{
+	//TODO - Have to create Controller (might have to be put in Child classes) // AMENDMENT: ARI SAYS SHE'LL TAKE CARE OF THIS
+}
+
+void ASTK_Entity::HideMouse()
+{
+	//TODO - Have to create Controller (might have to be put in Child classes) // AMENDMENT: ARI SAYS SHE'LL TAKE CARE OF THIS
+}
 
 /// <summary>
 /// Records vertical mouse input for HandleCamera(). Lockable.
 /// </summary>
 void ASTK_Entity::MouseLook_Vertical(float value)
+{
+	Server_MouseLook_Vertical(value);
+}
+
+void ASTK_Entity::Server_MouseLook_Vertical_Implementation(float value)
 {
 	if (InputLockFlags & EInputLockFlags::MouseLook)
 		return;
@@ -228,17 +307,32 @@ void ASTK_Entity::MouseLook_Vertical(float value)
 	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
 }
 
+bool ASTK_Entity::Server_MouseLook_Vertical_Validate(float value)
+{
+	return true;
+}
+
 
 /// <summary>
 /// Records horizontal mouse input for HandleCamera(). Lockable. 
 /// </summary>
 void ASTK_Entity::MouseLook_Horizontal(float value)
 {
+	Server_MouseLook_Horizontal(value);
+}
+
+void ASTK_Entity::Server_MouseLook_Horizontal_Implementation(float value)
+{
 	if (InputLockFlags & EInputLockFlags::MouseLook)
 		return;
 
 	MouseLookVector.X += m_MouseLook_X * value;
 	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+}
+
+bool ASTK_Entity::Server_MouseLook_Horizontal_Validate(float value)
+{
+	return true;
 }
 
 
@@ -298,6 +392,11 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 /// </summary>
 void ASTK_Entity::HandlePosition(float DeltaTime)
 {
+	Server_HandlePosition(DeltaTime);
+}
+
+void ASTK_Entity::Server_HandlePosition_Implementation(float DeltaTime)
+{
 	if (!bPositionOverride)
 	{
 		FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
@@ -322,6 +421,11 @@ void ASTK_Entity::HandlePosition(float DeltaTime)
 			FMath::Lerp(PositionOverrideOrigin, PositionOverrideTarget, PositionOverridePercent)
 		);
 	}
+}
+
+bool ASTK_Entity::Server_HandlePosition_Validate(float DeltaTime)
+{
+	return true;
 }
 
 
@@ -357,6 +461,13 @@ void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
 }
 
+void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASTK_Entity, m_MovementComp);
+	DOREPLIFETIME(ASTK_Entity, MouseLookVector);
+}
 
 /// <summary>
 /// This function allows for input locking using flags. Look at EInputLockFlags in Shadowstalk.h for more info.

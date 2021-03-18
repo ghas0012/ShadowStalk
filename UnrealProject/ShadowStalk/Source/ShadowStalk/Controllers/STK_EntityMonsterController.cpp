@@ -3,6 +3,7 @@
 #include "STK_EntityMonsterController.h"
 
 #include "../Entity/STK_EntityMonster.h"
+#include "Net/UnrealNetwork.h"
 
 
 /// <summary>
@@ -131,4 +132,11 @@ void ASTK_EntityMonsterController::MouseLook_Horizontal(float value)
     {
         m_MonsterEntity->MouseLook_Horizontal(value);
     }
+}
+
+void ASTK_EntityMonsterController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ASTK_EntityMonsterController, m_MonsterEntity);
 }

@@ -54,13 +54,14 @@ APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemo
 {
 	DefaultPawnClass = ASpectatorPawn::StaticClass();
 
-	if (PlayAsMonster)
-	{
-		PlayerControllerClass = pMonsterControllerBP;
-	}
-	else
+	//TODO - Fix this - For some reason this does not make the Server the Monster 
+	if (InRemoteRole < ROLE_Authority)
 	{
 		PlayerControllerClass = pShadeControllerBP;
+	}
+	else if (InRemoteRole == ROLE_Authority)
+	{
+		PlayerControllerClass = pMonsterControllerBP;
 	}
 
 	return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
@@ -203,6 +204,8 @@ void ASTK_MatchGameMode::BeginPlay()
 	// What we do is we select randomly from our spawn locations and remove those as we go.
 	// If we run out of spawn locations, refill the temp array and print a warning.
 
+	Super::BeginPlay();
+
 	if (SpawnList_Key.Num() == 0)
 		return;
 
@@ -253,3 +256,4 @@ void ASTK_MatchGameMode::BeginPlay()
 
 	gamestate->Register_MaxKeyCount(Pickup_Key_Count);
 }
+

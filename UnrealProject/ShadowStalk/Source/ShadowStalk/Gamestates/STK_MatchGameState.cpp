@@ -146,4 +146,6 @@ void ASTK_MatchGameState::BeginPlay()
     // TODO: MAKE THE GAMEMODE UPDATE THE ACTIVE ENTITIES IN THE MAP ON THE GAMESTATE. THIS WILL ALLOW NEW PLAYERS TO BE COUNTED.
     Super::BeginPlay();
     GetEntities();
+
+    //Super::BeginPlay();
 }

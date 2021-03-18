@@ -30,7 +30,10 @@ public:
 	// Sets default values for this character's properties
 	ASTK_Entity();
 
-	UPROPERTY()
+	//TODO - make Editanywhere
+
+
+	UPROPERTY(Replicated)
 	class USTK_EntityMovementComponent* m_MovementComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
@@ -99,10 +102,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Restart() override;
+
+	virtual void PostInitializeComponents() override;
+
 	virtual void HandleCamera(float DeltaTime);
 
+	UPROPERTY(Replicated)
 	FVector MouseLookVector = FVector::ZeroVector;
+
 	FVector ForwardAccelerationVector;
+
 	FVector RightAccelerationVector;
 	FVector VelocityVector;
 
@@ -139,6 +149,9 @@ public:
 
 	void HandlePosition(float DeltaTime);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_HandlePosition(float DeltaTime);
+
 	void HandleFootstepSounds(float DeltaTime);
 
 	// Called to bind functionality to input
@@ -147,8 +160,17 @@ public:
 	void SetInputLock(EInputLockFlags flag, bool lock);
 	void SetInputLock(uint8 flag, bool lock);
 
+    // virtual UPawnMovementComponent* GetMovementComponent();
+
 	virtual void Forward(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Forward(float value);
+
 	virtual void Strafe(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Strafe(float value);
 
 	void LockCameraLookat(FVector Offset);
 	void UnlockCameraLookat();
@@ -156,12 +178,35 @@ public:
 	void ForceMoveToPoint(FVector target);
 
 	virtual void Interact();
+
 	virtual void Jump();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Jump();
+
 	virtual void Sprint(bool IsSprint);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Sprint(bool IsSprint);
+
+
 	virtual void Crawl(bool IsCrawl);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Crawl(bool IsCrawl);
+
+	virtual void UnhideMouse();
+	virtual void HideMouse();
+
 	virtual void MouseLook_Vertical(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MouseLook_Vertical(float value);
+
 	virtual void MouseLook_Horizontal(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MouseLook_Horizontal(float value);
 
 	bool GetIsGrounded();
 };

@@ -72,6 +72,7 @@ void ASTK_PickupSpawn::BeginPlay()
 	}
 
 	Super::BeginPlay();
+
 }
  
 

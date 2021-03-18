@@ -3,6 +3,7 @@
 #include "STK_EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/Engine.h"
+#include "Net/UnrealNetwork.h"
 
 
 /// <summary>
@@ -157,6 +158,7 @@ void USTK_EntityMovementComponent::Jump(float jumpStrength) //TODO - FIX THIS DU
     VelocityAtJump = VelocityVector;
 
     CapsuleComp->AddImpulse(FVector::UpVector * jumpStrength);
+
     bIsGrounded = false;
 }
 
@@ -236,4 +238,13 @@ bool USTK_EntityMovementComponent::GetIsGrounded()
 float USTK_EntityMovementComponent::GetForwardVelocity()
 {
     return FMath::Abs(FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector));
+}
+
+void USTK_EntityMovementComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(USTK_EntityMovementComponent, CapsuleComp);
+    DOREPLIFETIME(USTK_EntityMovementComponent, CurrentSpeed);
+
 }

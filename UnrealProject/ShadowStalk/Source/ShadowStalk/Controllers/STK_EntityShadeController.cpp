@@ -3,6 +3,7 @@
 #include "STK_EntityShadeController.h"
 
 #include "../Entity/STK_EntityShade.h"
+#include "Net/UnrealNetwork.h"
 
 
 /// <summary>
@@ -13,6 +14,7 @@ void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
 	Super::OnPossess(aPawn);
 
 	m_ShadeEntity = Cast<ASTK_EntityShade>(aPawn);
+
 }
 
 
@@ -36,7 +38,7 @@ void ASTK_EntityShadeController::SetupInputComponent()
 		InputComponent->BindAxis("Strafe", this, &ASTK_EntityShadeController::Strafe);
 		InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityShadeController::Jump);
 		InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityShadeController::SetSprint);
-		InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityShadeController::StopSprint);
+		//InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityShadeController::StopSprint);
 		InputComponent->BindAction("Crawl", IE_Pressed, this, &ASTK_EntityShadeController::SetCrawl);
 		InputComponent->BindAction("Crawl", IE_Released, this, &ASTK_EntityShadeController::UnsetCrawl);
 		InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityShadeController::MouseLook_Vertical);
@@ -76,19 +78,28 @@ void ASTK_EntityShadeController::SetSprint()
 {
 	if (m_ShadeEntity)
 	{
-		m_ShadeEntity->Sprint(true);
+		if (isSprint)
+		{
+			isSprint = false;
+		}
+		else
+		{
+			isSprint = true;
+		}
+
+		m_ShadeEntity->Sprint(isSprint);
 	}
 }
 
+//TODO - Make Sprint toggle optional.
 
-void ASTK_EntityShadeController::StopSprint()
-{
-	if (m_ShadeEntity)
-	{
-		m_ShadeEntity->Sprint(false);
-	}
-}
-
+//void ASTK_EntityShadeController::StopSprint()
+//{
+//	if (m_ShadeEntity)
+//	{
+//		m_ShadeEntity->Sprint(false);
+//	}
+//}
 
 void ASTK_EntityShadeController::SetCrawl()
 {
@@ -132,4 +143,11 @@ void ASTK_EntityShadeController::MouseLook_Horizontal(float value)
 	{
 		m_ShadeEntity->MouseLook_Horizontal(value);
 	}
+}
+
+void ASTK_EntityShadeController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASTK_EntityShadeController, m_ShadeEntity);
 }
