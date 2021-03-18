@@ -3,10 +3,15 @@
 /*
   Author: Christian Young, Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+
+	A wrapper around the APawn class that allows for shared functionality such as movement behavior and interaction between the Shade and Monster classes.
+	The Entity class is an abstract class, which means it will never appear alone and is simply meant as a template class for all of the game’s entities.
+		
   ChangeLog:
   C 3/12/2021: Created the base entity class, added movement variables, implemented skeletal mesh.
-  H 3/12/2021: Added entity type getters, input locking, camera and position override, and cleaned up Tick function.
+  H 3/12/2021: Added entity type getters, input locking, camera and position override, and cleaned up the Tick function.
+  H 3/16/2021: Reformatted and cleaned up the methods and their order. Added a class description and summaries for pertinent methods.
 */
 
 #pragma once
@@ -86,8 +91,6 @@ public:
 	UFUNCTION()
 	virtual void Respawn() {}
 
-	//void AddToInventory();
-
 	// position override variables
 	bool bPositionOverride = false;
 	float PositionOverridePercent;
@@ -119,8 +122,8 @@ protected:
 	float ForwardInput = 0.0f;
 
 	FVector CameraOverrideTarget;
-	float CameraOverrideSpeed = 10.f; // 0-1
-	float PositionOverrideSpeed = 30.0f; // 0-1
+	float CameraOverrideSpeed = 10.f; 
+	float PositionOverrideSpeed = 30.0f;
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
@@ -158,6 +161,7 @@ public:
 	void SetInputLock(uint8 flag, bool lock);
 
     // virtual UPawnMovementComponent* GetMovementComponent();
+
 	virtual void Forward(float value);
 
 	UFUNCTION(Server, Reliable, WithValidation)

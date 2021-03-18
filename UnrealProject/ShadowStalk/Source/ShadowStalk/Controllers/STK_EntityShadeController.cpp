@@ -5,6 +5,10 @@
 #include "../Entity/STK_EntityShade.h"
 #include "Net/UnrealNetwork.h"
 
+
+/// <summary>
+/// Grab the posessing pawn to send input to.
+/// </summary>
 void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
@@ -13,6 +17,7 @@ void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
 
 }
 
+
 void ASTK_EntityShadeController::OnUnPossess()
 {
 	APawn* possessedPawn = Cast<APawn>(GetOwner());
@@ -20,6 +25,9 @@ void ASTK_EntityShadeController::OnUnPossess()
     Super::OnUnPossess();
 }
 
+/// <summary>
+/// Binds relevant input from the engine into the entity class.
+/// </summary>
 void ASTK_EntityShadeController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -38,6 +46,7 @@ void ASTK_EntityShadeController::SetupInputComponent()
 	}
 }
 
+
 void ASTK_EntityShadeController::Forward(float value)
 {
 	if (m_ShadeEntity)
@@ -45,6 +54,7 @@ void ASTK_EntityShadeController::Forward(float value)
 		m_ShadeEntity->Forward(value);
 	}
 }
+
 
 void ASTK_EntityShadeController::Strafe(float value)
 {
@@ -54,6 +64,7 @@ void ASTK_EntityShadeController::Strafe(float value)
 	}
 }
 
+
 void ASTK_EntityShadeController::Jump()
 {
 	if (m_ShadeEntity)
@@ -61,6 +72,7 @@ void ASTK_EntityShadeController::Jump()
 		m_ShadeEntity->Jump();
 	}
 }
+
 
 void ASTK_EntityShadeController::SetSprint()
 {
@@ -97,6 +109,7 @@ void ASTK_EntityShadeController::SetCrawl()
 	}
 }
 
+
 void ASTK_EntityShadeController::UnsetCrawl()
 {
 	if (m_ShadeEntity)
@@ -104,6 +117,7 @@ void ASTK_EntityShadeController::UnsetCrawl()
 		m_ShadeEntity->Crawl(false);
 	}
 }
+
 
 void ASTK_EntityShadeController::Interact()
 {
@@ -113,6 +127,7 @@ void ASTK_EntityShadeController::Interact()
 	}
 }
 
+
 void ASTK_EntityShadeController::MouseLook_Vertical(float value)
 {
 	if (m_ShadeEntity)
@@ -120,6 +135,7 @@ void ASTK_EntityShadeController::MouseLook_Vertical(float value)
 		m_ShadeEntity->MouseLook_Vertical(value);
 	}
 }
+
 
 void ASTK_EntityShadeController::MouseLook_Horizontal(float value)
 {

@@ -5,6 +5,12 @@
 #include "Engine/Engine.h"
 #include "Net/UnrealNetwork.h"
 
+
+/// <summary>
+/// This tick function calculates the desired movement based on the input acceleration.
+/// It slides the collider along surfaces so there's no intersection.
+/// It also checks if the collider is on the ground and calls a method to handle Crawling height.
+/// </summary>
 void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     if (bInputLocked)
@@ -95,6 +101,10 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
 
 }
 
+
+/// <summary>
+/// Smoothly transition the height of the collider to match whether or not the entity is crawling.
+/// </summary>
 void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
 {
     CrawlTransitionPercentage += DeltaTime * CrawlTransitionSpeed;
@@ -118,6 +128,10 @@ void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
     }
 }
 
+
+/// <summary>
+/// Stops all movement of the collider.
+/// </summary>
 void USTK_EntityMovementComponent::Reset()
 {
     bIsGrounded = false;
@@ -128,20 +142,26 @@ void USTK_EntityMovementComponent::Reset()
     LockInput(false);
 }
 
-void USTK_EntityMovementComponent::Jump(float jumpS) //TODO - FUCKING FIX THIS DUDE HOLY FUCKING SHIT
+
+/// <summary>
+/// Adds an impulse for jumping.
+/// </summary>
+void USTK_EntityMovementComponent::Jump(float jumpStrength) //TODO - FIX THIS DUDE HOLY CRAP
 {
     if (bInputLocked)
     {
         return;
     }
 
-    JumpStrength = jumpS;
+    JumpStrength = jumpStrength;
 
     VelocityAtJump = VelocityVector;
 
-    CapsuleComp->AddImpulse(FVector::UpVector * jumpS);
+    CapsuleComp->AddImpulse(FVector::UpVector * jumpStrength);
+
     bIsGrounded = false;
 }
+
 
 void USTK_EntityMovementComponent::LockInput(bool b)
 {
@@ -150,6 +170,10 @@ void USTK_EntityMovementComponent::LockInput(bool b)
     CapsuleComp->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 }
 
+
+/// <summary>
+/// Updates the movement speed of the component. Disables crawl.
+/// </summary>
 void USTK_EntityMovementComponent::Sprint()
 {
     if (bInputLocked)
@@ -163,6 +187,10 @@ void USTK_EntityMovementComponent::Sprint()
     bIsCrawling = false;
 }
 
+
+/// <summary>
+/// Updates the movement speed of the component. Disables crawl.
+/// </summary>
 void USTK_EntityMovementComponent::Walk()
 {
 
@@ -178,6 +206,10 @@ void USTK_EntityMovementComponent::Walk()
 
 }
 
+
+/// <summary>
+/// Updates the movement speed of the component. Enables crawl.
+/// </summary>
 void USTK_EntityMovementComponent::Crawl()
 {
 
@@ -193,11 +225,16 @@ void USTK_EntityMovementComponent::Crawl()
 
 }
 
+
 bool USTK_EntityMovementComponent::GetIsGrounded()
 {
     return bIsGrounded;
 }
 
+
+/// <summary>
+/// A Ufunction for the anim blueprint to apply run animation.
+/// </summary>
 float USTK_EntityMovementComponent::GetForwardVelocity()
 {
     return FMath::Abs(FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector));

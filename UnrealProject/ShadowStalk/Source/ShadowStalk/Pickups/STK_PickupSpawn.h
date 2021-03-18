@@ -3,10 +3,17 @@
 /*
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description:	
+
+	  This class is an interface for level designers to place item and key spawn points around the map with ease.
+	  It has an enum identifier for what pickup object it’s intended to spawn.
+	  On the server, this class registers itself with the Match GameMode Module, which decides which spawn points to randomly spawn keys on.
+	  A billboard sprite updated through code will change its icon in the editor for more readability.
+
   ChangeLog:
-  H 3/12/2021: *Init*
+  H 3/12/2021: class init.
   H 3/15/2021: Added Super::BeginPlay() to resolve a bug.
+  H 3/16/2021: Added a class description and summaries to relevant methods.
 */
 
 #pragma once

@@ -1,8 +1,17 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
-// Author: Jeffrey Armstrong
 
-// Changelog:
-// - Class init.
+/*
+  Author: Jeffrey Armstrong
+  Date Modified: 3/12/2021
+  Comment/Description: 
+	
+	This class contains information related to what a Shade player is currently carrying (keys, items, etc.),
+	As well as functionality to navigate the items they hold.
+
+  ChangeLog:
+  J 3/12/2021: Class init.
+  H 3/16/2021: Added a class description and summaries to relevant methods.
+*/
 
 #pragma once
 

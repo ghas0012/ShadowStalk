@@ -3,11 +3,16 @@
 /*
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+  
+	This class handles player spawning and posessing proper pawns.
+	It's also in charge of setting up the level by selecting a preset number of spawn points to spawn keys from,
+	and selecting a random exit door from a list of available doors. It then Informs the GameState of the results of the randomization.
+
   ChangeLog:
   H 3/12/2021: Init.
-  H 3/15/2021: Added functionality to spawn only if the level has loaded and the expected player count is hit.
-
+  H 3/15/2021: Added ability to spawn as the Monster. Added functionality to spawn only if the level has loaded.
+  H 3/16/2021: Added a class description and summaries to relevant methods.
 */
 
 #pragma once
@@ -38,7 +43,8 @@ public:
 	virtual APlayerController* Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
-	FTimerHandle SpawnDelayHandle;
+	TArray<class APlayerController*> PlayerControllerList;
+
 	uint8 PlayerCount = 0;
 	
 	bool bLevelHasLoaded = false;
@@ -47,7 +53,7 @@ protected:
 
 	void SpawnPawnAndPosess(APlayerController* NewPlayer);
 
-	TArray<class APlayerController*> PlayerControllerList;
+	FTimerHandle SpawnDelayHandle;
 
 	void DelaySpawnUntilLevelLoaded();
 

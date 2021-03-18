@@ -3,9 +3,13 @@
 /*
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+  	
+	An unnecessarily overengineered wrapper to handle the shade's eyes blinking and emoting.
+
   ChangeLog:
-  H 3/12/2021: *Description of Change.
+  H 3/12/2021: Class init.
+  H 3/16/2021: Added a class description and summaries to certain methods.
 */
 
 #pragma once

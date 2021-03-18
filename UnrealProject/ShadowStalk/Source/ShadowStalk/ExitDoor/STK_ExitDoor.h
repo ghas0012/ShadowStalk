@@ -3,9 +3,14 @@
 /*
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description:
+	
+	An exit door class. It has a collider, a mesh and some particle effects.
+	It can take requests to open and close.
+
   ChangeLog:
-  H 3/12/2021: *Description of Change.
+  H 3/12/2021: Initialized class.
+  H 3/16/2021: Reformatted code, Added a class description and summaries to relevant methods.
 */
 
 #pragma once
@@ -42,8 +47,6 @@ protected:
 	bool bIsOpen = false;
 
 public:
-
-	virtual void Tick(float DeltaTime) override;
 
 	void DoorOpen();
 	void DoorClose();

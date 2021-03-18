@@ -3,11 +3,16 @@
 /*
   Author: Christian Young, Hamidreza Ghasemi
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+
+	A child of the Entity class.
+	It reacts to user input for basic movement. It can attack and execute Shades,
+
   ChangeLog:
   C 3/12/2021: Created the base entity monster class.
-  H 3/12/2021: Added basic attack logic and input locking.
-  H 3/15/2021: Added entity safety check on attack logic. Fi 
+  H 3/12/2021: Added basic attack logic and input locking. Also added states.
+  H 3/15/2021: Added entity safety check on attack logic. Fixed attack range and direction. 
+  H 3/16/2021: Added a class description and summaries to pertinent functions.
 */
 
 #pragma once

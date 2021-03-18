@@ -11,9 +11,12 @@
 
 #include "Engine/LevelStreaming.h"
 
+
+/// <summary>
+/// Grab the Monster and shade Blueprints and controllers on startup.
+/// </summary>
 ASTK_MatchGameMode::ASTK_MatchGameMode()
 {
-
 	// Get all our required bps and controllers
 	static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityMonster"));
 	static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_MonsterController"));
@@ -41,14 +44,14 @@ ASTK_MatchGameMode::ASTK_MatchGameMode()
 	}
 
 	bStartPlayersAsSpectators = true;
-
 }
 
 
-
+/// <summary>
+/// Intercept players at login to assign controllers to them.
+/// </summary>
 APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
-	
 	DefaultPawnClass = ASpectatorPawn::StaticClass();
 
 	//TODO - Fix this - For some reason this does not make the Server the Monster 
@@ -62,11 +65,12 @@ APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemo
 	}
 
 	return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
-
 }
 
 
-
+/// <summary>
+/// Intercept players PostLogin, wait until level has loaded before spawning their proper pawn based on their controller.
+/// </summary>
 void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 
 	PlayerCount++;
@@ -87,7 +91,9 @@ void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 }
 
 
-
+/// <summary>
+/// Check if the level has loaded every half a second. If it has, spawn every player contoller submitted.
+/// </summary>
 void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("Checking level loaded to spawn."));
@@ -123,7 +129,9 @@ void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
 }
 
 
-
+/// <summary>
+/// Helper function to spawn and posess the correct pawn based on the player's assigned controller.
+/// </summary>
 void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 {
 	if (ASTK_EntityMonsterController* monsterController = dynamic_cast<ASTK_EntityMonsterController*>(NewPlayer))
@@ -158,7 +166,9 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 }
 
 
-
+/// <summary>
+/// Stores a pickup spawner's position.
+/// </summary>
 void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 {
 	switch (PickupSpawn->GetPickupType())
@@ -174,14 +184,20 @@ void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 }
 
 
-
+/// <summary>
+/// Stores a potential exit door to potentially open when all keys are collected.
+/// </summary>
 void ASTK_MatchGameMode::RegisterPotentialExitDoor(ASTK_ExitDoor* ExitDoor)
 {
 	ExitDoorList.Add(ExitDoor);
 }
 
 
-
+/// <summary>
+/// Spawns Pickup_Key_Count number of keys randomly on the provided spawn points.
+/// Selects one door randomly from the registered doors provided.
+/// Registers that door and the number of keys to pick with MatchGameState.
+/// </summary>
 void ASTK_MatchGameMode::BeginPlay()
 {
 
@@ -224,6 +240,7 @@ void ASTK_MatchGameMode::BeginPlay()
 		}
 	}
 
+	// Spawn items here.
 	//for (size_t i = 0; i < Pickup_Item_Count; i++)
 	//{
 	//

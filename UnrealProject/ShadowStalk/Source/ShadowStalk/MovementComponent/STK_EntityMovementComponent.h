@@ -3,11 +3,18 @@
 /*
   Author: Christian Young, Hamidreza Ghasemi, Jeffrey Armstrong
   Date Modified: 3/12/2021
-  Comment/Description: *Description of Class*
+  Comment/Description: 
+
+	A custom movement component with ground checking, movement handling, jumping and crouching.
+	It reads the input acceleration vector and calculates a desired movement per frame.
+	It then applies that movement value after resolving all collisions.
+	This component partially handles movement replication.
+
   ChangeLog:
-  C 3/12/2021: *Description of Change*
-  H 3/12/2021: *Description of Change*
-  J 3/12/2021: *Description of Change*
+  C 3/12/2021: Class init. Added movement, ground checking and collision resolution.
+  J 3/12/2021: Added crouch functionality.
+  H 3/12/2021: Added a smooth height transition for crouching.
+  H 3/16/2021: Added a class description and summaries to relevant methods.
 */
 
 #pragma once
@@ -55,7 +62,8 @@ public:
 	void HandleCrawlTransition(float DeltaTime);
 
 	void Reset();
-	void Jump(float jumpS);
+
+	void Jump(float jumpStrength); //TODO - FIX THIS DUDE HOLY CRAP
 
 	void LockInput(bool b);
 

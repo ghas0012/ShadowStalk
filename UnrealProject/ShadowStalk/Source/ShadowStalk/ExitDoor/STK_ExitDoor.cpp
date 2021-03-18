@@ -5,6 +5,7 @@
 #include "ShadowStalk/GameModes/STK_MatchGameMode.h"
 #include "Particles/ParticleSystemComponent.h"
 
+
 ASTK_ExitDoor::ASTK_ExitDoor()
 {
 	SceneComp = CreateDefaultSubobject<USceneComponent>("SceneComp");
@@ -27,6 +28,10 @@ ASTK_ExitDoor::ASTK_ExitDoor()
 	SetReplicates(true);
 }
 
+
+/// <summary>
+/// Register the door with the game mode in order to open one randomly.
+/// </summary>
 void ASTK_ExitDoor::BeginPlay()
 {
 	ASTK_MatchGameMode* pGameMode = nullptr;
@@ -42,6 +47,9 @@ void ASTK_ExitDoor::BeginPlay()
 	}
 }
 
+/// <summary>
+/// Open the door.
+/// </summary>
 void ASTK_ExitDoor::DoorOpen()
 {
 	ParticleFX->DeactivateSystem();
@@ -49,6 +57,9 @@ void ASTK_ExitDoor::DoorOpen()
 	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("DOOR IS OPEN!"));
 }
 
+/// <summary>
+/// Close the door.
+/// </summary>
 void ASTK_ExitDoor::DoorClose()
 {
 	ParticleFX->ActivateSystem();
@@ -56,12 +67,9 @@ void ASTK_ExitDoor::DoorClose()
 	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("DOOR IS CLOSED!"));
 }
 
+
 bool ASTK_ExitDoor::GetIsOpen()
 {
 	return bIsOpen;
 }
 
-void ASTK_ExitDoor::Tick(float DeltaTime)
-{
-
-}
