@@ -51,6 +51,17 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
         class URectLightComponent* m_pRSpotlight;
 
+    //Sound
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+        class USoundBase* ShadeHitScream;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+        class USoundBase* ShadeDownGroundHit;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+        class USoundBase* ShadeItemPickupSound;
+
 protected:
     // Called when the game starts
     virtual void BeginPlay() override;
