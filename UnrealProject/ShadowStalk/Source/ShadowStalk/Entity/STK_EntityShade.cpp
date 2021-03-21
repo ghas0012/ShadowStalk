@@ -37,7 +37,10 @@ ASTK_EntityShade::ASTK_EntityShade()
 	m_CrawlCapsuleHalfHeight = 50.f;
 	m_CapsuleRadius = 40.0f;
 
+	bReplicates = true;
 	SetReplicates(true);
+	SetReplicatingMovement(true);
+
 }
 
 // Called when the game starts or when spawned
@@ -69,13 +72,18 @@ void ASTK_EntityShade::Tick(float DeltaTime)
 /// </summary>
 void ASTK_EntityShade::StartExecution(ASTK_EntityMonster* Executioner)
 {
+	Server_StartExecution(Executioner);
+}
+
+void ASTK_EntityShade::Server_StartExecution_Implementation(ASTK_EntityMonster* Executioner)
+{
 	SetShadeState(EShadeState::Execution);
 	//FVector x = Executioner->GetActorLocation() + Executioner->m_CameraComp->GetComponentLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%f, %f, %f"), x.X,x.Y,x.Z));
 
 	LockCameraLookat(Executioner->m_CameraComp->GetComponentLocation());
 	ForceMoveToPoint(Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance);
-	
+
 	DelayedTargetState = EShadeState::Dead;
 	GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityShade::DelayedStateChange, Executioner->ExecutionTimeLength, false);
 }
@@ -89,28 +97,27 @@ void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
 
 	switch (Health)
 	{
-		case 0:
-			DelayedTargetState = EShadeState::Downed;
-			break;
+	case 0:
+		DelayedTargetState = EShadeState::Downed;
+		break;
 
-		case 1:
-			DelayedTargetState = EShadeState::Hurt;
-			break;
+	case 1:
+		DelayedTargetState = EShadeState::Hurt;
+		break;
 
-		default:
-			DelayedTargetState = EShadeState::Default;
-			break;
+	default:
+		DelayedTargetState = EShadeState::Default;
+		break;
 	}
 
 	if (!knockback.IsNearlyZero())
 	{
 		if (GetRootComponent()->IsSimulatingPhysics())
 			m_PlayerCapsule->AddImpulse(knockback);
-												
+
 		SetShadeState(EShadeState::KnockedBack);
 		GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityShade::DelayedStateChange, KnockbackRecoveryDuration, false);
 	}
- 
 }
 
 /// <summary>
@@ -211,6 +218,7 @@ void ASTK_EntityShade::RecoverFromDowned()
 	if(GetShadeState() == EShadeState::Downed)
 	SetShadeState(EShadeState::Default);
 }
+
 
 
 /// <summary>

@@ -44,6 +44,7 @@ ASTK_MatchGameMode::ASTK_MatchGameMode()
 	}
 
 	bStartPlayersAsSpectators = true;
+
 }
 
 
@@ -54,15 +55,14 @@ APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemo
 {
 	DefaultPawnClass = ASpectatorPawn::StaticClass();
 
-	//TODO - Fix this - For some reason this does not make the Server the Monster 
-	if (InRemoteRole < ROLE_Authority)
-	{
-		PlayerControllerClass = pShadeControllerBP;
-	}
-	else if (InRemoteRole == ROLE_Authority)
-	{
-		PlayerControllerClass = pMonsterControllerBP;
-	}
+	//if (PlayAsMonster)
+	//{
+	//	PlayerControllerClass = pMonsterControllerBP; 
+	//}
+	//else
+	//{
+	//	PlayerControllerClass = pShadeControllerBP;
+	//}
 
 	return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
 }
@@ -75,8 +75,18 @@ void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 
 	PlayerCount++;
 
+	if(NewPlayer->GetLocalRole() == ROLE_Authority)
+	{
+		PlayerControllerClass = pMonsterControllerBP;
+	}
+	if (NewPlayer->GetRemoteRole() < ROLE_Authority)
+	{
+		PlayerControllerClass = pShadeControllerBP;
+	}
+
 	PlayerControllerList.Add(NewPlayer);
 	NewPlayer->bBlockInput = true;
+
 
 	Super::PostLogin(NewPlayer);
 
@@ -163,6 +173,9 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 
 		shadeController->bBlockInput = false;
 	}
+
+	ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
+	gamestate->Register_NewEntity(NewPlayer->GetPawn());
 }
 
 
