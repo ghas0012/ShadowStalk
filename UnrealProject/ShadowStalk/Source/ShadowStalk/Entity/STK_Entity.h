@@ -12,6 +12,7 @@
   C 3/12/2021: Created the base entity class, added movement variables, implemented skeletal mesh.
   H 3/12/2021: Added entity type getters, input locking, camera and position override, and cleaned up the Tick function.
   H 3/16/2021: Reformatted and cleaned up the methods and their order. Added a class description and summaries for pertinent methods.
+  C 3/18/2021: Added Networking code to Entity.h and Entity.cpp
 */
 
 #pragma once
@@ -32,11 +33,9 @@ public:
 
 	//TODO - make Editanywhere
 
-
-	UPROPERTY(Replicated)
 	class USTK_EntityMovementComponent* m_MovementComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -102,7 +101,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void Restart() override;
+	//virtual void Restart() override;
 
 	virtual void PostInitializeComponents() override;
 

@@ -13,6 +13,7 @@
   H 3/12/2021: Added basic attack logic and input locking. Also added states.
   H 3/15/2021: Added entity safety check on attack logic. Fixed attack range and direction. 
   H 3/16/2021: Added a class description and summaries to pertinent functions.
+  C 3/19/2021: Added Networking code
 */
 
 #pragma once
@@ -81,9 +82,21 @@ public:
 
 	virtual void Interact() override;
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Interact();
+
 	void ExecuteShade(class ASTK_EntityShade* TargetShade);
+
+	UFUNCTION(Server, Reliable)
+	void Server_ExecuteShade(class ASTK_EntityShade* TargetShade);
 
 	void OnExcecuteEnd();
 
+	UFUNCTION(Server, Reliable)
+	void Server_OnExcecuteEnd();
+
 	void Attack();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Attack();
 };

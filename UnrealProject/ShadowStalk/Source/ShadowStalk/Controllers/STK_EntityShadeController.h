@@ -40,8 +40,6 @@ protected:
     void Interact();
     void MouseLook_Vertical(float value);
     void MouseLook_Horizontal(float value);
-    void SetCrawl();
-    void UnsetCrawl();
 
     bool isSprint;
 

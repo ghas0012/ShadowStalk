@@ -13,6 +13,7 @@
   H 3/12/2021: Class init. Added eye component and example use case.
   H 3/12/2021: Added States, health and relevant methods for recieving attacks and being executed.
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  C 3/19/2021: Added networking code.
 */
 
 #pragma once
@@ -73,6 +74,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
         float KnockbackStandupDuration = 0.3f;
 
+
     void RecoverFromDowned();
 
     FTimerHandle DownedRecoveryHandle;
@@ -83,13 +85,20 @@ protected:
 
 public:
 
+
     void StartExecution(class ASTK_EntityMonster* Executioner);
 
+    UFUNCTION(Server, Reliable)
+    void Server_StartExecution(class ASTK_EntityMonster* Executioner);
+
+ 
     void ApplyDamage(unsigned char damage, FVector knockback);
+
 
     UFUNCTION(BlueprintCallable)
         int GetHealth();
 
+    //Might have to Network later? 
     UFUNCTION(BlueprintCallable)
         void SetHealth(int targetHealth);
  

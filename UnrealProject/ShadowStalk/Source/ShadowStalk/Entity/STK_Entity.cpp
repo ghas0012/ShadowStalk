@@ -52,8 +52,9 @@ ASTK_Entity::ASTK_Entity()
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	AudioComponent->SetupAttachment(RootComponent);
 
+	bReplicates = true;
 	SetReplicates(true);
-	//SetReplicatingMovement(true);
+	SetReplicatingMovement(true);
 }
 
 
@@ -83,14 +84,16 @@ void ASTK_Entity::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%d"), GetWorld()->GetNumPlayerControllers()));
-	
+	if (GetLocalRole() <= ROLE_Authority)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%d"), GetWorld()->GetNumPlayerControllers()));
+	}
 }
 
-void ASTK_Entity::Restart()
-{
-	Super::Restart();
-}
+//void ASTK_Entity::Restart()
+//{
+//	Super::Restart();
+//}
 
 /// <summary>
 /// The Tick function handles camera rotation, position, and footstep sounds.
@@ -154,7 +157,6 @@ bool ASTK_Entity::Server_Strafe_Validate(float value)
 {
 	return true;
 }
-
 
 
 /// <summary>
@@ -467,8 +469,8 @@ void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ASTK_Entity, m_MovementComp);
 	DOREPLIFETIME(ASTK_Entity, MouseLookVector);
+	DOREPLIFETIME(ASTK_Entity, m_PlayerCapsule);
 }
 
 /// <summary>
