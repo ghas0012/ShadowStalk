@@ -65,8 +65,8 @@ void ASTK_Entity::BeginPlay()
 	m_MovementComp->CurrentSpeed = m_WalkSpeed;
 	m_MovementComp->Acceleration = m_Acceleration;
 	m_MovementComp->FrictionLerp = m_FrictionLerp;
-	m_MovementComp->CapsuleCrawlHalfHeight = m_CrawlCapsuleHalfHeight;
 	m_MovementComp->CapsuleStandingHalfHeight = m_CapsuleHalfHeight;
+	m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_CrawlCapsuleHalfHeight, m_CapsuleRadius);
 
 	m_MovementComp->CrawlSpeed = m_CrawlSpeed;
 

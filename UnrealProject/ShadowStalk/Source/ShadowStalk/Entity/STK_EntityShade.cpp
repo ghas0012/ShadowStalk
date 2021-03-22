@@ -77,7 +77,8 @@ void ASTK_EntityShade::StartExecution(ASTK_EntityMonster* Executioner)
 
 	LockCameraLookat(Executioner->m_CameraComp->GetComponentLocation());
 	ForceMoveToPoint(Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance);
-	
+	//m_PlayerCapsule->SetEnableGravity(false);
+
 	DelayedTargetState = EShadeState::Dead;
 	GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityShade::DelayedStateChange, Executioner->ExecutionTimeLength, false);
 }
@@ -170,6 +171,9 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 			break;
 
 		case EShadeState::Downed:
+
+			Crawl(true);
+
 			//Play the sound
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeDownGroundHit, GetActorLocation());
 
@@ -182,6 +186,10 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 			break;
 
 		case EShadeState::Dead:
+
+			m_PlayerCapsule->SetSimulatePhysics(false);
+			m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 			SetInputLock(Everything, true);
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HE'S DEAD, JIM!"));
 			GetWorldTimerManager().ClearAllTimersForObject(this);
