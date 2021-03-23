@@ -67,7 +67,7 @@ void ASTK_Entity::BeginPlay()
 	m_MovementComp->FrictionLerp = m_FrictionLerp;
 	m_MovementComp->CapsuleStandingHalfHeight = m_CapsuleHalfHeight;
 	m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_CrawlCapsuleHalfHeight, m_CapsuleRadius);
-
+	m_MovementComp->MeshComp = m_MeshComp;
 	m_MovementComp->CrawlSpeed = m_CrawlSpeed;
 
 	Super::BeginPlay();
@@ -209,6 +209,7 @@ void ASTK_Entity::Crawl(bool IsCrawl)
 	{
 		m_MovementComp->Crawl();
 	}
+
 	if (IsCrawl == false)
 	{
 		m_MovementComp->Walk();

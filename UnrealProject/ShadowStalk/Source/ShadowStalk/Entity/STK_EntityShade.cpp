@@ -64,6 +64,21 @@ void ASTK_EntityShade::BeginPlay()
 void ASTK_EntityShade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (OverlappingAnotherEntity)
+	{
+		TArray<AActor*> OverlappingActors;
+		GetOverlappingActors(OverlappingActors, ASTK_Entity::StaticClass());
+
+		for (size_t i = 0; i < OverlappingActors.Num(); i++)
+		{
+			FVector direction = GetActorLocation() - OverlappingActors[i]->GetActorLocation();
+			direction.Z = 0; direction.Normalize();
+			m_PlayerCapsule->AddImpulse(direction * 30000);
+		}
+
+		OverlappingAnotherEntity = OverlappingActors.Num() == 0;
+	}
 }
 
 /// <summary>
@@ -76,7 +91,11 @@ void ASTK_EntityShade::StartExecution(ASTK_EntityMonster* Executioner)
 	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%f, %f, %f"), x.X,x.Y,x.Z));
 
 	LockCameraLookat(Executioner->m_CameraComp->GetComponentLocation());
-	ForceMoveToPoint(Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance);
+
+	FVector targetPos = Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance;
+	targetPos.Z = m_PlayerCapsule->GetRelativeLocation().Z;
+	ForceMoveToPoint(targetPos);
+	//m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//m_PlayerCapsule->SetEnableGravity(false);
 
 	DelayedTargetState = EShadeState::Dead;
@@ -90,10 +109,23 @@ void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
 {
 	Health = FMath::Clamp(Health - damage, 0, 2);
 
+	if (!knockback.IsNearlyZero())
+	{
+		Jump();
+
+		if (GetRootComponent()->IsSimulatingPhysics())
+		{
+			m_PlayerCapsule->AddImpulse(knockback);
+		}
+
+		GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityShade::DelayedStateChange, KnockbackRecoveryDuration, false);
+	}
+
 	switch (Health)
 	{
 		case 0:
 			DelayedTargetState = EShadeState::Downed;
+			SetShadeState(EShadeState::KnockedBack);
 			break;
 
 		case 1:
@@ -103,15 +135,6 @@ void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
 		default:
 			DelayedTargetState = EShadeState::Default;
 			break;
-	}
-
-	if (!knockback.IsNearlyZero())
-	{
-		if (GetRootComponent()->IsSimulatingPhysics())
-			m_PlayerCapsule->AddImpulse(knockback);
-												
-		SetShadeState(EShadeState::KnockedBack);
-		GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityShade::DelayedStateChange, KnockbackRecoveryDuration, false);
 	}
  
 }
@@ -163,6 +186,7 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 {
 	switch (state)
 	{
+
 		case EShadeState::Hurt:
 			//TODO: Find proper place for this sound effect to play
 			//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeHitScream, GetActorLocation());
@@ -179,10 +203,10 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 
 			// Lock everything but keep mouselook and blinking
 			SetInputLock(EInputLockFlags::Everything & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
-			GetWorldTimerManager().SetTimer(DownedRecoveryHandle, this, &ASTK_EntityShade::RecoverFromDowned, DownedRecoveryTime, false);
-			
 
-			// TODO: detach mesh from camera so it doesn't rotate with the horizontal rotation of the camera while downed.
+			m_PlayerCapsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+			GetWorldTimerManager().SetTimer(DownedRecoveryHandle, this, &ASTK_EntityShade::RecoverFromDowned, DownedRecoveryTime, false);
+
 			break;
 
 		case EShadeState::Dead:
@@ -190,7 +214,7 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 			m_PlayerCapsule->SetSimulatePhysics(false);
 			m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-			SetInputLock(Everything, true);
+			SetInputLock(EInputLockFlags::Everything, true);
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HE'S DEAD, JIM!"));
 			GetWorldTimerManager().ClearAllTimersForObject(this);
 			// TODO: ragdoll
@@ -224,8 +248,36 @@ EEntityType ASTK_EntityShade::GetEntityType()
 /// </summary>
 void ASTK_EntityShade::RecoverFromDowned()
 {
-	if(GetShadeState() == EShadeState::Downed)
-	SetShadeState(EShadeState::Default);
+	if (GetShadeState() == EShadeState::Downed)
+	{
+		// TArray<ASTK_Entity*> entities = Cast<ASTK_MatchGameState>(GetWorld()->GetGameState())->GetEntities();
+		m_PlayerCapsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+		SafeActivatePawnCollision();
+
+		SetInputLock(EInputLockFlags::Crawl, false);
+		SetShadeState(EShadeState::Hurt);
+		Crawl(false);
+	}
+}
+
+void ASTK_EntityShade::SafeActivatePawnCollision()
+{
+	bool success = false;
+
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors, ASTK_Entity::StaticClass());
+
+	if (OverlappingActors.Num() == 0)
+	{
+		m_PlayerCapsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+		success = true;
+	}
+
+	if (!success)
+	{
+		OverlappingAnotherEntity = true;
+		GetWorldTimerManager().SetTimer(SafeActivatePawnCollisionHandle, this, &ASTK_EntityShade::SafeActivatePawnCollision, 0.2f, false);
+	}
 }
 
 
