@@ -32,14 +32,14 @@ ASTK_EntityShade::ASTK_EntityShade()
 	m_PlayerCapsule->OnComponentBeginOverlap.AddDynamic(this, &ASTK_EntityShade::OnBeginOverlap);
 
 	//Default Shade Stats. 
-	m_WalkSpeed = 500.0f;
-	m_SprintSpeed = 800.0f;
-	m_CrawlSpeed = 200.0f;
-	m_Acceleration = 3500.0f;
-	m_JumpStrength = 20000.0f;
-	m_CapsuleHalfHeight = 75.0f;
-	m_CrawlCapsuleHalfHeight = 50.f;
-	m_CapsuleRadius = 40.0f;
+	m_MovementData.m_WalkSpeed = 500.0f;
+	m_MovementData.m_SprintSpeed = 800.0f;
+	m_MovementData.m_CrawlSpeed = 200.0f;
+	m_MovementData.m_Acceleration = 3500.0f;
+	m_MovementData.m_JumpStrength = 20000.0f;
+	m_MovementData.m_CapsuleHalfHeight = 75.0f;
+	m_MovementData.m_CrawlCapsuleHalfHeight = 50.f;
+	m_MovementData.m_CapsuleRadius = 40.0f;
 }
 
 // Called when the game starts or when spawned

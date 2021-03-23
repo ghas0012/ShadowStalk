@@ -74,6 +74,7 @@ void ASTK_PickupSpawn::BeginPlay()
 	Super::BeginPlay();
 }
  
+#if WITH_EDITOR
 
 /// <summary>
 /// Update editor sprite when level loads.
@@ -118,6 +119,7 @@ void ASTK_PickupSpawn::PostEditChangeProperty(FPropertyChangedEvent& PropertyCha
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
+#endif
 
 EPickupType ASTK_PickupSpawn::GetPickupType()
 {
