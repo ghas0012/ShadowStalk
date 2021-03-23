@@ -33,6 +33,8 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	class UCapsuleComponent* CapsuleComp;
+	class USkeletalMeshComponent* MeshComp;
+
 	FVector VelocityVector = FVector::ZeroVector;
 	FVector VelocityAtJump = FVector::ZeroVector;
 

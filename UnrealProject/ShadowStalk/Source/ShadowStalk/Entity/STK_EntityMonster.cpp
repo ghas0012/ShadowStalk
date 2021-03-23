@@ -84,7 +84,7 @@ void ASTK_EntityMonster::Interact()
         FHitResult hit;
         FVector RayStart = m_CameraComp->GetComponentLocation();
         FVector RayEnd = RayStart + m_CameraComp->GetForwardVector() * GrabRange;
-        ECollisionChannel trace = ECC_Pawn;
+        ECollisionChannel trace = ECC_GameTraceChannel2;
         FCollisionQueryParams queryParams;
         queryParams.AddIgnoredActor(this);
 

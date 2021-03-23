@@ -86,7 +86,12 @@ protected:
 
     void RecoverFromDowned();
 
+    void SafeActivatePawnCollision();
+
     FTimerHandle DownedRecoveryHandle;
+    FTimerHandle SafeActivatePawnCollisionHandle;
+    bool OverlappingAnotherEntity = false;
+
     FTimerHandle DelayedStateChangeHandle;
     EShadeState DelayedTargetState;
 
