@@ -23,8 +23,8 @@ ASTK_Entity::ASTK_Entity()
     PrimaryActorTick.bCanEverTick = true;
 
     m_PlayerCapsule = CreateDefaultSubobject<UCapsuleComponent>("Player Capsule");
-    m_PlayerCapsule->SetCapsuleRadius(m_CapsuleRadius);
-    m_PlayerCapsule->SetCapsuleHalfHeight(m_CapsuleHalfHeight);
+    m_PlayerCapsule->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
+    m_PlayerCapsule->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
     m_PlayerCapsule->SetEnableGravity(true);
     m_PlayerCapsule->SetSimulatePhysics(true);
     m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
@@ -59,21 +59,22 @@ ASTK_Entity::ASTK_Entity()
 // Called when the game starts or when spawned
 void ASTK_Entity::BeginPlay()
 {
-    m_MovementComp->WalkSpeed = m_WalkSpeed;
-    m_MovementComp->AirControl = m_AirControl;
-    m_MovementComp->SprintSpeed = m_SprintSpeed;
-    m_MovementComp->CurrentSpeed = m_WalkSpeed;
-    m_MovementComp->Acceleration = m_Acceleration;
-    m_MovementComp->FrictionLerp = m_FrictionLerp;
-    m_MovementComp->CapsuleCrawlHalfHeight = m_CrawlCapsuleHalfHeight;
-    m_MovementComp->CapsuleStandingHalfHeight = m_CapsuleHalfHeight;
-
-    m_MovementComp->CrawlSpeed = m_CrawlSpeed;
-
-    Super::BeginPlay();
+    m_MovementComp->WalkSpeed = m_MovementData.m_WalkSpeed;
+    m_MovementComp->AirControl = m_MovementData.m_AirControl;
+    m_MovementComp->SprintSpeed = m_MovementData.m_SprintSpeed;
+    m_MovementComp->CurrentSpeed = m_MovementData.m_WalkSpeed;
+    m_MovementComp->Acceleration = m_MovementData.m_Acceleration;
+    m_MovementComp->FrictionLerp = m_MovementData.m_FrictionLerp;
+    m_MovementComp->CapsuleStandingHalfHeight = m_MovementData.m_CapsuleHalfHeight;
+    m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_MovementData.m_CrawlCapsuleHalfHeight,
+    m_MovementData.m_CapsuleRadius);
+    m_MovementComp->CrawlSpeed = m_MovementData.m_CrawlSpeed;
+    m_MovementComp->MeshComp = m_MeshComp;
 
     MouseLookVector.Y = m_CameraComp->GetRelativeRotation().Pitch;
     MouseLookVector.X = m_PlayerCapsule->GetRelativeRotation().Yaw;
+
+    Super::BeginPlay();
 }
 
 
@@ -169,7 +170,7 @@ void ASTK_Entity::Jump()
     {
         if (m_MovementComp->bIsGrounded)
         {
-            m_MovementComp->Jump(m_JumpStrength);
+            m_MovementComp->Jump(m_MovementData.m_JumpStrength);
             m_MovementComp->bIsGrounded = false;
         }
     }
@@ -222,7 +223,7 @@ void ASTK_Entity::MouseLook_Vertical(float value)
     if (InputLockFlags & EInputLockFlags::MouseLook)
         return;
 
-    MouseLookVector.Y += m_MouseLook_Y * value;
+    MouseLookVector.Y += m_MovementData.m_MouseLook_Y * value;
     //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
 }
 
@@ -235,7 +236,7 @@ void ASTK_Entity::MouseLook_Horizontal(float value)
     if (InputLockFlags & EInputLockFlags::MouseLook)
         return;
 
-    MouseLookVector.X += m_MouseLook_X * value;
+    MouseLookVector.X += m_MovementData.m_MouseLook_X * value;
     //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
 }
 
@@ -275,13 +276,13 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 
         m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
 
-        if (abs(MouseLookVector.Y) < m_MouseLook_VerticalLookLimitAngle)
+        if (abs(MouseLookVector.Y) < m_MovementData.m_MouseLook_VerticalLookLimitAngle)
         {
             m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
         }
         else
         {
-            MouseLookVector.Y = -m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
+            MouseLookVector.Y = -m_MovementData.m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
         }
 
     }

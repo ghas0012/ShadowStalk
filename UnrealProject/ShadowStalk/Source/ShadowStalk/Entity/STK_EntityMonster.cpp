@@ -15,13 +15,13 @@
 ASTK_EntityMonster::ASTK_EntityMonster()
 {
     //Default Monster Stats 
-    m_JumpStrength = 10000.0f;
-    m_Acceleration = 1750.0f;
-    m_WalkSpeed = 400.0f;
-    m_SprintSpeed = 800.0f;
-    m_AirControl = 0.0f;
-    m_CapsuleHalfHeight = 100.0f;
-    m_CapsuleRadius = 50.0f;
+    m_MovementData.m_JumpStrength = 10000.0f;
+    m_MovementData.m_Acceleration = 1750.0f;
+    m_MovementData.m_WalkSpeed = 400.0f;
+    m_MovementData.m_SprintSpeed = 800.0f;
+    m_MovementData.m_AirControl = 0.0f;
+    m_MovementData.m_CapsuleHalfHeight = 100.0f;
+    m_MovementData.m_CapsuleRadius = 50.0f;
 }
 
 void ASTK_EntityMonster::BeginPlay()
@@ -84,7 +84,7 @@ void ASTK_EntityMonster::Interact()
         FHitResult hit;
         FVector RayStart = m_CameraComp->GetComponentLocation();
         FVector RayEnd = RayStart + m_CameraComp->GetForwardVector() * GrabRange;
-        ECollisionChannel trace = ECC_Pawn;
+        ECollisionChannel trace = ECC_GameTraceChannel2;
         FCollisionQueryParams queryParams;
         queryParams.AddIgnoredActor(this);
 

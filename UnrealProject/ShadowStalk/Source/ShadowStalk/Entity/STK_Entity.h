@@ -12,6 +12,7 @@
   C 3/12/2021: Created the base entity class, added movement variables, implemented skeletal mesh.
   H 3/12/2021: Added entity type getters, input locking, camera and position override, and cleaned up the Tick function.
   H 3/16/2021: Reformatted and cleaned up the methods and their order. Added a class description and summaries for pertinent methods.
+  H 3/23/2021: Added FSTK_EntityData, Moved movement data into that struct.
   A 3/23/2021: Added function that sets up the Pause Menu.
 */
 
@@ -20,6 +21,7 @@
 #include "CoreMinimal.h"
 #include "ShadowStalk/ShadowStalk.h"
 #include "GameFramework/Character.h"
+#include "STK_EntityData.h"
 #include "STK_Entity.generated.h"
 
 UCLASS()
@@ -44,46 +46,10 @@ public:
     class USkeletalMeshComponent* m_MeshComp;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_MouseLook_X;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_MouseLook_Y;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_MouseLook_VerticalLookLimitAngle = 85.f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_JumpStrength;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_FrictionLerp = 1;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_Acceleration;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_WalkSpeed;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_SprintSpeed;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_CrawlSpeed;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_AirControl;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_CapsuleRadius = 50.f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_CapsuleHalfHeight = 100.f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    float m_CrawlCapsuleHalfHeight = 50.f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
     bool bCameraOverride = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+    FSTK_EntityData m_MovementData;
 
     //Respawn won't have a function, however if we want to add this, the framework is here.
     UFUNCTION()

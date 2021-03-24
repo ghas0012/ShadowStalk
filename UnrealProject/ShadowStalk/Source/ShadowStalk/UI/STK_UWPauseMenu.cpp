@@ -43,7 +43,7 @@ bool USTK_UWPauseMenu::Initialize()
 
     //Setup Input for Exit Button
     if (!ensure(ExitButton != nullptr)) return false;
-    ExitButton->OnClicked.AddDynamic(this, &USTK_UWPauseMenu::ReturnToMainMenu);
+    ExitButton->OnClicked.AddDynamic(this, &USTK_UWPauseMenu::ExitPauseMenu);
     ExitButton->OnHovered.AddDynamic(this, &USTK_UserWidget::PlayHoverSoundFX);
     
     return true;

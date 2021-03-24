@@ -14,6 +14,8 @@
   H 3/12/2021: class init.
   H 3/15/2021: Added Super::BeginPlay() to resolve a bug.
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  H 3/16/2021: Added #if WITH_EDITOR checks to the PostLoad and PostEditChangeProperty methods. this should resolve a package build error. will request C to test.
+
 */
 
 #pragma once
@@ -48,9 +50,14 @@ public:
 
 protected:
 
-	virtual void PostLoad() override;
 	virtual void BeginPlay() override;
+
+#if WITH_EDITOR
+
+	virtual void PostLoad() override;
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+#endif
 
 public:	
 	
