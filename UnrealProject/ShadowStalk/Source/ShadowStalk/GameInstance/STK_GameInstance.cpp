@@ -7,8 +7,6 @@
 #include "Blueprint/UserWidget.h"
 #include "ShadowStalk/UI/STK_UserWidget.h"
 #include "ShadowStalk/UI/STK_UWMainMenu.h"
-#include "ShadowStalk/UI/STK_UWOptionsPanel.h"
-#include "ShadowStalk/UI/STK_UWCreditsPanel.h"
 
 USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer)
 {
@@ -18,22 +16,6 @@ USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer
         if (!ensure(MainMenuBPClass.Class != nullptr)) return;
 
         MainMenuClass = MainMenuBPClass.Class;
-    }
-
-    //Search for Options Panel Widget Blueprint
-    {
-        ConstructorHelpers::FClassFinder<UUserWidget> OptionsPanelBPClass(TEXT("/Game/UI/WBP_OptionsPanel"));
-        if (!ensure(OptionsPanelBPClass.Class != nullptr)) return;
-
-        OptionsPanelClass = OptionsPanelBPClass.Class;
-    }
-
-    //Search for Credits Panel Widget Blueprint
-    {
-        ConstructorHelpers::FClassFinder<UUserWidget> CreditsPanelBPClass(TEXT("/Game/UI/WBP_CreditsPanel"));
-        if (!ensure(CreditsPanelBPClass.Class != nullptr)) return;
-
-        CreditsPanelClass = CreditsPanelBPClass.Class;
     }
 }
 
@@ -48,32 +30,6 @@ void USTK_GameInstance::SetupMainMenuWidget()
     if (!ensure(UWMainMenu != nullptr)) return;
 
     UWMainMenu->Setup();
-}
-
-/// <summary>
-/// Creates and sets up the Options Panel Widget in the game's viewport.
-/// </summary>
-void USTK_GameInstance::SetupOptionsWidget()
-{
-    if (!ensure(OptionsPanelClass != nullptr)) return;
-
-    UWOptionsPanel = CreateWidget<USTK_UWOptionsPanel>(this, OptionsPanelClass);
-    if (!ensure(UWOptionsPanel != nullptr)) return;
-
-    UWOptionsPanel->Setup();
-}
-
-/// <summary>
-/// Creates and sets up the Credits Panel Widget in the game's viewport.
-/// </summary>
-void USTK_GameInstance::SetupCreditsWidget()
-{
-    if (!ensure(CreditsPanelClass != nullptr)) return;
-
-    UWCreditsPanel = CreateWidget<USTK_UWCreditsPanel>(this, CreditsPanelClass);
-    if (!ensure(UWCreditsPanel != nullptr)) return;
-
-    UWCreditsPanel->Setup();
 }
 
 /// <summary>

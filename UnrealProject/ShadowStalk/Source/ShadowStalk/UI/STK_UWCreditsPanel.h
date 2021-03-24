@@ -11,25 +11,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "STK_UserWidget.h"
+#include "ShadowStalk/UI/STK_UserWidget.h"
 #include "STK_UWCreditsPanel.generated.h"
 
 UCLASS()
 class SHADOWSTALK_API USTK_UWCreditsPanel : public USTK_UserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UButton* ExitButton = nullptr;
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UButton* ExitButton = nullptr;
 
 protected:
 
-	virtual bool Initialize() override;
+    virtual bool Initialize() override;
 
 private:
 
-	UFUNCTION()
-	void ExitPressed();
+    UFUNCTION()
+    void ExitPressed();
 };

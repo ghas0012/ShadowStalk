@@ -11,46 +11,50 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "STK_UserWidget.h"
+#include "ShadowStalk/UI/STK_UserWidget.h"
 #include "STK_UWMainMenu.generated.h"
 
 UCLASS()
 class SHADOWSTALK_API USTK_UWMainMenu : public USTK_UserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-
-    UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
-	class UVerticalBox* MainMenuButtons = nullptr;
+    USTK_UWMainMenu(const FObjectInitializer& ObjectInitializer);
 
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UButton* PlayButton = nullptr;
+    class UButton* PlayButton = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UButton* OptionsButton = nullptr;
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UButton* OptionsButton = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UButton* CreditsButton = nullptr;
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UButton* CreditsButton = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UButton* QuitButton = nullptr;
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UButton* QuitButton = nullptr;
 
 protected:
 
-	virtual bool Initialize() override;
+    virtual bool Initialize() override;
 
 private:
 
-	UFUNCTION()
-	void PlayPressed();
+    TSubclassOf<class UUserWidget> OptionsPanelClass;
+    class USTK_UWOptionsPanel* UWOptionsPanel;
 
-	UFUNCTION()
-	void OpenOptionsMenu();
+    TSubclassOf<class UUserWidget> CreditsPanelClass;
+    class USTK_UWCreditsPanel* UWCreditsPanel;
 
-	UFUNCTION()
-	void OpenCreditsPanel();
+    UFUNCTION()
+        void PlayPressed();
 
-	UFUNCTION()
-	void QuitPressed();
+    UFUNCTION()
+        void OpenOptionsMenu();
+
+    UFUNCTION()
+        void OpenCreditsPanel();
+
+    UFUNCTION()
+        void QuitPressed();
 };
