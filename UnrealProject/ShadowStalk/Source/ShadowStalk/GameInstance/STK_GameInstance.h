@@ -7,7 +7,7 @@
   ChangeLog:
   A 3/12/2021: Implemented base functions to work with UWMainMenu.
   A 3/13/2021: Added SetupCreditWidget() to work with UWCreditsPanel.
-  A 3/23/2021: Moved Options and Credits setup to UWMainMenu.
+  A 3/23/2021: Moved Options and Credits setup to UWMainMenu. Added Pause Menu Setup.
   */
 
 #pragma once
@@ -28,9 +28,16 @@ public:
     void SetupMainMenuWidget();
 
     UFUNCTION(BlueprintCallable)
+    void SetupPauseMenuWidget();
+
+    UFUNCTION(BlueprintCallable)
     void LoadGameLevel();
 
-private:
+protected:
+
     TSubclassOf<class UUserWidget> MainMenuClass;
     class USTK_UWMainMenu* UWMainMenu;
+
+    TSubclassOf<class UUserWidget> PauseMenuClass;
+    class USTK_UWPauseMenu* UWPauseMenu;
 };

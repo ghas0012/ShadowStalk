@@ -110,7 +110,6 @@ public:
     UFUNCTION(BlueprintCallable)
         void SetShadeState(EShadeState state);
  
-
     virtual void Interact() override;
 
     virtual void Tick(float DeltaTime) override;

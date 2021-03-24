@@ -47,14 +47,14 @@ private:
     class USTK_UWCreditsPanel* UWCreditsPanel;
 
     UFUNCTION()
-        void PlayPressed();
+    void PlayPressed();
 
     UFUNCTION()
-        void OpenOptionsMenu();
+    void OpenOptionsMenu();
 
     UFUNCTION()
-        void OpenCreditsPanel();
+    void OpenCreditsPanel();
 
     UFUNCTION()
-        void QuitPressed();
+    void QuitPressed();
 };

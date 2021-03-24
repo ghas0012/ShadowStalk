@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ShadowStalk/UI/STK_UserWidget.h"
 #include "ShadowStalk/UI/STK_UWMainMenu.h"
+#include "ShadowStalk/UI/STK_UWPauseMenu.h"
 
 USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer)
 {
@@ -16,6 +17,14 @@ USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer
         if (!ensure(MainMenuBPClass.Class != nullptr)) return;
 
         MainMenuClass = MainMenuBPClass.Class;
+    }
+
+    //Search for Pause Menu Widget Blueprint
+    {
+        ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/UI/WBP_PauseMenu"));
+        if (!ensure(PauseMenuBPClass.Class != nullptr)) return;
+
+        PauseMenuClass = PauseMenuBPClass.Class;
     }
 }
 
@@ -33,6 +42,19 @@ void USTK_GameInstance::SetupMainMenuWidget()
 }
 
 /// <summary>
+/// Creates and sets up the Pause Menu Widget in the game's viewport.
+/// </summary>
+void USTK_GameInstance::SetupPauseMenuWidget()
+{
+    if (!ensure(PauseMenuClass != nullptr)) return;
+
+    UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(this, PauseMenuClass);
+    if (!ensure(UWPauseMenu != nullptr)) return;
+
+    UWPauseMenu->Setup();
+}
+
+/// <summary>
 /// Removes the Main Menu Widget from the game and loads the game's default level.
 /// </summary>
 void USTK_GameInstance::LoadGameLevel()
@@ -45,4 +67,8 @@ void USTK_GameInstance::LoadGameLevel()
 
     UGameplayStatics::OpenLevel(World, "MapTest");
 }
+
+
+
+
 

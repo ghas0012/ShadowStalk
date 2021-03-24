@@ -22,6 +22,9 @@ class SHADOWSTALK_API USTK_UWOptionsPanel : public USTK_UserWidget
 public:
 
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UImage* BGOverlay = nullptr;
+
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     class UButton* ExitButton = nullptr;
 
 protected:
