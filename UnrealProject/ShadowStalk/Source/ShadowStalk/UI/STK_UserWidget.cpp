@@ -2,10 +2,11 @@
 
 #include "STK_UserWidget.h"
 
-#include "UObject/UObjectGlobals.h"
+//#include "UObject/UObjectGlobals.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
+#include "Components/Button.h"
 
 USTK_UserWidget::USTK_UserWidget(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer)
@@ -17,16 +18,6 @@ USTK_UserWidget::USTK_UserWidget(const FObjectInitializer& ObjectInitializer) :
 
         HoverSoundFX = HoverSound.Object;
     }
-}
-
-void USTK_UserWidget::NativeConstruct()
-{
-    Super::NativeConstruct();
-}
-
-void USTK_UserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-    Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
 /// <summary>
@@ -77,3 +68,8 @@ void USTK_UserWidget::PlayHoverSoundFX()
 {
     UGameplayStatics::PlaySound2D(GetWorld(), HoverSoundFX);
 }
+
+
+
+
+

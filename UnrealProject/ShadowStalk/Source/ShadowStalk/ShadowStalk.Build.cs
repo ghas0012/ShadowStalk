@@ -8,12 +8,14 @@ public class ShadowStalk : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG" /*,"BUITween"*/});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
 		MinFilesUsingPrecompiledHeaderOverride = 1;
 		bFasterWithoutUnity = true;
+
+		//PublicIncludePaths.AddRange(new string[] { "../Plugins/ue4-uitween-master/Source/UITween/Public", "../Plugins/ue4-uitween-master/Source/UITween/Private" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

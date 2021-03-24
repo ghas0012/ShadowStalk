@@ -2,16 +2,37 @@
 
 #include "STK_UWMainMenu.h"
 
+#include "UObject/ConstructorHelpers.h"
+#include "ShadowStalk/UI/STK_UWCreditsPanel.h"
+#include "ShadowStalk/UI/STK_UWOptionsPanel.h"
 #include "ShadowStalk/GameInstance/STK_GameInstance.h"
-#include "Components/VerticalBox.h"
 #include "Components/Button.h"
+#include "Kismet/KismetSystemLibrary.h"
+
+USTK_UWMainMenu::USTK_UWMainMenu(const FObjectInitializer& ObjectInitializer) :
+    Super(ObjectInitializer)
+{
+    //Search for Options Panel Widget Blueprint
+    {
+        ConstructorHelpers::FClassFinder<UUserWidget> OptionsPanelBPClass(TEXT("/Game/UI/WBP_OptionsPanel"));
+        if (!ensure(OptionsPanelBPClass.Class != nullptr)) return;
+
+        OptionsPanelClass = OptionsPanelBPClass.Class;
+    }
+
+    //Search for Credits Panel Widget Blueprint
+    {
+        ConstructorHelpers::FClassFinder<UUserWidget> CreditsPanelBPClass(TEXT("/Game/UI/WBP_CreditsPanel"));
+        if (!ensure(CreditsPanelBPClass.Class != nullptr)) return;
+
+        CreditsPanelClass = CreditsPanelBPClass.Class;
+    }
+}
 
 bool USTK_UWMainMenu::Initialize()
 {
     bool Success = Super::Initialize();
     if (!Success) return false;
-
-    if (!ensure(MainMenuButtons != nullptr)) return false;
 
     //Setup Input for Play Button
     if (!ensure(PlayButton != nullptr)) return false;
@@ -47,22 +68,30 @@ void USTK_UWMainMenu::PlayPressed()
     GameInstance->LoadGameLevel();
 }
 
+/// <summary>
+/// Creates and sets up the Options Panel Widget in the game's viewport.
+/// </summary>
 void USTK_UWMainMenu::OpenOptionsMenu()
 {
-    //TODO: Inlcude Options for keybindings, resolutions, etc.
+    if (!ensure(OptionsPanelClass != nullptr)) return;
 
-    auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
-    if (GameInstance == nullptr) return;
+    UWOptionsPanel = CreateWidget<USTK_UWOptionsPanel>(this, OptionsPanelClass);
+    if (!ensure(UWOptionsPanel != nullptr)) return;
 
-    GameInstance->SetupOptionsWidget();
+    UWOptionsPanel->Setup();
 }
 
+/// <summary>
+/// Creates and sets up the Credits Panel Widget in the game's viewport.
+/// </summary>
 void USTK_UWMainMenu::OpenCreditsPanel()
 {
-    auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
-    if (GameInstance == nullptr) return;
+    if (!ensure(CreditsPanelClass != nullptr)) return;
 
-    GameInstance->SetupCreditsWidget();
+    UWCreditsPanel = CreateWidget<USTK_UWCreditsPanel>(this, CreditsPanelClass);
+    if (!ensure(UWCreditsPanel != nullptr)) return;
+
+    UWCreditsPanel->Setup();
 }
 
 /// <summary>
@@ -70,11 +99,5 @@ void USTK_UWMainMenu::OpenCreditsPanel()
 /// </summary>
 void USTK_UWMainMenu::QuitPressed()
 {
-    UWorld* World = GetWorld();
-    if (!ensure(World != nullptr)) return;
-
-    APlayerController* PlayerController = World->GetFirstPlayerController();
-    if (!ensure(PlayerController != nullptr)) return;
-
-    PlayerController->ConsoleCommand("quit");
+    UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 }
