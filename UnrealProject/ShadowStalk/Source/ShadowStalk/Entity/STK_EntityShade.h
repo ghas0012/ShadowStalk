@@ -5,8 +5,8 @@
   Date Modified: 3/12/2021
   Comment/Description: 
   
-    The main driver of the Shade players’ character.
-    It reacts to user input, picks up pickup instances, interacts with the Inventory Module, controls the Shade’s eyes,
+    The main driver of the Shade playersâ€™ character.
+    It reacts to user input, picks up pickup instances, interacts with the Inventory Module, controls the Shadeâ€™s eyes,
     and accepts requests to take damage or be executed.
   
   ChangeLog:
@@ -31,7 +31,8 @@ enum class EShadeState : uint8
     Downed      UMETA(DisplayName = "Downed"),
     Hurt        UMETA(DisplayName = "Hurt"),
     KnockedBack UMETA(DisplayName = "Hit"),
-    Dead	    UMETA(DisplayName = "Dead")
+    Dead	    UMETA(DisplayName = "Dead"),
+    Stuck       UMETA(DisplayName = "Stuck")
 };
 
 UCLASS()
@@ -86,9 +87,16 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
         float KnockbackStandupDuration = 0.3f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trap")
+        float StuckRecoveryTime = 6.0f;
+
     void RecoverFromDowned();
 
+
+    void RecoverFromTrap();
+
     void SafeActivatePawnCollision();
+
 
     FTimerHandle DownedRecoveryHandle;
     FTimerHandle SafeActivatePawnCollisionHandle;
@@ -96,6 +104,8 @@ protected:
 
     FTimerHandle DelayedStateChangeHandle;
     EShadeState DelayedTargetState;
+
+    FTimerHandle StuckRecoveryHandle;
 
     void DelayedStateChange();
 
