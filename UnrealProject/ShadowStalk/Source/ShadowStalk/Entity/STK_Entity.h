@@ -36,9 +36,10 @@ public:
 
 	//TODO - make Editanywhere
 
+	UPROPERTY(Replicated)
 	class USTK_EntityMovementComponent* m_MovementComp;
 
-	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -46,15 +47,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class USkeletalMeshComponent* m_MeshComp;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	float m_MouseLook_X;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	float m_MouseLook_Y;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	float m_MouseLook_VerticalLookLimitAngle = 85.f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
     bool bCameraOverride = false;

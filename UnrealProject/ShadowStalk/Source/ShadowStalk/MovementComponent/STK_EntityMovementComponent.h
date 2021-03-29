@@ -31,21 +31,26 @@ class SHADOWSTALK_API USTK_EntityMovementComponent : public UPawnMovementCompone
 
 public:
 
+
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+
 	FVector GetMovementThisFrame(FVector InputAcceleration);
 
+	UPROPERTY(Replicated)
 	class UCapsuleComponent* CapsuleComp;
 
 	class USkeletalMeshComponent* MeshComp;
 
+	UPROPERTY(Replicated)
 	FVector VelocityVector = FVector::ZeroVector;
+
 	FVector VelocityAtJump = FVector::ZeroVector;
 
 	float FrictionLerp = 1;
 	float AirControl = 1;
 	float Acceleration;
 
+	UPROPERTY(Replicated)
 	float CurrentSpeed;
 
 	float JumpStrength;
@@ -75,6 +80,9 @@ public:
 	void Walk();
 
 	void Crawl();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Crawl();
 
 	bool bInputLocked = false;
 	bool bIsGrounded = true;

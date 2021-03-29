@@ -24,8 +24,8 @@ ASTK_Entity::ASTK_Entity()
 	PrimaryActorTick.bCanEverTick = true;
 
 	m_PlayerCapsule = CreateDefaultSubobject<UCapsuleComponent>("Player Capsule");
-	m_PlayerCapsule->SetCapsuleRadius(m_CapsuleRadius);
-	m_PlayerCapsule->SetCapsuleHalfHeight(m_CapsuleHalfHeight);
+	m_PlayerCapsule->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
+	m_PlayerCapsule->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
 	m_PlayerCapsule->SetEnableGravity(true);
 	m_PlayerCapsule->SetSimulatePhysics(true);
 	m_PlayerCapsule->GetBodyInstance()->bLockYRotation;
@@ -214,7 +214,7 @@ void ASTK_Entity::Server_Jump_Implementation()
 	{
 		if (m_MovementComp->bIsGrounded)
 		{
-			m_MovementComp->Jump(m_JumpStrength);
+			m_MovementComp->Jump(m_MovementData.m_JumpStrength);
 			m_MovementComp->bIsGrounded = false;
 		}
 	}
@@ -418,7 +418,7 @@ void ASTK_Entity::Server_HandlePosition_Implementation(float DeltaTime)
 		FVector CombinedAccleration = ForwardAccelerationVector + RightAccelerationVector;
 		if (!CombinedAccleration.IsNearlyZero() && m_MovementComp && (m_MovementComp->UpdatedComponent == RootComponent))
 		{
-			m_MovementComp->AddInputVector(CombinedAccleration);
+			m_MovementComp->GetPawnOwner()->Internal_AddMovementInput(CombinedAccleration, false);
 		}
 	}
 	else
@@ -484,7 +484,9 @@ void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ASTK_Entity, MouseLookVector);
-	DOREPLIFETIME(ASTK_Entity, m_PlayerCapsule);
+	DOREPLIFETIME(ASTK_Entity, m_MovementComp);
+	//DOREPLIFETIME(ASTK_Entity, m_PlayerCapsule);
+
 }
 
 /// <summary>
