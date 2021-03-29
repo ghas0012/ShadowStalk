@@ -6,6 +6,7 @@
 #include "ShadowStalk/Entity/STK_EntityShade.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 
 //Sounds
@@ -22,6 +23,10 @@ ASTK_EntityMonster::ASTK_EntityMonster()
     m_MovementData.m_AirControl = 0.0f;
     m_MovementData.m_CapsuleHalfHeight = 100.0f;
     m_MovementData.m_CapsuleRadius = 50.0f;
+
+    bReplicates = true;
+    SetReplicates(true);
+    SetReplicatingMovement(true);
 }
 
 void ASTK_EntityMonster::BeginPlay()
@@ -41,6 +46,11 @@ void ASTK_EntityMonster::Tick(float DeltaTime)
 /// Basic function to allow the monster to attack shades. Will be updated to have a cooldown, and be dependent on the monster's animation.
 /// </summary>
 void ASTK_EntityMonster::Attack()
+{
+    Server_Attack();
+}
+
+void ASTK_EntityMonster::Server_Attack_Implementation()
 {
     if (InputLockFlags & EInputLockFlags::Attack)
         return;
@@ -66,14 +76,17 @@ void ASTK_EntityMonster::Attack()
             }
         }
     }
-
 }
-
 
 /// <summary>
 /// Allows the monster to interact with the world by firing a Line Trace. Currently, it's only used to execute downed shades.
 /// </summary>
 void ASTK_EntityMonster::Interact()
+{
+    Server_Interact();
+}
+
+void ASTK_EntityMonster::Server_Interact_Implementation()
 {
     if (InputLockFlags & EInputLockFlags::Interact)
         return;
@@ -98,20 +111,29 @@ void ASTK_EntityMonster::Interact()
 
                 if (TargetShade)
                 {
-                    if(TargetShade->GetShadeState() == EShadeState::Downed)
-                    ExecuteShade(TargetShade);
+                    if (TargetShade->GetShadeState() == EShadeState::Downed)
+                        ExecuteShade(TargetShade);
                 }
             }
         }
     }
 }
 
+bool ASTK_EntityMonster::Server_Interact_Validate()
+{
+    return true;
+}
 
 /// <summary>
 /// Initiate execution of downed shades. It locks both the shade and monster's input, forces them to look at each other, and it sets their state for the animation blueprint to use.
 /// </summary>
 void ASTK_EntityMonster::ExecuteShade(ASTK_EntityShade* TargetShade)
 { 
+    Server_ExecuteShade(TargetShade);
+}
+
+void ASTK_EntityMonster::Server_ExecuteShade_Implementation(ASTK_EntityShade* TargetShade)
+{
     if (TargetShade == nullptr)
         return;
 
@@ -119,10 +141,9 @@ void ASTK_EntityMonster::ExecuteShade(ASTK_EntityShade* TargetShade)
 
     SetInputLock(EInputLockFlags::Everything, true);
     SetMonsterState(EMonsterState::Executing);
-    
+
     LockCameraLookat(TargetShade->m_CameraComp->GetComponentLocation());
     GetWorldTimerManager().SetTimer(ExecutionTimerHandle, this, &ASTK_EntityMonster::OnExcecuteEnd, ExecutionTimeLength, false);
-
 }
   
 
@@ -131,11 +152,15 @@ void ASTK_EntityMonster::ExecuteShade(ASTK_EntityShade* TargetShade)
 /// </summary>
 void ASTK_EntityMonster::OnExcecuteEnd()
 {
+    Server_OnExcecuteEnd();
+}
+
+void ASTK_EntityMonster::Server_OnExcecuteEnd_Implementation()
+{
     SetInputLock(EInputLockFlags::Everything, false);
     SetMonsterState(EMonsterState::Default);
     UnlockCameraLookat();
 }
-
 
 EMonsterState ASTK_EntityMonster::GetMonsterState()
 {
@@ -180,3 +205,4 @@ void ASTK_EntityMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
+

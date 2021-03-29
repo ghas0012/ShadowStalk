@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "STK_Entity.h"
+#include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShadowStalk/GameElements/STK_TrapBase.h"
 
@@ -41,6 +42,11 @@ ASTK_EntityShade::ASTK_EntityShade()
 	m_MovementData.m_CapsuleHalfHeight = 75.0f;
 	m_MovementData.m_CrawlCapsuleHalfHeight = 50.f;
 	m_MovementData.m_CapsuleRadius = 40.0f;
+
+	bReplicates = true;
+	SetReplicates(true);
+	SetReplicatingMovement(true);
+
 }
 
 // Called when the game starts or when spawned
@@ -87,6 +93,11 @@ void ASTK_EntityShade::Tick(float DeltaTime)
 /// </summary>
 void ASTK_EntityShade::StartExecution(ASTK_EntityMonster* Executioner)
 {
+	Server_StartExecution(Executioner);
+}
+
+void ASTK_EntityShade::Server_StartExecution_Implementation(ASTK_EntityMonster* Executioner)
+{
 	SetShadeState(EShadeState::Execution);
 	//FVector x = Executioner->GetActorLocation() + Executioner->m_CameraComp->GetComponentLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%f, %f, %f"), x.X,x.Y,x.Z));
@@ -129,15 +140,14 @@ void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
 			SetShadeState(EShadeState::KnockedBack);
 			break;
 
-		case 1:
-			DelayedTargetState = EShadeState::Hurt;
-			break;
+	case 1:
+		DelayedTargetState = EShadeState::Hurt;
+		break;
 
-		default:
-			DelayedTargetState = EShadeState::Default;
-			break;
+	default:
+		DelayedTargetState = EShadeState::Default;
+		break;
 	}
- 
 }
 
 /// <summary>
@@ -294,6 +304,7 @@ void ASTK_EntityShade::SafeActivatePawnCollision()
 		GetWorldTimerManager().SetTimer(SafeActivatePawnCollisionHandle, this, &ASTK_EntityShade::SafeActivatePawnCollision, 0.2f, false);
 	}
 }
+
 
 
 /// <summary>

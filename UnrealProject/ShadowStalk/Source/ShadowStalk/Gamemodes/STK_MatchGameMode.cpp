@@ -44,6 +44,7 @@ ASTK_MatchGameMode::ASTK_MatchGameMode()
 	}
 
 	bStartPlayersAsSpectators = true;
+
 }
 
 
@@ -54,14 +55,14 @@ APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemo
 {
 	DefaultPawnClass = ASpectatorPawn::StaticClass();
 
-	if (PlayAsMonster)
-	{
-		PlayerControllerClass = pMonsterControllerBP;
-	}
-	else
-	{
-		PlayerControllerClass = pShadeControllerBP;
-	}
+	//if (PlayAsMonster)
+	//{
+	//	PlayerControllerClass = pMonsterControllerBP; 
+	//}
+	//else
+	//{
+	//	PlayerControllerClass = pShadeControllerBP;
+	//}
 
 	return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
 }
@@ -74,8 +75,18 @@ void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 
 	PlayerCount++;
 
+	if(NewPlayer->GetLocalRole() == ROLE_Authority)
+	{
+		PlayerControllerClass = pMonsterControllerBP;
+	}
+	if (NewPlayer->GetRemoteRole() < ROLE_Authority)
+	{
+		PlayerControllerClass = pShadeControllerBP;
+	}
+
 	PlayerControllerList.Add(NewPlayer);
 	NewPlayer->bBlockInput = true;
+
 
 	Super::PostLogin(NewPlayer);
 
@@ -162,6 +173,9 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 
 		shadeController->bBlockInput = false;
 	}
+
+	ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
+	gamestate->Register_NewEntity(NewPlayer->GetPawn());
 }
 
 
@@ -202,6 +216,8 @@ void ASTK_MatchGameMode::BeginPlay()
 
 	// What we do is we select randomly from our spawn locations and remove those as we go.
 	// If we run out of spawn locations, refill the temp array and print a warning.
+
+	Super::BeginPlay();
 
 	if (SpawnList_Key.Num() == 0)
 		return;
@@ -253,3 +269,4 @@ void ASTK_MatchGameMode::BeginPlay()
 
 	gamestate->Register_MaxKeyCount(Pickup_Key_Count);
 }
+

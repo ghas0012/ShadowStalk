@@ -15,6 +15,7 @@
   J 3/12/2021: Added crouch functionality.
   H 3/12/2021: Added a smooth height transition for crouching.
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  C 3/18/2021: Added code for the networking.
 */
 
 #pragma once
@@ -30,18 +31,28 @@ class SHADOWSTALK_API USTK_EntityMovementComponent : public UPawnMovementCompone
 
 public:
 
+
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	FVector GetMovementThisFrame(FVector InputAcceleration);
+
+	UPROPERTY(Replicated)
 	class UCapsuleComponent* CapsuleComp;
+
 	class USkeletalMeshComponent* MeshComp;
 
+	UPROPERTY(Replicated)
 	FVector VelocityVector = FVector::ZeroVector;
+
 	FVector VelocityAtJump = FVector::ZeroVector;
 
 	float FrictionLerp = 1;
 	float AirControl = 1;
 	float Acceleration;
+
+	UPROPERTY(Replicated)
 	float CurrentSpeed;
+
 	float JumpStrength;
 	float SprintSpeed;
 	float CrawlSpeed;
@@ -59,11 +70,20 @@ public:
 	void HandleCrawlTransition(float DeltaTime);
 
 	void Reset();
+
 	void Jump(float jumpStrength); //TODO - FIX THIS DUDE HOLY CRAP
+
 	void LockInput(bool b);
+
 	void Sprint();
+
 	void Walk();
+
 	void Crawl();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Crawl();
+
 	bool bInputLocked = false;
 	bool bIsGrounded = true;
 

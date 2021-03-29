@@ -3,6 +3,7 @@
 #include "STK_EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/Engine.h"
+#include "Net/UnrealNetwork.h"
 
 
 /// <summary>
@@ -10,6 +11,8 @@
 /// It slides the collider along surfaces so there's no intersection.
 /// It also checks if the collider is on the ground and calls a method to handle Crawling height.
 /// </summary>
+
+
 void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     if (bInputLocked)
@@ -96,10 +99,15 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
         HandleCrawlTransition(DeltaTime);
     }
 
-    UpdateComponentVelocity();
+   UpdateComponentVelocity();
 
 }
 
+
+FVector USTK_EntityMovementComponent::GetMovementThisFrame(FVector InputAcceleration)
+{
+    return FVector();
+}
 
 /// <summary>
 /// Smoothly transition the height of the collider to match whether or not the entity is crawling.
@@ -149,6 +157,7 @@ void USTK_EntityMovementComponent::Jump(float jumpStrength) //TODO - FIX THIS DU
     VelocityAtJump = VelocityVector;
 
     CapsuleComp->AddImpulse(FVector::UpVector * jumpStrength);
+
     bIsGrounded = false;
 }
 
@@ -202,6 +211,11 @@ void USTK_EntityMovementComponent::Walk()
 /// </summary>
 void USTK_EntityMovementComponent::Crawl()
 {
+    Server_Crawl();
+}
+
+void USTK_EntityMovementComponent::Server_Crawl_Implementation()
+{
 
     if (bInputLocked)
     {
@@ -228,4 +242,12 @@ bool USTK_EntityMovementComponent::GetIsGrounded()
 float USTK_EntityMovementComponent::GetForwardVelocity()
 {
     return FMath::Abs(FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector));
+}
+
+void USTK_EntityMovementComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(USTK_EntityMovementComponent, CapsuleComp);
+    DOREPLIFETIME(USTK_EntityMovementComponent, CurrentSpeed);
 }

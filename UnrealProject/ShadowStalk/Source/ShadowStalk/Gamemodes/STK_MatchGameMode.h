@@ -78,6 +78,7 @@ protected:
 
 	virtual void BeginPlay() override;
 
+
 	TSubclassOf <APawn> pShadeBP;
 	TSubclassOf <APawn> pMonsterBP;
 	TSubclassOf <APlayerController> pShadeControllerBP;
