@@ -29,7 +29,8 @@ enum class EShadeState : uint8
     Downed      UMETA(DisplayName = "Downed"),
     Hurt        UMETA(DisplayName = "Hurt"),
     KnockedBack UMETA(DisplayName = "Hit"),
-    Dead	    UMETA(DisplayName = "Dead")
+    Dead	    UMETA(DisplayName = "Dead"),
+    Stuck       UMETA(DisplayName = "Stuck")
 };
 
 UCLASS()
@@ -84,11 +85,18 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
         float KnockbackStandupDuration = 0.3f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trap")
+        float StuckRecoveryTime = 6.0f;
+
     void RecoverFromDowned();
+
+    void RecoverFromTrap();
 
     FTimerHandle DownedRecoveryHandle;
     FTimerHandle DelayedStateChangeHandle;
     EShadeState DelayedTargetState;
+
+    FTimerHandle StuckRecoveryHandle;
 
     void DelayedStateChange();
 

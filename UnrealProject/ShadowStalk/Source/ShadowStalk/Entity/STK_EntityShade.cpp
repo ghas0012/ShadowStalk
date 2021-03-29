@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "STK_Entity.h"
 #include "Kismet/GameplayStatics.h"
+#include "ShadowStalk/GameElements/STK_TrapBase.h"
 
 //Eyes
 #include "Components/RectLightComponent.h"
@@ -182,7 +183,7 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 			break;
 
 		case EShadeState::Dead:
-			SetInputLock(Everything, true);
+			SetInputLock(EInputLockFlags::Everything, true);
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HE'S DEAD, JIM!"));
 			GetWorldTimerManager().ClearAllTimersForObject(this);
 			// TODO: ragdoll
@@ -196,6 +197,12 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 
 		default:
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("UNDEFINED SHADE STATE!"));
+			break;
+
+		case EShadeState::Stuck:
+			SetInputLock(EInputLockFlags::Movement & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
+			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HELP, I'M STUCK!"));
+			GetWorldTimerManager().SetTimer(StuckRecoveryHandle, this, &ASTK_EntityShade::RecoverFromTrap, StuckRecoveryTime, false);
 			break;
 	}
 
@@ -218,6 +225,17 @@ void ASTK_EntityShade::RecoverFromDowned()
 {
 	if(GetShadeState() == EShadeState::Downed)
 	SetShadeState(EShadeState::Default);
+	//TODO Define Default State
+}
+
+void ASTK_EntityShade::RecoverFromTrap()
+{
+	if (GetShadeState() == EShadeState::Stuck)
+	{
+		SetInputLock(EInputLockFlags::Everything, false);
+		SetShadeState(EShadeState::Default);
+		//TODO Define Default State
+	}
 }
 
 
@@ -256,6 +274,12 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 				break;
 			}
 		}
+	}
+
+	else if (OtherActor->ActorHasTag("Trap"))
+	{
+		Cast<ASTK_TrapBase>(OtherActor)->ActivateTrap();
+		SetShadeState(EShadeState::Stuck);
 	}
 }
 
