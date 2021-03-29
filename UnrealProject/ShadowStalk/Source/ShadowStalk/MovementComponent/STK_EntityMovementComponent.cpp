@@ -118,20 +118,12 @@ void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
     if (CrawlTransitionPercentage >= 1.0f)
         CrawlTransitionPercentage = 1.0f;
 
-    if (bIsCrawling)
-    {
-        float finalHalfHeight = FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleCrawlHalfHeight, CrawlTransitionPercentage);
-        float diff = CapsuleComp->GetScaledCapsuleHalfHeight() - finalHalfHeight;
-        CapsuleComp->SetCapsuleHalfHeight(finalHalfHeight);
-        CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
-    }
-    else
-    {
-        float finalHalfHeight = FMath::Lerp(CrawlTransitionInitHalfHeight, CapsuleStandingHalfHeight, CrawlTransitionPercentage);
-        float diff = CapsuleComp->GetScaledCapsuleHalfHeight() - finalHalfHeight;
-        CapsuleComp->SetCapsuleHalfHeight(finalHalfHeight);
-        CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
-    }
+    float finalHalfHeight = FMath::Max(FMath::Lerp(CrawlTransitionInitHalfHeight, bIsCrawling ? CapsuleCrawlHalfHeight : CapsuleStandingHalfHeight, CrawlTransitionPercentage), CapsuleComp->GetScaledCapsuleRadius());
+    float diff = CapsuleComp->GetScaledCapsuleHalfHeight() - finalHalfHeight;
+    CapsuleComp->SetCapsuleHalfHeight(finalHalfHeight);
+    CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
+    MeshComp->SetRelativeLocation(MeshComp->GetRelativeLocation() + FVector(0, 0, diff));
+
 }
 
 

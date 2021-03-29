@@ -25,14 +25,6 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "SoundFX")
     class USoundBase* HoverSoundFX;
 
-public:
-
-    //Optionally override the Blueprint "Event Construct" event
-    virtual void NativeConstruct() override;
-
-    // Optionally override the tick event
-    virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
     void Setup();
     void Teardown();
 

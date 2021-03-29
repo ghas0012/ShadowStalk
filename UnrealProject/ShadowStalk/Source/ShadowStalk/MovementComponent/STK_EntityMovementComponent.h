@@ -37,6 +37,8 @@ public:
 
 	class UCapsuleComponent* CapsuleComp;
 
+	class USkeletalMeshComponent* MeshComp;
+
 	FVector VelocityVector = FVector::ZeroVector;
 	FVector VelocityAtJump = FVector::ZeroVector;
 

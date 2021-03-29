@@ -13,6 +13,9 @@
 #include "Engine/TargetPoint.h"
 #include "DrawDebugHelpers.h"
 #include "Net/UnrealNetwork.h"
+#include "ShadowStalk/GameInstance/STK_GameInstance.h"
+#include "ShadowStalk/UI/STK_UserWidget.h"
+
 
 // Sets default values
 ASTK_Entity::ASTK_Entity()
@@ -61,23 +64,22 @@ ASTK_Entity::ASTK_Entity()
 // Called when the game starts or when spawned
 void ASTK_Entity::BeginPlay()
 {
+    m_MovementComp->WalkSpeed = m_MovementData.m_WalkSpeed;
+    m_MovementComp->AirControl = m_MovementData.m_AirControl;
+    m_MovementComp->SprintSpeed = m_MovementData.m_SprintSpeed;
+    m_MovementComp->CurrentSpeed = m_MovementData.m_WalkSpeed;
+    m_MovementComp->Acceleration = m_MovementData.m_Acceleration;
+    m_MovementComp->FrictionLerp = m_MovementData.m_FrictionLerp;
+    m_MovementComp->CapsuleStandingHalfHeight = m_MovementData.m_CapsuleHalfHeight;
+    m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_MovementData.m_CrawlCapsuleHalfHeight,
+    m_MovementData.m_CapsuleRadius);
+    m_MovementComp->CrawlSpeed = m_MovementData.m_CrawlSpeed;
+    m_MovementComp->MeshComp = m_MeshComp;
 
-	m_MovementComp->WalkSpeed = m_WalkSpeed;
-	m_MovementComp->AirControl = m_AirControl;
-	m_MovementComp->SprintSpeed = m_SprintSpeed;
-	m_MovementComp->CurrentSpeed = m_WalkSpeed;
-	m_MovementComp->Acceleration = m_Acceleration;
-	m_MovementComp->FrictionLerp = m_FrictionLerp;
-	m_MovementComp->CapsuleCrawlHalfHeight = m_CrawlCapsuleHalfHeight;
-	m_MovementComp->CapsuleStandingHalfHeight = m_CapsuleHalfHeight;
+    MouseLookVector.Y = m_CameraComp->GetRelativeRotation().Pitch;
+    MouseLookVector.X = m_PlayerCapsule->GetRelativeRotation().Yaw;
 
-	m_MovementComp->CrawlSpeed = m_CrawlSpeed;
-
-	Super::BeginPlay();
-
-	MouseLookVector.Y = m_CameraComp->GetRelativeRotation().Pitch;
-	MouseLookVector.X = m_PlayerCapsule->GetRelativeRotation().Yaw;
-
+    Super::BeginPlay();
 }
 
 void ASTK_Entity::PostInitializeComponents()
@@ -100,11 +102,11 @@ void ASTK_Entity::PostInitializeComponents()
 /// </summary>
 void ASTK_Entity::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+    Super::Tick(DeltaTime);
 
-	HandleCamera(DeltaTime);
-	HandleFootstepSounds(DeltaTime);
-	HandlePosition(DeltaTime);
+    HandleCamera(DeltaTime);
+    HandleFootstepSounds(DeltaTime);
+    HandlePosition(DeltaTime);
 }
 
 
@@ -150,7 +152,7 @@ void ASTK_Entity::Server_Strafe_Implementation(float value)
 		return;
 	}
 
-	RightAccelerationVector = GetActorRightVector() * value;
+    RightAccelerationVector = GetActorRightVector() * value;
 }
 
 bool ASTK_Entity::Server_Strafe_Validate(float value)
@@ -164,8 +166,8 @@ bool ASTK_Entity::Server_Strafe_Validate(float value)
 /// </summary>
 void ASTK_Entity::LockCameraLookat(FVector Location)
 {
-	bCameraOverride = true;
-	CameraOverrideTarget = Location;
+    bCameraOverride = true;
+    CameraOverrideTarget = Location;
 }
 
 
@@ -174,7 +176,7 @@ void ASTK_Entity::LockCameraLookat(FVector Location)
 /// </summary>
 void ASTK_Entity::UnlockCameraLookat()
 {
-	bCameraOverride = false;
+    bCameraOverride = false;
 }
 
 
@@ -183,15 +185,15 @@ void ASTK_Entity::UnlockCameraLookat()
 /// </summary>
 void ASTK_Entity::ForceMoveToPoint(FVector target)
 {
-	bPositionOverride = true;
-	PositionOverrideTarget = target;
-	PositionOverrideOrigin = m_PlayerCapsule->GetRelativeLocation();
+    bPositionOverride = true;
+    PositionOverrideTarget = target;
+    PositionOverrideOrigin = m_PlayerCapsule->GetRelativeLocation();
 }
 
 
 void ASTK_Entity::Interact()
 {
-	// LEAVE EMPTY, Will get overridden by child classes.
+    // LEAVE EMPTY, Will get overridden by child classes.
 }
 
 
@@ -305,8 +307,8 @@ void ASTK_Entity::Server_MouseLook_Vertical_Implementation(float value)
 	if (InputLockFlags & EInputLockFlags::MouseLook)
 		return;
 
-	MouseLookVector.Y += m_MouseLook_Y * value;
-	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
+    MouseLookVector.Y += m_MovementData.m_MouseLook_Y * value;
+    //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook Y : %f "), MouseLookVector.Y));
 }
 
 bool ASTK_Entity::Server_MouseLook_Vertical_Validate(float value)
@@ -328,8 +330,20 @@ void ASTK_Entity::Server_MouseLook_Horizontal_Implementation(float value)
 	if (InputLockFlags & EInputLockFlags::MouseLook)
 		return;
 
-	MouseLookVector.X += m_MouseLook_X * value;
-	//GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+    MouseLookVector.X += m_MovementData.m_MouseLook_X * value;
+    //GEngine->AddOnScreenDebugMessage(-1, 0, FColor::Orange, FString::Printf(TEXT("Mouselook X : %f "), MouseLookVector.X));
+}
+
+
+/// <summary>
+/// Creates and sets up the Pause Menu Widget in the game's viewport.
+/// </summary>
+void ASTK_Entity::SetupPauseMenu()
+{
+    auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
+    if (GameInstance == nullptr) return;
+
+    GameInstance->SetupPauseMenuWidget();
 }
 
 bool ASTK_Entity::Server_MouseLook_Horizontal_Validate(float value)
@@ -340,13 +354,13 @@ bool ASTK_Entity::Server_MouseLook_Horizontal_Validate(float value)
 
 bool ASTK_Entity::GetIsGrounded()
 {
-	return bIsGrounded;
+    return bIsGrounded;
 }
 
 
 EEntityType ASTK_Entity::GetEntityType()
 {
-	return EEntityType::Undefined;
+    return EEntityType::Undefined;
 }
 
 
@@ -356,35 +370,35 @@ EEntityType ASTK_Entity::GetEntityType()
 /// </summary>
 void ASTK_Entity::HandleCamera(float DeltaTime)
 {
-	if (!bCameraOverride)
-	{
+    if (!bCameraOverride)
+    {
 
-		m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
+        m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
 
-		if (abs(MouseLookVector.Y) < m_MouseLook_VerticalLookLimitAngle)
-		{
-			m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
-		}
-		else
-		{
-			MouseLookVector.Y = -m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
-		}
+        if (abs(MouseLookVector.Y) < m_MovementData.m_MouseLook_VerticalLookLimitAngle)
+        {
+            m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
+        }
+        else
+        {
+            MouseLookVector.Y = -m_MovementData.m_MouseLook_VerticalLookLimitAngle * (signbit(MouseLookVector.Y) * 2 - 1);
+        }
 
-	}
-	else
-	{
+    }
+    else
+    {
 
-		FVector TargetPos = CameraOverrideTarget;
-		FRotator Rot = (TargetPos - m_CameraComp->GetComponentLocation()).GetSafeNormal().Rotation();
-		FRotator calcRot = FMath::RInterpTo(FRotator(MouseLookVector.Y, MouseLookVector.X, 0), Rot, DeltaTime, CameraOverrideSpeed);
+        FVector TargetPos = CameraOverrideTarget;
+        FRotator Rot = (TargetPos - m_CameraComp->GetComponentLocation()).GetSafeNormal().Rotation();
+        FRotator calcRot = FMath::RInterpTo(FRotator(MouseLookVector.Y, MouseLookVector.X, 0), Rot, DeltaTime, CameraOverrideSpeed);
 
-		MouseLookVector.X = calcRot.Yaw;
-		MouseLookVector.Y = calcRot.Pitch;
+        MouseLookVector.X = calcRot.Yaw;
+        MouseLookVector.Y = calcRot.Pitch;
 
-		m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
-		m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
+        m_PlayerCapsule->SetRelativeRotation(FRotator(0, MouseLookVector.X, 0));
+        m_CameraComp->SetRelativeRotation(FRotator(MouseLookVector.Y, 0, 0));
 
-	}
+    }
 }
 
 
@@ -436,14 +450,14 @@ bool ASTK_Entity::Server_HandlePosition_Validate(float DeltaTime)
 /// </summary>
 void ASTK_Entity::HandleFootstepSounds(float DeltaTime)
 {
-	FootstepTimer += DeltaTime * FootstepFrequency * m_MovementComp->GetForwardVelocity();
-	if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && !AudioComponent->IsPlaying())
-	{
-		FootstepTimer = 0;
+    FootstepTimer += DeltaTime * FootstepFrequency * m_MovementComp->GetForwardVelocity();
+    if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && !AudioComponent->IsPlaying())
+    {
+        FootstepTimer = 0;
 
-		//AudioComponent->SetSound(FootstepsSound);
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
-	}
+        //AudioComponent->SetSound(FootstepsSound);
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
+    }
 
 }
 
@@ -453,14 +467,14 @@ void ASTK_Entity::HandleFootstepSounds(float DeltaTime)
 /// </summary>
 void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 {
-	if (flag & EInputLockFlags::Movement)
-	{
-		m_MovementComp->StopMovementImmediately();
-		ForwardAccelerationVector = FVector(0);
-		RightAccelerationVector = FVector(0);
-	}
+    if (flag & EInputLockFlags::Movement)
+    {
+        m_MovementComp->StopMovementImmediately();
+        ForwardAccelerationVector = FVector(0);
+        RightAccelerationVector = FVector(0);
+    }
 
-	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
+    lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
 }
 /// <summary>
 /// Replicated Variables for the class
@@ -478,12 +492,12 @@ void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 /// </summary>
 void ASTK_Entity::SetInputLock(EInputLockFlags flag, bool lock)
 {
-	SetInputLock(static_cast<uint8>(flag), lock);
+    SetInputLock(static_cast<uint8>(flag), lock);
 }
 
 
 // Called to bind functionality to input
 void ASTK_Entity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
