@@ -3,6 +3,7 @@
 #include "STK_EntityMonsterController.h"
 
 #include "../Entity/STK_EntityMonster.h"
+#include "Net/UnrealNetwork.h"
 
 
 /// <summary>
@@ -17,7 +18,6 @@ void ASTK_EntityMonsterController::OnPossess(APawn* aPawn)
     m_MonsterEntity = Cast<ASTK_EntityMonster>(aPawn);
 
     GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Monster Name: " + m_MonsterEntity->GetName());
-
 }
 
 
@@ -49,6 +49,8 @@ void ASTK_EntityMonsterController::SetupInputComponent()
 
         InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityMonsterController::MouseLook_Vertical);
         InputComponent->BindAxis("MouseLook_Horizontal", this, &ASTK_EntityMonsterController::MouseLook_Horizontal);
+
+        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityMonsterController::SetupPauseMenu);
     }
 }
 
@@ -130,5 +132,20 @@ void ASTK_EntityMonsterController::MouseLook_Horizontal(float value)
     if (m_MonsterEntity)
     {
         m_MonsterEntity->MouseLook_Horizontal(value);
+    }
+}
+
+void ASTK_EntityMonsterController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ASTK_EntityMonsterController, m_MonsterEntity);
+}
+
+void ASTK_EntityMonsterController::SetupPauseMenu()
+{
+    if (m_MonsterEntity)
+    {
+        m_MonsterEntity->SetupPauseMenu();
     }
 }
