@@ -54,6 +54,16 @@ void ASTK_EntityShade::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (IsLocallyControlled())
+	{
+		m_pLSpotlight->SetVisibility(false);
+		m_pRSpotlight->SetVisibility(false);
+	}
+	else
+	{
+		m_pFPSpotlight->SetVisibility(false);
+	}
+
 	// here's how to use the eyes. each new emotion gets added to a queue to be emoted.
 	// order is: Emotion name, Emotion intensity, Duration, Transition speed, and fidgeting intensity.
 
@@ -358,7 +368,7 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 void ASTK_EntityShade::SetupEyes()
 {
 	m_pEyes = CreateDefaultSubobject<USTK_EyeComponent>(TEXT("Eyes"));
-	m_pEyes->SetupMesh(m_MeshComp);
+	m_pEyes->SetupMesh(m_TPMeshComp);
 
 	m_pLSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pLSpotlight"));
 	m_pRSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pRSpotlight"));
@@ -390,6 +400,22 @@ void ASTK_EntityShade::SetupEyes()
 	m_pRSpotlight->VolumetricScatteringIntensity = 0.01f;
 	m_pLSpotlight->VolumetricScatteringIntensity = 0.01f;
 
-	m_pLSpotlight->AttachToComponent(m_MeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
-	m_pRSpotlight->AttachToComponent(m_MeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
+	m_pLSpotlight->AttachToComponent(m_TPMeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
+	m_pRSpotlight->AttachToComponent(m_TPMeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
+
+	// First person light
+
+	m_pFPSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pFPSpotlight"));
+
+	m_pFPSpotlight->SetRelativeRotation(FRotator(79.999390, 269.600494, 360.000641));
+	m_pFPSpotlight->Intensity = 12000.f;
+	m_pFPSpotlight->AttenuationRadius = 2500.f;
+	m_pFPSpotlight->SourceWidth = 9.6f;
+	m_pFPSpotlight->SourceHeight = 9.f;
+	m_pFPSpotlight->BarnDoorAngle = 0;
+	m_pFPSpotlight->BarnDoorLength = 12.f;
+	m_pFPSpotlight->VolumetricScatteringIntensity = 0.01f;
+	m_pFPSpotlight->SetupAttachment(m_CameraComp);
+
+
 }

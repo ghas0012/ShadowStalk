@@ -49,10 +49,15 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
         class USTK_EyeComponent* m_pEyes;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
         class URectLightComponent* m_pLSpotlight;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
         class URectLightComponent* m_pRSpotlight;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+        class URectLightComponent* m_pFPSpotlight;
 
     //Sound
 
