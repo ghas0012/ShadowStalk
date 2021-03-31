@@ -43,10 +43,7 @@ ASTK_EntityShade::ASTK_EntityShade()
 	m_MovementData.m_CrawlCapsuleHalfHeight = 50.f;
 	m_MovementData.m_CapsuleRadius = 40.0f;
 
-	bReplicates = true;
 	SetReplicates(true);
-	SetReplicatingMovement(true);
-
 }
 
 // Called when the game starts or when spawned
@@ -96,6 +93,7 @@ void ASTK_EntityShade::Tick(float DeltaTime)
 		}
 
 		OverlappingAnotherEntity = OverlappingActors.Num() == 0;
+
 	}
 
 	//if (BlinkPercentage != BlinkTarget)
