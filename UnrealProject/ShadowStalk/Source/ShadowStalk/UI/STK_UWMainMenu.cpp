@@ -65,7 +65,22 @@ void USTK_UWMainMenu::PlayPressed()
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
     if (GameInstance == nullptr) return;
 
-    GameInstance->LoadGameLevel();
+    bool Success = GameInstance->HostSession("Game", "MapTest", false, true, 5);
+
+    if (Success)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Created Session"));
+
+        //Create Invite Menu Widget and add it to the viewport to be accessible immediately.
+        GameInstance->SetupInviteMenuWidget();
+        
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Failed To Create Session"));
+    }
+
+    //GameInstance->LoadGameLevel();
 }
 
 /// <summary>

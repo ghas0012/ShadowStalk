@@ -10,6 +10,7 @@
 #include "ShadowStalk/UI/STK_UserWidget.h"
 #include "ShadowStalk/UI/STK_UWMainMenu.h"
 #include "ShadowStalk/UI/STK_UWPauseMenu.h"
+#include "ShadowStalk/UI/STK_UWInviteMenu.h"
 
 const static FName SESSION_NAME = TEXT("Game");
 const static FName SERVER_NAME_SETTINGS_KEY = TEXT("ServerName");
@@ -41,6 +42,14 @@ USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer
         if (!ensure(PauseMenuBPClass.Class != nullptr)) return;
 
         PauseMenuClass = PauseMenuBPClass.Class;
+    }
+
+    //Search for Invite Menu Blueprint
+    {
+        ConstructorHelpers::FClassFinder<UUserWidget> InviteMenuBPClass(TEXT("/Game/UI/WBP_InviteMenu"));
+        if (!ensure(InviteMenuBPClass.Class != nullptr)) return;
+
+        InviteMenuClass = InviteMenuBPClass.Class;
     }
 }
 
@@ -599,6 +608,16 @@ void USTK_GameInstance::SetupPauseMenuWidget()
     if (!ensure(UWPauseMenu != nullptr)) return;
 
     UWPauseMenu->Setup();
+}
+
+void USTK_GameInstance::SetupInviteMenuWidget()
+{
+    if (!ensure(InviteMenuClass != nullptr)) return;
+
+    UWInviteMenu = CreateWidget<USTK_UWInviteMenu>(GetWorld(), InviteMenuClass);
+    if (!ensure(UWInviteMenu != nullptr)) return;
+
+    UWInviteMenu->Setup();
 }
 
 /// <summary>

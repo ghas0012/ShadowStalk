@@ -2,7 +2,7 @@
 
  /*
   Author: Arianne Fennell
-  Date Modified: 3/23/2021
+  Date Modified: 3/29/2021
   Comment/Description: Base Game Instance for the game.
   ChangeLog:
   A 3/12/2021: Implemented base functions to work with UWMainMenu.
@@ -104,6 +104,9 @@ public:
     void SetupPauseMenuWidget();
 
     UFUNCTION(BlueprintCallable)
+    void SetupInviteMenuWidget();
+
+    UFUNCTION(BlueprintCallable)
     void LoadGameLevel();
 
 private:
@@ -178,4 +181,7 @@ protected:
 
     TSubclassOf<class UUserWidget> PauseMenuClass;
     class USTK_UWPauseMenu* UWPauseMenu;
+
+    TSubclassOf<class UUserWidget> InviteMenuClass;
+    class USTK_UWInviteMenu* UWInviteMenu;
 };
