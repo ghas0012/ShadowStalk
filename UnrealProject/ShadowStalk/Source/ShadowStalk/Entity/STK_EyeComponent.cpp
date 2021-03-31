@@ -24,11 +24,18 @@ USTK_EyeComponent::USTK_EyeComponent()
 /// <summary>
 /// Called when the game starts. It registers the mesh to be modified.
 /// </summary>
-void USTK_EyeComponent::SetupMesh(USkeletalMeshComponent* meshptr)
+void USTK_EyeComponent::SetupTPMesh(USkeletalMeshComponent* meshptr)
 {
-	TargetMesh = meshptr;
+	ThirdPersonMesh = meshptr;
 }
 
+/// <summary>
+/// Called when the game starts. It registers the eyesocket to be modified.
+/// </summary>
+void USTK_EyeComponent::SetupFPMesh(USkeletalMeshComponent* eyeSocketMeshPtr)
+{
+	FirstPersonEyeSocket = eyeSocketMeshPtr;
+}
 
 /// <summary>
 /// Called when the game starts
@@ -44,7 +51,7 @@ void USTK_EyeComponent::BeginPlay()
 /// </summary>
 void USTK_EyeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	RandomBlinkLogic(DeltaTime);
+	//RandomBlinkLogic(DeltaTime);
 
 	//	TO DEBUG GESTURE STATE:
 	//	for (size_t i = 0; i < StatesQueue.Num(); i++)
@@ -72,7 +79,7 @@ void USTK_EyeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, FString::Printf(TEXT("Angry: %f"), x));
 
-	if (TargetMesh == nullptr || TargetMesh->SkeletalMesh == nullptr)
+	if (ThirdPersonMesh == nullptr || ThirdPersonMesh->SkeletalMesh == nullptr || FirstPersonEyeSocket == nullptr || FirstPersonEyeSocket->SkeletalMesh == nullptr)
 		return;
 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -112,7 +119,7 @@ void USTK_EyeComponent::Reset()
 {
 	for (size_t i = 0; i < GestureNames.Num(); i++)
 	{
-		TargetMesh->SetMorphTarget(FName(GestureNames[i]), 0, false);
+		ThirdPersonMesh->SetMorphTarget(FName(GestureNames[i]), 0, false);
 	}
 
 	CurrentState->HoldDuration = 0;
@@ -155,7 +162,7 @@ TMap <FName, float> USTK_EyeComponent::GetCurrentState()
 
 	for (size_t i = 0; i < GestureNames.Num(); i++)
 	{
-		state.Add(TPair<FName, float>(GestureNames[i], TargetMesh->GetMorphTarget(GestureNames[i])));
+		state.Add(TPair<FName, float>(GestureNames[i], ThirdPersonMesh->GetMorphTarget(GestureNames[i])));
 	}
 
 	return state;
@@ -174,7 +181,7 @@ void USTK_EyeComponent::LerpQueue(float DeltaTime)
 
 			for (const TPair<FName, float>& pair : CurrentState->State)
 			{
-				TargetMesh->SetMorphTarget(FName(pair.Key), CurrentState->State[pair.Key], false);
+				ThirdPersonMesh->SetMorphTarget(FName(pair.Key), CurrentState->State[pair.Key], false);
 			}
 		}
 
@@ -210,7 +217,12 @@ void USTK_EyeComponent::LerpQueue(float DeltaTime)
 	for (const TPair<FName, float>& pair : CurrentState->State)
 	{
 		float targetValue = FMath::Lerp(CurrentState->State[pair.Key], StatesQueue[0]->State[pair.Key], lerpValue);
-		TargetMesh->SetMorphTarget(FName(pair.Key), targetValue, false);
+		ThirdPersonMesh->SetMorphTarget(FName(pair.Key), targetValue, false);
+
+		if (pair.Key == "Close")
+		{
+			FirstPersonEyeSocket->SetMorphTarget(FName("Closed"), targetValue, false);
+		}
 	}
 }
 
@@ -316,6 +328,16 @@ void USTK_EyeComponent::ApplyFidgeting(float DeltaTime, StateData* StateToFidget
 	}
 }
 
+
+void USTK_EyeComponent::SetState(std::string Name, float Intensity)
+{
+	ThirdPersonMesh->SetMorphTarget(FName(Name.c_str()), Intensity, false);
+
+	if (Name == "Close")
+	{
+		FirstPersonEyeSocket->SetMorphTarget(FName("Closed"), Intensity, false);
+	}
+}
 
 /// <summary>
 /// Get how closed the eyes are at the moment. 0 is open, 1 is closed. Can be improved.

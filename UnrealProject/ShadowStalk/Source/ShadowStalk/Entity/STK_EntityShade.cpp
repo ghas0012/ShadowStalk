@@ -62,6 +62,7 @@ void ASTK_EntityShade::BeginPlay()
 	else
 	{
 		m_pFPSpotlight->SetVisibility(false);
+		m_pEyeSocket->SetVisibility(false);
 	}
 
 	// here's how to use the eyes. each new emotion gets added to a queue to be emoted.
@@ -95,6 +96,25 @@ void ASTK_EntityShade::Tick(float DeltaTime)
 		}
 
 		OverlappingAnotherEntity = OverlappingActors.Num() == 0;
+	}
+
+	//if (BlinkPercentage != BlinkTarget)
+	{
+		HandleBlinkInput(DeltaTime);
+		m_pEyes->SetState("Close", BlinkPercentage);
+
+		if (BlinkPercentage == 1)
+		{
+			m_pLSpotlight ->SetIntensity(0);
+			m_pRSpotlight ->SetIntensity(0);
+			m_pFPSpotlight->SetIntensity(0);
+		}
+		else
+		{
+			m_pLSpotlight ->SetIntensity( (1 - BlinkPercentage) * InitBrightness );
+			m_pRSpotlight ->SetIntensity( (1 - BlinkPercentage) * InitBrightness );
+			m_pFPSpotlight->SetIntensity( (1 - BlinkPercentage) * InitBrightness );
+		}
 	}
 }
 
@@ -199,6 +219,37 @@ void ASTK_EntityShade::Interact()
 		return;
 }
 
+void ASTK_EntityShade::CloseEyes()
+{
+	Server_CloseEyes();
+}
+
+void ASTK_EntityShade::Server_CloseEyes_Implementation()
+{
+	BlinkTarget = 1;
+}
+
+void ASTK_EntityShade::OpenEyes()
+{
+	Server_OpenEyes();
+}
+
+void ASTK_EntityShade::Server_OpenEyes_Implementation()
+{
+	BlinkTarget = 0;
+}
+
+void ASTK_EntityShade::HandleBlinkInput(float DeltaTime)
+{
+	Server_HandleBlinkInput(DeltaTime);
+}
+
+void ASTK_EntityShade::Server_HandleBlinkInput_Implementation(float DeltaTime)
+{
+	//BlinkPercentage = BlinkTarget - (BlinkTarget - BlinkPercentage) * DeltaTime * BlinkSpeed;
+	BlinkTarget ? BlinkPercentage += DeltaTime * BlinkSpeed : BlinkPercentage -= DeltaTime * BlinkSpeed;
+	BlinkPercentage = FMath::Max(FMath::Clamp(BlinkPercentage, 0.0f, 1.0f), EyeClosedOverride);
+}
 
 /// <summary>
 /// Sets the Shade's state. Also allows for custom functionality to apply when a certain state change occurs.
@@ -367,8 +418,15 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 /// </summary>
 void ASTK_EntityShade::SetupEyes()
 {
+	m_pEyeSocket = CreateDefaultSubobject<USkeletalMeshComponent>("m_pEyeSocket");
+	m_pEyeSocket->SetupAttachment(m_CameraComp);
+	m_pEyeSocket->CastShadow = 0;
+
+	InitBrightness = 12000.0f;
+
 	m_pEyes = CreateDefaultSubobject<USTK_EyeComponent>(TEXT("Eyes"));
-	m_pEyes->SetupMesh(m_TPMeshComp);
+	m_pEyes->SetupTPMesh(m_TPMeshComp);
+	m_pEyes->SetupFPMesh(m_pEyeSocket);
 
 	m_pLSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pLSpotlight"));
 	m_pRSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pRSpotlight"));
@@ -379,8 +437,8 @@ void ASTK_EntityShade::SetupEyes()
 	m_pRSpotlight->SetRelativeLocation(FVector(4.358307, 1.676558, -7.412248));
 	m_pRSpotlight->SetRelativeRotation(FRotator(79.999390, 269.600494, 360.000641));
 
-	m_pRSpotlight->Intensity = 12000.f;
-	m_pLSpotlight->Intensity = 12000.f;
+	m_pRSpotlight->Intensity = InitBrightness;
+	m_pLSpotlight->Intensity = InitBrightness;
 
 	m_pRSpotlight->AttenuationRadius = 2500.f;
 	m_pLSpotlight->AttenuationRadius = 2500.f;
@@ -407,8 +465,7 @@ void ASTK_EntityShade::SetupEyes()
 
 	m_pFPSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pFPSpotlight"));
 
-	m_pFPSpotlight->SetRelativeRotation(FRotator(79.999390, 269.600494, 360.000641));
-	m_pFPSpotlight->Intensity = 12000.f;
+	m_pFPSpotlight->Intensity = InitBrightness;
 	m_pFPSpotlight->AttenuationRadius = 2500.f;
 	m_pFPSpotlight->SourceWidth = 9.6f;
 	m_pFPSpotlight->SourceHeight = 9.f;
@@ -418,4 +475,11 @@ void ASTK_EntityShade::SetupEyes()
 	m_pFPSpotlight->SetupAttachment(m_CameraComp);
 
 
+}
+
+void ASTK_EntityShade::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASTK_EntityShade, BlinkPercentage);
+	DOREPLIFETIME(ASTK_EntityShade, EyeClosedOverride);
 }

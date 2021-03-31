@@ -43,6 +43,8 @@ void ASTK_EntityShadeController::SetupInputComponent()
 		InputComponent->BindAction("Crawl", IE_Released, this, &ASTK_EntityShadeController::UnsetCrawl);
 		InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityShadeController::MouseLook_Vertical);
 		InputComponent->BindAxis("MouseLook_Horizontal", this, &ASTK_EntityShadeController::MouseLook_Horizontal);
+        InputComponent->BindAction("CloseEyes", IE_Pressed, this, &ASTK_EntityShadeController::CloseEyes);
+        InputComponent->BindAction("CloseEyes", IE_Released, this, &ASTK_EntityShadeController::OpenEyes);
         InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityShadeController::SetupPauseMenu);
 	}
 }
@@ -147,6 +149,21 @@ void ASTK_EntityShadeController::MouseLook_Horizontal(float value)
     }
 }
 
+void ASTK_EntityShadeController::CloseEyes()
+{
+    if (m_ShadeEntity)
+    {
+        m_ShadeEntity->CloseEyes();
+    }
+}
+
+void ASTK_EntityShadeController::OpenEyes()
+{
+    if (m_ShadeEntity)
+    {
+        m_ShadeEntity->OpenEyes();
+    }
+}
 
 void ASTK_EntityShadeController::SetupPauseMenu()
 {

@@ -78,7 +78,7 @@ protected:
 
 	virtual void HandleCamera(float DeltaTime);
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	FVector MouseLookVector = FVector::ZeroVector;
 
 	FVector ForwardAccelerationVector;

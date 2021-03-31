@@ -123,8 +123,12 @@ void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
     float diff = CapsuleComp->GetScaledCapsuleHalfHeight() - finalHalfHeight;
     CapsuleComp->SetCapsuleHalfHeight(finalHalfHeight);
     CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
-    MeshComp->SetRelativeLocation(MeshComp->GetRelativeLocation() + FVector(0, 0, diff));
 
+    if (TPMeshComp)
+    TPMeshComp->SetRelativeLocation(TPMeshComp->GetRelativeLocation() + FVector(0, 0, diff));
+
+    if (FPMeshComp)
+    FPMeshComp->SetRelativeLocation(FPMeshComp->GetRelativeLocation() + FVector(0, 0, diff));
 }
 
 

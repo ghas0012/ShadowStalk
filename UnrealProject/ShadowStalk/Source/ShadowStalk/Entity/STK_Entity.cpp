@@ -52,6 +52,7 @@ ASTK_Entity::ASTK_Entity()
 	m_FPMeshComp->SetRelativeRotation(FRotator(0, 180, 0));
 	m_FPMeshComp->SetOnlyOwnerSee(true);
 	m_FPMeshComp->SetupAttachment(m_PlayerCapsule);
+	m_FPMeshComp->CastShadow = 0;
 
 	m_MovementComp = CreateDefaultSubobject<USTK_EntityMovementComponent>("Movement Component");
 	m_MovementComp->CapsuleComp = m_PlayerCapsule;
@@ -81,7 +82,8 @@ void ASTK_Entity::BeginPlay()
     m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_MovementData.m_CrawlCapsuleHalfHeight,
     m_MovementData.m_CapsuleRadius);
     m_MovementComp->CrawlSpeed = m_MovementData.m_CrawlSpeed;
-    m_MovementComp->MeshComp = m_TPMeshComp;
+    m_MovementComp->TPMeshComp = m_TPMeshComp;
+	m_MovementComp->FPMeshComp = m_FPMeshComp;
 
     MouseLookVector.Y = m_CameraComp->GetRelativeRotation().Pitch;
     MouseLookVector.X = m_PlayerCapsule->GetRelativeRotation().Yaw;
