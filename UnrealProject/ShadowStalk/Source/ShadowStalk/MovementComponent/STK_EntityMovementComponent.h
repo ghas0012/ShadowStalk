@@ -36,22 +36,20 @@ public:
 
 	FVector GetMovementThisFrame(FVector InputAcceleration);
 
-	UPROPERTY(Replicated)
 	class UCapsuleComponent* CapsuleComp;
 
 	class USkeletalMeshComponent* TPMeshComp;
 	class USkeletalMeshComponent* FPMeshComp;
 
-	UPROPERTY(Replicated)
 	FVector VelocityVector = FVector::ZeroVector;
-
 	FVector VelocityAtJump = FVector::ZeroVector;
+
+	float GetFinalCapsuleHalfHeight();
 
 	float FrictionLerp = 1;
 	float AirControl = 1;
 	float Acceleration;
 
-	UPROPERTY(Replicated)
 	float CurrentSpeed;
 
 	float JumpStrength;
@@ -60,7 +58,13 @@ public:
 	float WalkSpeed;
 
 	float CrawlTransitionSpeed = 5.f;
+
+	//UPROPERTY(Replicated)
 	float CrawlTransitionPercentage = 0.f;
+
+	float finalCapsuleHalfHeight;
+
+	//UPROPERTY(Replicated)
 	float CrawlTransitionInitHalfHeight;
 
 	float CapsuleStandingHalfHeight;
@@ -70,6 +74,13 @@ public:
 
 	void HandleCrawlTransition(float DeltaTime);
 
+	UFUNCTION(Server, Reliable)
+	void Server_HandleCrawlTransition(float DeltaTime);
+
+	UFUNCTION(Client, Reliable)
+	void Client_UpdateCapsuleHeight(float height, float diff);
+
+
 	void Reset();
 
 	void Jump(float jumpStrength); //TODO - FIX THIS DUDE HOLY CRAP
@@ -78,7 +89,13 @@ public:
 
 	void Sprint();
 
+	UFUNCTION(Server, Reliable)
+	void Server_Sprint();
+
 	void Walk();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Walk();
 
 	void Crawl();
 

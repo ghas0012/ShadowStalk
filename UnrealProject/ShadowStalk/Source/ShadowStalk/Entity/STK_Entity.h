@@ -36,10 +36,10 @@ public:
 
 	//TODO - make Editanywhere
 
-	UPROPERTY(Replicated)
+	//UPROPERTY(Replicated)
 	class USTK_EntityMovementComponent* m_MovementComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Character")
 	class UCapsuleComponent* m_PlayerCapsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -57,15 +57,20 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
     FSTK_EntityData m_MovementData;
 
+
+
     //Respawn won't have a function, however if we want to add this, the framework is here.
     UFUNCTION()
-    virtual void Respawn() {}
+    virtual void Respawn() {};
 
     // position override variables
     bool bPositionOverride = false;
     float PositionOverridePercent;
     FVector PositionOverrideTarget;
     FVector PositionOverrideOrigin;
+
+	UPROPERTY(Replicated)
+	FVector m_ServerPos;
 
 protected:
 

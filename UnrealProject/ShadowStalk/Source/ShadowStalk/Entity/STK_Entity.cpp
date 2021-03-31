@@ -63,9 +63,9 @@ ASTK_Entity::ASTK_Entity()
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	AudioComponent->SetupAttachment(RootComponent);
 
-	bReplicates = true;
+	//bReplicates = true;
 	SetReplicates(true);
-	SetReplicatingMovement(true);
+	//SetReplicatingMovement(true);
 }
 
 
@@ -79,6 +79,7 @@ void ASTK_Entity::BeginPlay()
     m_MovementComp->Acceleration = m_MovementData.m_Acceleration;
     m_MovementComp->FrictionLerp = m_MovementData.m_FrictionLerp;
     m_MovementComp->CapsuleStandingHalfHeight = m_MovementData.m_CapsuleHalfHeight;
+	m_MovementComp->CrawlTransitionInitHalfHeight = m_MovementData.m_CapsuleHalfHeight;
     m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_MovementData.m_CrawlCapsuleHalfHeight,
     m_MovementData.m_CapsuleRadius);
     m_MovementComp->CrawlSpeed = m_MovementData.m_CrawlSpeed;
@@ -95,10 +96,10 @@ void ASTK_Entity::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if (GetLocalRole() <= ROLE_Authority)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%d"), GetWorld()->GetNumPlayerControllers()));
-	}
+	//if (GetLocalRole() <= ROLE_Authority)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%d"), GetWorld()->GetNumPlayerControllers()));
+	//}
 }
 
 //void ASTK_Entity::Restart()
@@ -116,8 +117,9 @@ void ASTK_Entity::Tick(float DeltaTime)
     HandleCamera(DeltaTime);
     HandleFootstepSounds(DeltaTime);
     HandlePosition(DeltaTime);
-}
 
+
+}
 
 /// <summary>
 /// Record forward acceleration value. Lockable.
@@ -418,7 +420,14 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
 void ASTK_Entity::HandlePosition(float DeltaTime)
 {
 	Server_HandlePosition(DeltaTime);
+	m_PlayerCapsule->SetRelativeLocation(m_ServerPos);
+
+	//if (m_MovementComp->CrawlTransitionPercentage != 0)
+	//{
+		//m_PlayerCapsule->SetCapsuleHalfHeight(m_MovementComp->GetFinalCapsuleHalfHeight());
+	//}
 }
+
 
 void ASTK_Entity::Server_HandlePosition_Implementation(float DeltaTime)
 {
@@ -446,6 +455,8 @@ void ASTK_Entity::Server_HandlePosition_Implementation(float DeltaTime)
 			FMath::Lerp(PositionOverrideOrigin, PositionOverrideTarget, PositionOverridePercent)
 		);
 	}
+
+	m_ServerPos = m_PlayerCapsule->GetRelativeLocation();
 }
 
 bool ASTK_Entity::Server_HandlePosition_Validate(float DeltaTime)
@@ -485,18 +496,7 @@ void ASTK_Entity::SetInputLock(uint8 flag, bool lock)
 
     lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
 }
-/// <summary>
-/// Replicated Variables for the class
-/// </summary>
-void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ASTK_Entity, MouseLookVector);
-	DOREPLIFETIME(ASTK_Entity, m_MovementComp);
-	//DOREPLIFETIME(ASTK_Entity, m_PlayerCapsule);
-
-}
 
 /// <summary>
 /// This function allows for input locking using flags. Look at EInputLockFlags in Shadowstalk.h for more info.
@@ -511,4 +511,19 @@ void ASTK_Entity::SetInputLock(EInputLockFlags flag, bool lock)
 void ASTK_Entity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+
+/// <summary>
+/// Replicated Variables for the class
+/// </summary>
+void ASTK_Entity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASTK_Entity, MouseLookVector);
+	/*DOREPLIFETIME(ASTK_Entity, m_MovementComp);*/
+	DOREPLIFETIME(ASTK_Entity, m_PlayerCapsule);
+	DOREPLIFETIME(ASTK_Entity, m_ServerPos);
+
 }
