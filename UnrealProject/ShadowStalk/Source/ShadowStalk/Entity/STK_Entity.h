@@ -46,7 +46,10 @@ public:
 	class UCameraComponent* m_CameraComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-	class USkeletalMeshComponent* m_MeshComp;
+	class USkeletalMeshComponent* m_TPMeshComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	class USkeletalMeshComponent* m_FPMeshComp;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
     bool bCameraOverride = false;
@@ -75,7 +78,7 @@ protected:
 
 	virtual void HandleCamera(float DeltaTime);
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	FVector MouseLookVector = FVector::ZeroVector;
 
 	FVector ForwardAccelerationVector;

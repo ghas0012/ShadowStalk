@@ -41,10 +41,18 @@ ASTK_Entity::ASTK_Entity()
 	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
 	m_CameraComp->SetupAttachment(m_PlayerCapsule);
 
-	m_MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh Comp");
-	m_MeshComp->bHiddenInGame = false;
-	m_MeshComp->SetRelativeRotation(FRotator(0, 180, 0));
-	m_MeshComp->SetupAttachment(m_PlayerCapsule);
+	m_TPMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("TP Mesh Comp");
+	m_TPMeshComp->bHiddenInGame = false;
+	m_TPMeshComp->SetRelativeRotation(FRotator(0, 180, 0));
+	m_TPMeshComp->SetOwnerNoSee(true);
+	m_TPMeshComp->SetupAttachment(m_PlayerCapsule);
+
+	m_FPMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("FP Mesh Comp");
+	m_FPMeshComp->bHiddenInGame = false;
+	m_FPMeshComp->SetRelativeRotation(FRotator(0, 180, 0));
+	m_FPMeshComp->SetOnlyOwnerSee(true);
+	m_FPMeshComp->SetupAttachment(m_PlayerCapsule);
+	m_FPMeshComp->CastShadow = 0;
 
 	m_MovementComp = CreateDefaultSubobject<USTK_EntityMovementComponent>("Movement Component");
 	m_MovementComp->CapsuleComp = m_PlayerCapsule;
@@ -74,7 +82,8 @@ void ASTK_Entity::BeginPlay()
     m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_MovementData.m_CrawlCapsuleHalfHeight,
     m_MovementData.m_CapsuleRadius);
     m_MovementComp->CrawlSpeed = m_MovementData.m_CrawlSpeed;
-    m_MovementComp->MeshComp = m_MeshComp;
+    m_MovementComp->TPMeshComp = m_TPMeshComp;
+	m_MovementComp->FPMeshComp = m_FPMeshComp;
 
     MouseLookVector.Y = m_CameraComp->GetRelativeRotation().Pitch;
     MouseLookVector.X = m_PlayerCapsule->GetRelativeRotation().Yaw;

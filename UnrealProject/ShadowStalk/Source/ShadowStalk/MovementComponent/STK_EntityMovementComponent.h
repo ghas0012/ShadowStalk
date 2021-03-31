@@ -39,7 +39,8 @@ public:
 	UPROPERTY(Replicated)
 	class UCapsuleComponent* CapsuleComp;
 
-	class USkeletalMeshComponent* MeshComp;
+	class USkeletalMeshComponent* TPMeshComp;
+	class USkeletalMeshComponent* FPMeshComp;
 
 	UPROPERTY(Replicated)
 	FVector VelocityVector = FVector::ZeroVector;
