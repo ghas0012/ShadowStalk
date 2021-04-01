@@ -8,6 +8,7 @@
   J 3/12/2021: Initialized class and populated input.
   H 3/16/2021: Added a class description and summaries to pertinent functions.
   A 3/23/2021: Added function and Input that sets up the Pause Menu.
+  J 3/31/2021: Added variables for pickup selection.
 */
 
 #pragma once
@@ -41,6 +42,9 @@ protected:
     void Interact();
     void MouseLook_Vertical(float value);
     void MouseLook_Horizontal(float value);
+
+    void NextItem();
+    void PrevItem();
 
     bool isSprint;
 

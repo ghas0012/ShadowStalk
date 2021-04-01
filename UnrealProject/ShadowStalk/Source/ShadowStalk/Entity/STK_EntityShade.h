@@ -16,6 +16,8 @@
   C 3/19/2021: Added networking code.
   H 3/23/2021: Modified the attack logic so: 1. The shade jumps when hit. 2. The shade only plays knockback anim when downed. 3. The shade ignores pawn collisions when downed, and safely stops ignoring them after recovering.
   H 3/23/2021: Moved movement data into its own struct.
+  J 3/28/2021: Added compatibility with the Trap class. The Shade will get stuck for brief moment when it collides with a trap. RecoverFromTrap() handles the Shade being freed from the trap.
+  J 3/31/2021: Added variables and code for Inventory Component.
 */
 
 #pragma once
@@ -111,7 +113,6 @@ protected:
     void DelayedStateChange();
 
 public:
-
 
     void StartExecution(class ASTK_EntityMonster* Executioner);
 

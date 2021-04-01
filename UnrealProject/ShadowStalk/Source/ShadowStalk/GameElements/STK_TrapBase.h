@@ -1,4 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+
+/*
+  Author: Jeffrey Armstrong
+  Date Modified: 3/28/2021
+  Comment/Description:
+
+	Base class for the Bear Trap in the game.
+	It has a Collider, a Mesh, and variables for deactivating the collision.
+
+  ChangeLog:
+  J 3/28/2021: Class init.
+*/
 
 #pragma once
 

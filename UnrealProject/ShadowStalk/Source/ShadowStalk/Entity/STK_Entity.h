@@ -15,6 +15,7 @@
   C 3/18/2021: Added Networking code to Entity.h and Entity.cpp
   H 3/23/2021: Added FSTK_EntityData, Moved movement data into that struct.
   A 3/23/2021: Added function that sets up the Pause Menu.
+  J 3/31/2021: Added another footsteps sound and additional variables and code for Inventory Component.
 */
 
 #pragma once
@@ -92,16 +93,36 @@ protected:
     float CameraOverrideSpeed = 10.f;
     float PositionOverrideSpeed = 30.0f;
 
+	UFUNCTION()
+		void NextItem();
+
+	UFUNCTION()
+		void PrevItem();
+
+	UFUNCTION()
+		void UseItem();
+
+	class ASTK_PickupBase* CurrentItem;
+
+	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class USTK_InventoryComponent* InventoryComponent;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
     class UAudioComponent* AudioComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
-    class USoundBase* FootstepsSound;
+    class USoundBase* FootstepsSound1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+	class USoundBase* FootstepsSound2;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
     float FootstepFrequency;
 
     float FootstepTimer;
+
+	bool PlayFootstep1 = true;
+	bool PlayFootstep2 = false;
 
     uint8 InputLockFlags = 0;
 
