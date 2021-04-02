@@ -233,7 +233,9 @@ void USTK_GameInstance::OnStartSessionComplete(FName SessionName, bool bWasSucce
     {
         if (!SessionInfo.GameMapName.ToString().IsEmpty())
         {
-            FString URL = "/Game/Maps/MainMap_Hospital/MapTest.MapTest?listen";
+            UWMainMenu->Teardown();
+
+            FString URL = "/Game/Maps/MainMap_Hospital/MapTest?listen";
             GetWorld()->ServerTravel(URL, true);
         }
 
