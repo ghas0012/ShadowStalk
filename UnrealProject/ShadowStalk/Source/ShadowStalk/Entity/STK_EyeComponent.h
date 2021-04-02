@@ -28,8 +28,11 @@ public:
 	// Sets default values for this component's properties
 	USTK_EyeComponent();
 
-	void SetupMesh(USkeletalMeshComponent* meshptr);
-	class USkeletalMeshComponent* TargetMesh = nullptr;
+	void SetupTPMesh(USkeletalMeshComponent* MeshPtr);
+	class USkeletalMeshComponent* ThirdPersonMesh = nullptr;
+
+	void SetupFPMesh(USkeletalMeshComponent* eyeSocketMeshPtr);
+	class USkeletalMeshComponent* FirstPersonEyeSocket = nullptr;
 
 protected:
 
@@ -82,13 +85,16 @@ protected:
 	float fidgetLerpSpeed = 2.0f;
 	float fidgetLerpFactor = 0.0f;
 
-	float GetValueOfSpecificMorphTarget(std::string name);
 
 public:
+
+	float GetValueOfSpecificMorphTarget(std::string name);
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void Reset();
+
+	void SetState(std::string Name, float Intensity);
 
 	void Blink(float duration, float speed);
 	void BlankFace(float duration, float speed);

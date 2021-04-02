@@ -7,6 +7,8 @@
 // Sets default values
 ASTK_PickupBase::ASTK_PickupBase()
 {
+	Tags.Add("Pickup"); // TODO maybe convert to "IsA..." in shade's on overlap function.
+
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -30,8 +32,9 @@ ASTK_PickupBase::ASTK_PickupBase()
 	ParticleFX = CreateDefaultSubobject<UParticleSystemComponent>("Particles");
 	ParticleFX->SetRelativeLocation(FVector(0, 0, -75));
 	ParticleFX->SetupAttachment(Collider);
-
 	Tags.Add("Pickup"); // TODO maybe convert to "IsA..." in shade's on overlap function.
+
+	SetReplicates(true);
 }
 
 

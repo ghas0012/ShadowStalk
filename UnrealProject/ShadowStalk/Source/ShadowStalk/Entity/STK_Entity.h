@@ -12,6 +12,7 @@
   C 3/12/2021: Created the base entity class, added movement variables, implemented skeletal mesh.
   H 3/12/2021: Added entity type getters, input locking, camera and position override, and cleaned up the Tick function.
   H 3/16/2021: Reformatted and cleaned up the methods and their order. Added a class description and summaries for pertinent methods.
+  C 3/18/2021: Added Networking code to Entity.h and Entity.cpp
   H 3/23/2021: Added FSTK_EntityData, Moved movement data into that struct.
   A 3/23/2021: Added function that sets up the Pause Menu.
 */
@@ -30,20 +31,25 @@ class SHADOWSTALK_API ASTK_Entity : public APawn
     GENERATED_BODY()
 
 public:
-    // Sets default values for this character's properties
-    ASTK_Entity();
+	// Sets default values for this character's properties
+	ASTK_Entity();
 
-    UPROPERTY()
-    class USTK_EntityMovementComponent* m_MovementComp;
+	//TODO - make Editanywhere
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    class UCapsuleComponent* m_PlayerCapsule;
+	//UPROPERTY(Replicated)
+	class USTK_EntityMovementComponent* m_MovementComp;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-    class UCameraComponent* m_CameraComp;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Character")
+	class UCapsuleComponent* m_PlayerCapsule;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
-    class USkeletalMeshComponent* m_MeshComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	class UCameraComponent* m_CameraComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	class USkeletalMeshComponent* m_TPMeshComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
+	class USkeletalMeshComponent* m_FPMeshComp;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
     bool bCameraOverride = false;
@@ -51,9 +57,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
     FSTK_EntityData m_MovementData;
 
+
+
     //Respawn won't have a function, however if we want to add this, the framework is here.
     UFUNCTION()
-    virtual void Respawn() {}
+    virtual void Respawn() {};
 
     // position override variables
     bool bPositionOverride = false;
@@ -61,20 +69,29 @@ public:
     FVector PositionOverrideTarget;
     FVector PositionOverrideOrigin;
 
-    TSubclassOf<class UUserWidget> PauseMenuClass;
-    class USTK_UWPauseMenu* UWPauseMenu;
+	UPROPERTY(Replicated)
+	FVector m_ServerPos;
 
+TSubclassOf<class UUserWidget> PauseMenuClass;
+    class USTK_UWPauseMenu* UWPauseMenu;
 protected:
 
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-    virtual void HandleCamera(float DeltaTime);
+	//virtual void Restart() override;
 
-    FVector MouseLookVector = FVector::ZeroVector;
-    FVector ForwardAccelerationVector;
-    FVector RightAccelerationVector;
-    FVector VelocityVector;
+	virtual void PostInitializeComponents() override;
+
+	virtual void HandleCamera(float DeltaTime);
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	FVector MouseLookVector = FVector::ZeroVector;
+
+	FVector ForwardAccelerationVector;
+
+	FVector RightAccelerationVector;
+	FVector VelocityVector;
 
     bool bIsGrounded;
     bool bCanJump;
@@ -113,26 +130,61 @@ public:
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_HandlePosition(float DeltaTime);
+
     void SetInputLock(EInputLockFlags flag, bool lock);
     void SetInputLock(uint8 flag, bool lock);
 
-    virtual void Forward(float value);
-    virtual void Strafe(float value);
 
-    void LockCameraLookat(FVector Offset);
-    void UnlockCameraLookat();
+    // virtual UPawnMovementComponent* GetMovementComponent();
 
-    void ForceMoveToPoint(FVector target);
+	virtual void Forward(float value);
 
-    virtual void Interact();
-    virtual void Jump();
-    virtual void Sprint(bool IsSprint);
-    virtual void Crawl(bool IsCrawl);
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Forward(float value);
 
-    virtual void MouseLook_Vertical(float value);
-    virtual void MouseLook_Horizontal(float value);
+	virtual void Strafe(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Strafe(float value);
+
+	void LockCameraLookat(FVector Offset);
+	void UnlockCameraLookat();
+	
+	void ForceMoveToPoint(FVector target);
+
+	virtual void Interact();
+
+	virtual void Jump();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Jump();
+
+	virtual void Sprint(bool IsSprint);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Sprint(bool IsSprint);
+
+	virtual void Crawl(bool IsCrawl);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Crawl(bool IsCrawl);
+
+	virtual void UnhideMouse();
+	virtual void HideMouse();
+
+	virtual void MouseLook_Vertical(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MouseLook_Vertical(float value);
+
+	virtual void MouseLook_Horizontal(float value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MouseLook_Horizontal(float value);
+
+	bool GetIsGrounded();
 
     virtual void PauseMenu();
-
-    bool GetIsGrounded();
 };

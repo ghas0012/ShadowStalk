@@ -3,13 +3,16 @@
 #include "STK_EntityMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/Engine.h"
-
+#include "Net/UnrealNetwork.h"
+#include "ShadowStalk/Entity/STK_Entity.h"
 
 /// <summary>
 /// This tick function calculates the desired movement based on the input acceleration.
 /// It slides the collider along surfaces so there's no intersection.
 /// It also checks if the collider is on the ground and calls a method to handle Crawling height.
 /// </summary>
+
+
 void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     if (bInputLocked)
@@ -96,15 +99,26 @@ void USTK_EntityMovementComponent::TickComponent(float DeltaTime, enum ELevelTic
         HandleCrawlTransition(DeltaTime);
     }
 
-    UpdateComponentVelocity();
+   UpdateComponentVelocity();
 
 }
 
+
+FVector USTK_EntityMovementComponent::GetMovementThisFrame(FVector InputAcceleration)
+{
+    return FVector();
+}
 
 /// <summary>
 /// Smoothly transition the height of the collider to match whether or not the entity is crawling.
 /// </summary>
 void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
+{
+    Server_HandleCrawlTransition(DeltaTime);
+}
+
+
+void USTK_EntityMovementComponent::Server_HandleCrawlTransition_Implementation(float DeltaTime)
 {
     CrawlTransitionPercentage += DeltaTime * CrawlTransitionSpeed;
 
@@ -113,12 +127,26 @@ void USTK_EntityMovementComponent::HandleCrawlTransition(float DeltaTime)
 
     float finalHalfHeight = FMath::Max(FMath::Lerp(CrawlTransitionInitHalfHeight, bIsCrawling ? CapsuleCrawlHalfHeight : CapsuleStandingHalfHeight, CrawlTransitionPercentage), CapsuleComp->GetScaledCapsuleRadius());
     float diff = CapsuleComp->GetScaledCapsuleHalfHeight() - finalHalfHeight;
+
+    // server does this
     CapsuleComp->SetCapsuleHalfHeight(finalHalfHeight);
     CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
-    MeshComp->SetRelativeLocation(MeshComp->GetRelativeLocation() + FVector(0, 0, diff));
 
+    Client_UpdateCapsuleHeight(finalHalfHeight, diff);
+
+    if (TPMeshComp)
+        TPMeshComp->SetRelativeLocation(TPMeshComp->GetRelativeLocation() + FVector(0, 0, diff));
+
+    if (FPMeshComp)
+        FPMeshComp->SetRelativeLocation(FPMeshComp->GetRelativeLocation() + FVector(0, 0, diff));
 }
 
+
+void USTK_EntityMovementComponent::Client_UpdateCapsuleHeight_Implementation(float height, float diff)
+{
+    CapsuleComp->SetCapsuleHalfHeight(height);
+    CapsuleComp->SetRelativeLocation(CapsuleComp->GetRelativeLocation() - FVector(0, 0, diff));
+}
 
 /// <summary>
 /// Stops all movement of the collider.
@@ -149,6 +177,7 @@ void USTK_EntityMovementComponent::Jump(float jumpStrength) //TODO - FIX THIS DU
     VelocityAtJump = VelocityVector;
 
     CapsuleComp->AddImpulse(FVector::UpVector * jumpStrength);
+
     bIsGrounded = false;
 }
 
@@ -166,6 +195,11 @@ void USTK_EntityMovementComponent::LockInput(bool b)
 /// </summary>
 void USTK_EntityMovementComponent::Sprint()
 {
+    Server_Sprint();
+}
+
+void USTK_EntityMovementComponent::Server_Sprint_Implementation()
+{
     if (bInputLocked)
     {
         return;
@@ -182,6 +216,11 @@ void USTK_EntityMovementComponent::Sprint()
 /// Updates the movement speed of the component. Disables crawl.
 /// </summary>
 void USTK_EntityMovementComponent::Walk()
+{
+    Server_Walk();
+}
+
+void USTK_EntityMovementComponent::Server_Walk_Implementation()
 {
 
     if (bInputLocked)
@@ -201,6 +240,11 @@ void USTK_EntityMovementComponent::Walk()
 /// Updates the movement speed of the component. Enables crawl.
 /// </summary>
 void USTK_EntityMovementComponent::Crawl()
+{
+    Server_Crawl();
+}
+
+void USTK_EntityMovementComponent::Server_Crawl_Implementation()
 {
 
     if (bInputLocked)
@@ -229,3 +273,11 @@ float USTK_EntityMovementComponent::GetForwardVelocity()
 {
     return FMath::Abs(FVector::DotProduct(CapsuleComp->GetForwardVector(), VelocityVector));
 }
+
+//void USTK_EntityMovementComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+//{
+//    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//    //DOREPLIFETIME(USTK_EntityMovementComponent, CrawlTransitionPercentage);
+//    //DOREPLIFETIME(USTK_EntityMovementComponent, CrawlTransitionInitHalfHeight);
+//    //DOREPLIFETIME(USTK_EntityMovementComponent, bIsCrawling);
+//}

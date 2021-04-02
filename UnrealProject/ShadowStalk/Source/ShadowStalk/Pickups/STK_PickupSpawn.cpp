@@ -71,7 +71,7 @@ void ASTK_PickupSpawn::BeginPlay()
         pGameMode->RegisterPickupSpawnPoint(this);
     }
 
-    Super::BeginPlay();
+	Super::BeginPlay();
 }
 
 #if WITH_EDITOR

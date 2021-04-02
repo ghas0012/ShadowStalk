@@ -15,6 +15,7 @@
   J 3/12/2021: Added crouch functionality.
   H 3/12/2021: Added a smooth height transition for crouching.
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  C 3/18/2021: Added code for the networking.
 */
 
 #pragma once
@@ -30,25 +31,40 @@ class SHADOWSTALK_API USTK_EntityMovementComponent : public UPawnMovementCompone
 
 public:
 
+
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	FVector GetMovementThisFrame(FVector InputAcceleration);
+
 	class UCapsuleComponent* CapsuleComp;
-	class USkeletalMeshComponent* MeshComp;
+
+	class USkeletalMeshComponent* TPMeshComp;
+	class USkeletalMeshComponent* FPMeshComp;
 
 	FVector VelocityVector = FVector::ZeroVector;
 	FVector VelocityAtJump = FVector::ZeroVector;
 
+	float GetFinalCapsuleHalfHeight();
+
 	float FrictionLerp = 1;
 	float AirControl = 1;
 	float Acceleration;
+
 	float CurrentSpeed;
+
 	float JumpStrength;
 	float SprintSpeed;
 	float CrawlSpeed;
 	float WalkSpeed;
 
 	float CrawlTransitionSpeed = 5.f;
+
+	//UPROPERTY(Replicated)
 	float CrawlTransitionPercentage = 0.f;
+
+	float finalCapsuleHalfHeight;
+
+	//UPROPERTY(Replicated)
 	float CrawlTransitionInitHalfHeight;
 
 	float CapsuleStandingHalfHeight;
@@ -58,12 +74,34 @@ public:
 
 	void HandleCrawlTransition(float DeltaTime);
 
+	UFUNCTION(Server, Reliable)
+	void Server_HandleCrawlTransition(float DeltaTime);
+
+	UFUNCTION(Client, Reliable)
+	void Client_UpdateCapsuleHeight(float height, float diff);
+
+
 	void Reset();
+
 	void Jump(float jumpStrength); //TODO - FIX THIS DUDE HOLY CRAP
+
 	void LockInput(bool b);
+
 	void Sprint();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Sprint();
+
 	void Walk();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Walk();
+
 	void Crawl();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Crawl();
+
 	bool bInputLocked = false;
 	bool bIsGrounded = true;
 

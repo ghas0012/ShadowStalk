@@ -9,6 +9,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "ShadowStalk/ShadowStalk.h"
 
+ASTK_MatchGameState::ASTK_MatchGameState()
+{
+    GetEntities();
+}
+
 /// <summary>
 /// Informs the gamestate of a new key being picked up.
 /// If enough keys are picked up, call OnAllKeysPickedUp().
@@ -115,6 +120,10 @@ void ASTK_MatchGameState::Register_SelectedExitDoor(ASTK_ExitDoor* ExitDoor)
     Selected_Exit_Door = ExitDoor;
 }
 
+void ASTK_MatchGameState::Register_NewEntity(APawn* entity)
+{
+    Entities.Add(Cast<ASTK_Entity>(entity));
+}
 
 /// <summary>
 /// Opens the selected door if all keys are picked up.
@@ -145,5 +154,6 @@ void ASTK_MatchGameState::BeginPlay()
 {
     // TODO: MAKE THE GAMEMODE UPDATE THE ACTIVE ENTITIES IN THE MAP ON THE GAMESTATE. THIS WILL ALLOW NEW PLAYERS TO BE COUNTED.
     Super::BeginPlay();
-    GetEntities();
+
+    //Super::BeginPlay();
 }

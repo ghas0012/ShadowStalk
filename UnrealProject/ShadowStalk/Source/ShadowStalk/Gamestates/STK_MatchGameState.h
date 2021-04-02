@@ -30,6 +30,8 @@ class SHADOWSTALK_API ASTK_MatchGameState : public AGameStateBase
 
 public:
 
+	ASTK_MatchGameState();
+
 	TArray <ASTK_Entity*> GetEntities();
 	TArray <ASTK_EntityShade*> GetShades();
 	class ASTK_EntityMonster* GetMonster();
@@ -41,6 +43,8 @@ public:
 	void Register_KeyPickedUp();
 	void Register_KeyDropped(uint8 count);
 	void Register_SelectedExitDoor(class ASTK_ExitDoor* ExitDoor);
+
+	void Register_NewEntity(APawn* entity);
 
 	void OnAllKeysPickedUp();
 	void OnKeysDropped();

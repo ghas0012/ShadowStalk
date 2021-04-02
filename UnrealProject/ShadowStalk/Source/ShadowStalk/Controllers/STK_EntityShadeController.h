@@ -35,14 +35,20 @@ protected:
 
     void Jump();
     void SetSprint();
-    void StopSprint();
+    //void StopSprint();
+    void SetCrawl();
+    void UnsetCrawl();
     void Interact();
     void MouseLook_Vertical(float value);
     void MouseLook_Horizontal(float value);
-    void SetCrawl();
-    void UnsetCrawl();
+
+    void CloseEyes();
+    void OpenEyes();
+
+    bool isSprint;
 
     void PauseMenu();
 
+    UPROPERTY(Replicated)
     class ASTK_EntityShade* m_ShadeEntity;
 };

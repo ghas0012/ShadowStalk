@@ -3,6 +3,7 @@
 #include "STK_EntityShadeController.h"
 
 #include "../Entity/STK_EntityShade.h"
+#include "Net/UnrealNetwork.h"
 
 
 /// <summary>
@@ -12,7 +13,8 @@ void ASTK_EntityShadeController::OnPossess(APawn* aPawn)
 {
     Super::OnPossess(aPawn);
 
-    m_ShadeEntity = Cast<ASTK_EntityShade>(aPawn);
+	m_ShadeEntity = Cast<ASTK_EntityShade>(aPawn);
+
 }
 
 
@@ -28,26 +30,23 @@ void ASTK_EntityShadeController::OnUnPossess()
 /// </summary>
 void ASTK_EntityShadeController::SetupInputComponent()
 {
-    Super::SetupInputComponent();
+	Super::SetupInputComponent();
 
-    if (InputComponent != nullptr)
-    {
-        InputComponent->BindAxis("Forward", this, &ASTK_EntityShadeController::Forward);
-        InputComponent->BindAxis("Strafe", this, &ASTK_EntityShadeController::Strafe);
-
-        InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityShadeController::Jump);
-
-        InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityShadeController::SetSprint);
-        InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityShadeController::StopSprint);
-
-        InputComponent->BindAction("Crawl", IE_Pressed, this, &ASTK_EntityShadeController::SetCrawl);
-        InputComponent->BindAction("Crawl", IE_Released, this, &ASTK_EntityShadeController::UnsetCrawl);
-
-        InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityShadeController::MouseLook_Vertical);
-        InputComponent->BindAxis("MouseLook_Horizontal", this, &ASTK_EntityShadeController::MouseLook_Horizontal);
-
-        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityShadeController::PauseMenu);
-    }
+	if (InputComponent != nullptr)
+	{
+		InputComponent->BindAxis("Forward", this, &ASTK_EntityShadeController::Forward);
+		InputComponent->BindAxis("Strafe", this, &ASTK_EntityShadeController::Strafe);
+		InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityShadeController::Jump);
+		InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityShadeController::SetSprint);
+		//InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityShadeController::StopSprint);
+		InputComponent->BindAction("Crawl", IE_Pressed, this, &ASTK_EntityShadeController::SetCrawl);
+		InputComponent->BindAction("Crawl", IE_Released, this, &ASTK_EntityShadeController::UnsetCrawl);
+		InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityShadeController::MouseLook_Vertical);
+		InputComponent->BindAxis("MouseLook_Horizontal", this, &ASTK_EntityShadeController::MouseLook_Horizontal);
+        InputComponent->BindAction("CloseEyes", IE_Pressed, this, &ASTK_EntityShadeController::CloseEyes);
+        InputComponent->BindAction("CloseEyes", IE_Released, this, &ASTK_EntityShadeController::OpenEyes);
+        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityShadeController::SetupPauseMenu);
+	}
 }
 
 
@@ -80,20 +79,30 @@ void ASTK_EntityShadeController::Jump()
 
 void ASTK_EntityShadeController::SetSprint()
 {
-    if (m_ShadeEntity)
-    {
-        m_ShadeEntity->Sprint(true);
-    }
+	if (m_ShadeEntity)
+	{
+		if (isSprint)
+		{
+			isSprint = false;
+		}
+		else
+		{
+			isSprint = true;
+		}
+
+		m_ShadeEntity->Sprint(isSprint);
+	}
 }
 
+//TODO - Make Sprint toggle optional.
 
-void ASTK_EntityShadeController::StopSprint()
-{
-    if (m_ShadeEntity)
-    {
-        m_ShadeEntity->Sprint(false);
-    }
-}
+//void ASTK_EntityShadeController::StopSprint()
+//{
+//	if (m_ShadeEntity)
+//	{
+//		m_ShadeEntity->Sprint(false);
+//	}
+//}
 
 
 void ASTK_EntityShadeController::SetCrawl()
@@ -140,6 +149,22 @@ void ASTK_EntityShadeController::MouseLook_Horizontal(float value)
     }
 }
 
+void ASTK_EntityShadeController::CloseEyes()
+{
+    if (m_ShadeEntity)
+    {
+        m_ShadeEntity->CloseEyes();
+    }
+}
+
+void ASTK_EntityShadeController::PauseMenu()
+void ASTK_EntityShadeController::OpenEyes()
+{
+    if (m_ShadeEntity)
+    {
+        m_ShadeEntity->OpenEyes();
+    }
+}
 
 void ASTK_EntityShadeController::PauseMenu()
 {
@@ -147,4 +172,11 @@ void ASTK_EntityShadeController::PauseMenu()
     {
         m_ShadeEntity->PauseMenu();
     }
+}
+
+void ASTK_EntityShadeController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASTK_EntityShadeController, m_ShadeEntity);
 }
