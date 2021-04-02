@@ -72,6 +72,8 @@ public:
 	UPROPERTY(Replicated)
 	FVector m_ServerPos;
 
+TSubclassOf<class UUserWidget> PauseMenuClass;
+    class USTK_UWPauseMenu* UWPauseMenu;
 protected:
 
     // Called when the game starts or when spawned
@@ -184,5 +186,5 @@ public:
 
 	bool GetIsGrounded();
 
-    virtual void SetupPauseMenu();
+    virtual void PauseMenu();
 };

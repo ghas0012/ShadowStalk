@@ -13,8 +13,10 @@
 #include "Engine/TargetPoint.h"
 #include "DrawDebugHelpers.h"
 #include "Net/UnrealNetwork.h"
+#include "UObject/ConstructorHelpers.h"
 #include "ShadowStalk/GameInstance/STK_GameInstance.h"
 #include "ShadowStalk/UI/STK_UserWidget.h"
+#include "ShadowStalk/UI/STK_UWPauseMenu.h"
 
 
 // Sets default values
@@ -66,6 +68,14 @@ ASTK_Entity::ASTK_Entity()
 	//bReplicates = true;
 	SetReplicates(true);
 	//SetReplicatingMovement(true);
+
+    //Search for Pause Menu Widget Blueprint
+    {
+        ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/UI/WBP_PauseMenu"));
+        if (!ensure(PauseMenuBPClass.Class != nullptr)) return;
+
+        PauseMenuClass = PauseMenuBPClass.Class;
+    }
 }
 
 
@@ -81,7 +91,7 @@ void ASTK_Entity::BeginPlay()
     m_MovementComp->CapsuleStandingHalfHeight = m_MovementData.m_CapsuleHalfHeight;
 	m_MovementComp->CrawlTransitionInitHalfHeight = m_MovementData.m_CapsuleHalfHeight;
     m_MovementComp->CapsuleCrawlHalfHeight = FMath::Max(m_MovementData.m_CrawlCapsuleHalfHeight,
-    m_MovementData.m_CapsuleRadius);
+        m_MovementData.m_CapsuleRadius);
     m_MovementComp->CrawlSpeed = m_MovementData.m_CrawlSpeed;
     m_MovementComp->TPMeshComp = m_TPMeshComp;
 	m_MovementComp->FPMeshComp = m_FPMeshComp;
@@ -349,12 +359,32 @@ void ASTK_Entity::Server_MouseLook_Horizontal_Implementation(float value)
 /// <summary>
 /// Creates and sets up the Pause Menu Widget in the game's viewport.
 /// </summary>
-void ASTK_Entity::SetupPauseMenu()
+void ASTK_Entity::PauseMenu()
 {
-    auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
-    if (GameInstance == nullptr) return;
+    if (PauseMenuClass)
+    {
+        if (UWPauseMenu)
+        {
+            UWPauseMenu->RemoveFromParent();
 
-    GameInstance->SetupPauseMenuWidget();
+            //Change Input Method
+            APlayerController* PlayerController = Cast<APlayerController>(GetController());
+            PlayerController->SetInputMode(FInputModeGameOnly());
+            PlayerController->bShowMouseCursor = false;
+
+            UWPauseMenu = nullptr;
+        }
+        else
+        {
+            UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
+            UWPauseMenu->AddToViewport();
+
+            //Change Input Method
+            APlayerController* PlayerController = Cast<APlayerController>(GetController());
+            PlayerController->SetInputMode(FInputModeGameAndUI());
+            PlayerController->bShowMouseCursor = true;
+        }
+    }
 }
 
 bool ASTK_Entity::Server_MouseLook_Horizontal_Validate(float value)

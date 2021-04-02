@@ -44,6 +44,7 @@ protected:
 	UPROPERTY(Replicated)
 	class ASTK_EntityMonster* m_MonsterEntity;
 
-    void SetupPauseMenu();
+
+    void PauseMenu();
 
 };

@@ -47,7 +47,7 @@ protected:
 
     bool isSprint;
 
-    void SetupPauseMenu();
+    void PauseMenu();
 
     UPROPERTY(Replicated)
     class ASTK_EntityShade* m_ShadeEntity;

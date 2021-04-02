@@ -50,7 +50,7 @@ void ASTK_EntityMonsterController::SetupInputComponent()
         InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityMonsterController::MouseLook_Vertical);
         InputComponent->BindAxis("MouseLook_Horizontal", this, &ASTK_EntityMonsterController::MouseLook_Horizontal);
 
-        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityMonsterController::SetupPauseMenu);
+        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityMonsterController::PauseMenu);
     }
 }
 
@@ -142,10 +142,10 @@ void ASTK_EntityMonsterController::GetLifetimeReplicatedProps(TArray<FLifetimePr
     DOREPLIFETIME(ASTK_EntityMonsterController, m_MonsterEntity);
 }
 
-void ASTK_EntityMonsterController::SetupPauseMenu()
+void ASTK_EntityMonsterController::PauseMenu()
 {
     if (m_MonsterEntity)
     {
-        m_MonsterEntity->SetupPauseMenu();
+        m_MonsterEntity->PauseMenu();
     }
 }
