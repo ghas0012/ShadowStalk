@@ -27,7 +27,7 @@ bool USTK_UWFriendsList::Initialize()
     if (GameInstance)
         SetFriendsList(GameInstance->GetFriends());
 
-    return true;
+    return Success;
 }
 
 /// <summary>

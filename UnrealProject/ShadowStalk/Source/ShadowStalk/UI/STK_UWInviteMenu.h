@@ -17,18 +17,28 @@
 UCLASS()
 class SHADOWSTALK_API USTK_UWInviteMenu : public USTK_UserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UButton* ExitButton = nullptr;
+    USTK_UWInviteMenu(const FObjectInitializer& ObjectInitializer);
+
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UImage* BGOverlay = nullptr;
+
+    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UButton* ExitButton = nullptr;
+
+    //TSubclassOf<UUserWidget> FriendsListClass;
+
+    //UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    //class USTK_UWFriendsList* UWFriendsList = nullptr;
 
 protected:
-	virtual bool Initialize() override;
+    virtual bool Initialize() override;
 
 private:
 
-	UFUNCTION()
-	void ExitPressed();
+    UFUNCTION()
+    void ExitPressed();
 };

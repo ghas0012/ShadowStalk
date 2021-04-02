@@ -42,7 +42,7 @@ protected:
     void SetCrawl();
     void UnsetCrawl();
 
-    void SetupPauseMenu();
+    void PauseMenu();
 
     class ASTK_EntityShade* m_ShadeEntity;
 };

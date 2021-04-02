@@ -41,7 +41,7 @@ protected:
     void MouseLook_Horizontal(float value);
     void Attack();
 
-    void SetupPauseMenu();
+    void PauseMenu();
 
     class ASTK_EntityMonster* m_MonsterEntity;
 };

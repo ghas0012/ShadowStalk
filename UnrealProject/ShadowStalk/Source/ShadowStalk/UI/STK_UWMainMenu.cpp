@@ -70,10 +70,6 @@ void USTK_UWMainMenu::PlayPressed()
     if (Success)
     {
         GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Created Session"));
-
-        //Create Invite Menu Widget and add it to the viewport to be accessible immediately.
-        GameInstance->SetupInviteMenuWidget();
-        
     }
     else
     {

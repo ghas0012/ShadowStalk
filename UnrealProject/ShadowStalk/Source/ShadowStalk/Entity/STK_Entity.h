@@ -61,6 +61,9 @@ public:
     FVector PositionOverrideTarget;
     FVector PositionOverrideOrigin;
 
+    TSubclassOf<class UUserWidget> PauseMenuClass;
+    class USTK_UWPauseMenu* UWPauseMenu;
+
 protected:
 
     // Called when the game starts or when spawned
@@ -129,7 +132,7 @@ public:
     virtual void MouseLook_Vertical(float value);
     virtual void MouseLook_Horizontal(float value);
 
-    virtual void SetupPauseMenu();
+    virtual void PauseMenu();
 
     bool GetIsGrounded();
 };

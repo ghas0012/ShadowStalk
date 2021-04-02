@@ -28,6 +28,9 @@ public:
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     class UButton* ContinueButton = nullptr;
 
+    /*UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+    class UButton* InviteButton = nullptr;*/
+
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     class UButton* OptionsButton = nullptr;
 
@@ -43,15 +46,21 @@ protected:
 
 private:
 
+    TSubclassOf<class UUserWidget> InviteMenuClass;
+    class USTK_UWInviteMenu* UWInviteMenu;
+
     TSubclassOf<class UUserWidget> OptionsPanelClass;
     class USTK_UWOptionsPanel* UWOptionsPanel;
 
     UFUNCTION()
-    void ExitPauseMenu();
+    void OpenInviteMenu();
 
     UFUNCTION()
     void OpenOptionsMenu();
 
     UFUNCTION()
     void ReturnToMainMenu();
+
+    UFUNCTION()
+    void ExitPauseMenu();
 };

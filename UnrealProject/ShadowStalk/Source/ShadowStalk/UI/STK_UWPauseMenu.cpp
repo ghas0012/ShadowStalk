@@ -4,6 +4,7 @@
 
 #include "ShadowStalk/UI/STK_UserWidget.h"
 #include "ShadowStalk/UI/STK_UWOptionsPanel.h"
+#include "ShadowStalk/UI/STK_UWInviteMenu.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
@@ -12,6 +13,14 @@
 USTK_UWPauseMenu::USTK_UWPauseMenu(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer)
 {
+    //Search for Options Panel Widget Blueprint
+    {
+        ConstructorHelpers::FClassFinder<UUserWidget> InviteMenuBPClass(TEXT("/Game/UI/WBP_InviteMenu"));
+        if (!ensure(InviteMenuBPClass.Class != nullptr)) return;
+
+        InviteMenuClass = InviteMenuBPClass.Class;
+    }
+
     //Search for Options Panel Widget Blueprint
     {
         ConstructorHelpers::FClassFinder<UUserWidget> OptionsPanelBPClass(TEXT("/Game/UI/WBP_OptionsPanel"));
@@ -28,7 +37,7 @@ bool USTK_UWPauseMenu::Initialize()
 
     //Setup Input for Continue Button
     if (!ensure(ContinueButton != nullptr)) return false;
-    ContinueButton->OnClicked.AddDynamic(this, &USTK_UWPauseMenu::ExitPauseMenu);
+    ContinueButton->OnClicked.AddDynamic(this, &USTK_UWPauseMenu::OpenInviteMenu);
     ContinueButton->OnHovered.AddDynamic(this, &USTK_UserWidget::PlayHoverSoundFX);
 
     //Setup Input for Options Button
@@ -45,13 +54,24 @@ bool USTK_UWPauseMenu::Initialize()
     if (!ensure(ExitButton != nullptr)) return false;
     ExitButton->OnClicked.AddDynamic(this, &USTK_UWPauseMenu::ExitPauseMenu);
     ExitButton->OnHovered.AddDynamic(this, &USTK_UserWidget::PlayHoverSoundFX);
-    
+
     return true;
 }
 
 void USTK_UWPauseMenu::ExitPauseMenu()
 {
     this->Teardown();
+}
+
+void USTK_UWPauseMenu::OpenInviteMenu()
+{
+    if (!ensure(InviteMenuClass != nullptr)) return;
+
+    UWInviteMenu = CreateWidget<USTK_UWInviteMenu>(this, InviteMenuClass);
+    if (!ensure(UWInviteMenu != nullptr)) return;
+
+    UWInviteMenu->BGOverlay->SetVisibility(ESlateVisibility::Hidden);
+    UWInviteMenu->AddToViewport();
 }
 
 void USTK_UWPauseMenu::OpenOptionsMenu()

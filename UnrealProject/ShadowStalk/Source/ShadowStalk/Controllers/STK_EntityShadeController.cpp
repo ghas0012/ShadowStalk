@@ -46,7 +46,7 @@ void ASTK_EntityShadeController::SetupInputComponent()
         InputComponent->BindAxis("MouseLook_Vertical", this, &ASTK_EntityShadeController::MouseLook_Vertical);
         InputComponent->BindAxis("MouseLook_Horizontal", this, &ASTK_EntityShadeController::MouseLook_Horizontal);
 
-        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityShadeController::SetupPauseMenu);
+        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityShadeController::PauseMenu);
     }
 }
 
@@ -141,10 +141,10 @@ void ASTK_EntityShadeController::MouseLook_Horizontal(float value)
 }
 
 
-void ASTK_EntityShadeController::SetupPauseMenu()
+void ASTK_EntityShadeController::PauseMenu()
 {
     if (m_ShadeEntity)
     {
-        m_ShadeEntity->SetupPauseMenu();
+        m_ShadeEntity->PauseMenu();
     }
 }

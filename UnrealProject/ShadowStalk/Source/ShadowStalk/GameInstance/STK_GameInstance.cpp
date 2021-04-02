@@ -379,6 +379,10 @@ void USTK_GameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool
             OnlineSessionInterface->FindSessions(*UserId, SearchSettingsRef);
         }
     }
+    else
+    {
+        OnFindSessionsComplete(false);
+    }
 }
 
 /// <summary>
