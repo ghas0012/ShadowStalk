@@ -2,10 +2,11 @@
 
  /*
   Author: Arianne Fennell
-  Date Modified: 3/30/2021
+  Date Modified: 4/06/2021
   Comment/Description: Base user widget responsible for the displaying the Host's friends list.
   ChangeLog:
   A 3/30/2021: Implemented base class and functionality responsible for filling the user's visible friends list.
+  A 4/06/2021: Removed code that sets the friends "RealName" in the FriendsRow widget.
   */
 
 #pragma once

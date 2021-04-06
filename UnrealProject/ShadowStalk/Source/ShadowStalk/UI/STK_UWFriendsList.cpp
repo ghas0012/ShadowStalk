@@ -48,10 +48,8 @@ void USTK_UWFriendsList::SetFriendsList(TArray<FFriendData> Friends)
         USTK_UWFriendRow* Row = CreateWidget<USTK_UWFriendRow>(World, FriendRowClass);
         if (!ensure(Row != nullptr)) return;
 
-        //TODO: Remove unnecessary data from displayed widget
         //Set the rows text variables based on friend data
         Row->DisplayName->SetText(FText::FromString(FriendData.DisplayName));
-        Row->RealName->SetText(FText::FromString(FriendData.RealName));
         Row->Presence->SetText(FText::FromString(FriendData.Presence));
         Row->UniqueNetId->SetText(FText::FromString(FriendData.UniqueNetId));
 

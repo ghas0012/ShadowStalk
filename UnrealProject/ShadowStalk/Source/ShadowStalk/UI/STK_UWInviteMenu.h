@@ -29,11 +29,6 @@ public:
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     class UButton* ExitButton = nullptr;
 
-    //TSubclassOf<UUserWidget> FriendsListClass;
-
-    //UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-    //class USTK_UWFriendsList* UWFriendsList = nullptr;
-
 protected:
     virtual bool Initialize() override;
 
