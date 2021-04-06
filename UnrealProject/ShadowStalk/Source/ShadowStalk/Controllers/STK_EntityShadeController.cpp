@@ -46,6 +46,8 @@ void ASTK_EntityShadeController::SetupInputComponent()
         InputComponent->BindAction("CloseEyes", IE_Pressed, this, &ASTK_EntityShadeController::CloseEyes);
         InputComponent->BindAction("CloseEyes", IE_Released, this, &ASTK_EntityShadeController::OpenEyes);
         InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityShadeController::PauseMenu);
+        InputComponent->BindAction("NextItem", IE_Pressed, this, &ASTK_EntityShadeController::NextItem);
+        InputComponent->BindAction("PreviousItem", IE_Pressed, this, &ASTK_EntityShadeController::PrevItem);
     }
 }
 
@@ -163,6 +165,14 @@ void ASTK_EntityShadeController::OpenEyes()
     {
         m_ShadeEntity->OpenEyes();
     }
+}
+
+void ASTK_EntityShadeController::NextItem()
+{
+}
+
+void ASTK_EntityShadeController::PrevItem()
+{
 }
 
 void ASTK_EntityShadeController::PauseMenu()

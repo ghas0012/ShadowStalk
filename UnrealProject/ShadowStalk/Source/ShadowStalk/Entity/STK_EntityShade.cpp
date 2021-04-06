@@ -17,6 +17,7 @@
 
 //Pickups
 #include "ShadowStalk/Pickups/STK_PickupBase.h"
+#include "ShadowStalk/Inventory/STK_InventoryComponent.h"
 
 //Sounds
 #include "Components/AudioComponent.h"
@@ -397,6 +398,7 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 			case EPickupType::Item:
 			{
 				// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+				InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
 				OtherActor->Destroy();
 				break;
 			}
