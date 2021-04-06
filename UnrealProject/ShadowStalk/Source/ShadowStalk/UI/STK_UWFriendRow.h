@@ -2,10 +2,11 @@
 
  /*
   Author: Arianne Fennell
-  Date Modified: 3/30/2021
+  Date Modified: 4/06/2021
   Comment/Description: Base user widget responsible for sending out game invitations.
   ChangeLog:
   A 3/30/2021: Implemented base class and functionality responsible for sending a game invite to a friend.
+  A 4/06/2021: Removed "RealName" UPROPERTY from FriendRow widget. 
   */
 
 #pragma once
@@ -23,9 +24,6 @@ public:
 
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     class UTextBlock* DisplayName = nullptr;
-
-    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-    class UTextBlock* RealName = nullptr;
 
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     class UTextBlock* Presence = nullptr;
