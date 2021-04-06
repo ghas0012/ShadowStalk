@@ -10,25 +10,13 @@
 USTK_UWInviteMenu::USTK_UWInviteMenu(const FObjectInitializer& ObjectInitializer) :
     Super(ObjectInitializer)
 {
-    //Search for Friend Row Widget Blueprint
-    {
-        /*ConstructorHelpers::FClassFinder<UUserWidget> FriendsListBPClass(TEXT("/Game/UI/WBP_FriendsList"));
-        if (!ensure(FriendsListBPClass.Class != nullptr)) return;
 
-        FriendsListClass = FriendsListBPClass.Class;*/
-    }
 }
 
 bool USTK_UWInviteMenu::Initialize()
 {
     bool Success = Super::Initialize();
     if (!Success) return false;
-
-    //Create the Friends List Custom Widget
-    //UWFriendsList = CreateWidget<USTK_UWFriendsList>(this, FriendsListClass);
-    //if (!ensure(UWFriendsList != nullptr)) return false;
-    //
-    //if (UWFriendsList) GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, TEXT("Friends List Found!"));
 
     //Setup Input for Exit Button
     if (!ensure(ExitButton != nullptr)) return false;

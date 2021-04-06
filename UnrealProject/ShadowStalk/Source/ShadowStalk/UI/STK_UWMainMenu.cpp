@@ -65,7 +65,7 @@ void USTK_UWMainMenu::PlayPressed()
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
     if (GameInstance == nullptr) return;
 
-    bool Success = GameInstance->HostSession("Game", "MapTest", false, true, 5);
+    /*bool Success = GameInstance->HostSession("Game", "MapTest", false, true, 5);
 
     if (Success)
     {
@@ -74,9 +74,9 @@ void USTK_UWMainMenu::PlayPressed()
     else
     {
         GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Failed To Create Session"));
-    }
+    }*/
 
-    //GameInstance->LoadGameLevel();
+    GameInstance->LoadGameLevel();
 }
 
 /// <summary>
