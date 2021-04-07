@@ -9,6 +9,7 @@
   A 3/13/2021: Added SetupCreditWidget() to work with UWCreditsPanel.
   A 3/23/2021: Moved Options and Credits setup to UWMainMenu. Added Pause Menu Setup.
   A 3/29/2021: Implemented key functions for Join/Host Online Sessions.
+  H 4/07/2021: Added #define toggle to turn steam integration on or off
   */
 
 #pragma once
