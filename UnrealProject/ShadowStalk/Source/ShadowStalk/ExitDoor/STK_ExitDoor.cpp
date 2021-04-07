@@ -4,6 +4,7 @@
 #include "Components/BoxComponent.h"
 #include "ShadowStalk/GameModes/STK_MatchGameMode.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 ASTK_ExitDoor::ASTK_ExitDoor()
@@ -47,20 +48,36 @@ void ASTK_ExitDoor::BeginPlay()
 	}
 }
 
+void ASTK_ExitDoor::DoorOpen()
+{
+	if (HasAuthority())
+	{
+		NMC_DoorOpen();
+	}
+}
+
 /// <summary>
 /// Open the door.
 /// </summary>
-void ASTK_ExitDoor::DoorOpen()
+void ASTK_ExitDoor::NMC_DoorOpen_Implementation()
 {
 	ParticleFX->DeactivateSystem();
 	DoorCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("DOOR IS OPEN!"));
 }
 
+void ASTK_ExitDoor::DoorClose()
+{
+	if (HasAuthority())
+	{
+		NMC_DoorClose();
+	}
+}
+
 /// <summary>
 /// Close the door.
 /// </summary>
-void ASTK_ExitDoor::DoorClose()
+void ASTK_ExitDoor::NMC_DoorClose_Implementation()
 {
 	ParticleFX->ActivateSystem();
 	DoorCollider->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);

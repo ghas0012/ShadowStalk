@@ -29,8 +29,8 @@ void ASTK_MatchGameState::Register_KeyPickedUp()
 
     if (Current_Key_Count >= Max_Key_Count)
     {
-        OnAllKeysPickedUp();
-        //GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Gamestate: Attempting to open door."));
+        Selected_Exit_Door->DoorOpen();
+        GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Gamestate: Attempting to open door."));
     }
 }
 
