@@ -363,7 +363,12 @@ void ASTK_Entity::PauseMenu()
 {
     if (PauseMenuClass)
     {
-        if (UWPauseMenu)
+		// Create the pause menu widget
+		UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
+		UWPauseMenu->Setup();
+
+		//TODO: User Interface [Fix Toggle Menu to avoid widget overlap (widget switcher)]
+        /*if (UWPauseMenu)
         {
             UWPauseMenu->RemoveFromParent();
 
@@ -383,7 +388,7 @@ void ASTK_Entity::PauseMenu()
             APlayerController* PlayerController = Cast<APlayerController>(GetController());
             PlayerController->SetInputMode(FInputModeGameAndUI());
             PlayerController->bShowMouseCursor = true;
-        }
+        }*/
     }
 }
 
