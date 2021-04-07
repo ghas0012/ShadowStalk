@@ -22,12 +22,17 @@ bool USTK_UWFriendsList::Initialize()
     bool Success = Super::Initialize();
     if (!Success) return false;
 
+#ifdef STEAM_ENABLED
+
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
 
     if (GameInstance)
         SetFriendsList(GameInstance->GetFriends());
 
+#endif
+
     return Success;
+
 }
 
 /// <summary>

@@ -68,24 +68,38 @@ public:
 
     USTK_GameInstance(const FObjectInitializer& ObjectInitializer);
 
+    UFUNCTION(BlueprintCallable)
+        void SetupMainMenuWidget();
+
+    UFUNCTION(BlueprintCallable)
+        void SetupPauseMenuWidget();
+
+    UFUNCTION(BlueprintCallable)
+        void SetupInviteMenuWidget();
+
+    UFUNCTION(BlueprintCallable)
+        void LoadGameLevel();
+
+    UFUNCTION(BlueprintCallable, Category = "Online|Session")
+        bool HostSession(FName SessionName, FName Map, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
+
+    UFUNCTION(BlueprintCallable, Category = "Online|Session")
+        bool FindSessions(bool bIsLAN, bool bIsPresence);
+
+    UFUNCTION(BlueprintCallable, Category = "Online|Session")
+        bool JoinSession();
+
+    UFUNCTION(BlueprintCallable, Category = "Online|Session")
+        void DestroySession();
+
+    UFUNCTION(BlueprintCallable, Category = "Online|Session")
+        bool SendSessionInviteToFriend(const FString& FriendUniqueNetId);
+
+#ifdef STEAM_ENABLED
+
     virtual void Init() override;
 
     virtual void Shutdown() override;
-
-    UFUNCTION(BlueprintCallable, Category = "Online|Session")
-    bool HostSession(FName SessionName, FName Map, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
-
-    UFUNCTION(BlueprintCallable, Category = "Online|Session")
-    bool FindSessions(bool bIsLAN, bool bIsPresence);
-
-    UFUNCTION(BlueprintCallable, Category = "Online|Session")
-    bool JoinSession();
-
-    UFUNCTION(BlueprintCallable, Category = "Online|Session")
-    void DestroySession();
-
-    UFUNCTION(BlueprintCallable, Category = "Online|Session")
-    bool SendSessionInviteToFriend(const FString& FriendUniqueNetId);
 
     void InviteFriend(FString FriendName, bool bWasSuccessful);
 
@@ -96,18 +110,6 @@ public:
     void FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
 
     TArray<FFriendData> GetFriends() { return FriendArray; }
-
-    UFUNCTION(BlueprintCallable)
-    void SetupMainMenuWidget();
-
-    UFUNCTION(BlueprintCallable)
-    void SetupPauseMenuWidget();
-
-    UFUNCTION(BlueprintCallable)
-    void SetupInviteMenuWidget();
-
-    UFUNCTION(BlueprintCallable)
-    void LoadGameLevel();
 
 private:
 
@@ -173,6 +175,8 @@ private:
     void OnReadFriendsListComplete(int32 LocalUserNum, bool bWasSuccessful, const FString& FriendsListName, const FString& ErrorString);
 
     void OnSessionUserInviteAccepted(const bool bWasSuccesful, const int32 LocalUserNum, TSharedPtr<const FUniqueNetId> NetId, const FOnlineSessionSearchResult& SessionSearchResult);
+
+#endif
 
 protected:
 
