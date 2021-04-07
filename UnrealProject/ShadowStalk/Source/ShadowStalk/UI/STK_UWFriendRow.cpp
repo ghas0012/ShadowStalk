@@ -20,6 +20,8 @@ void USTK_UWFriendRow::Setup(USTK_UWFriendsList* InParent, uint32 InIndex)
 
 void USTK_UWFriendRow::OnClicked()
 {
+#ifdef STEAM_ENABLED
+
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
 
     if (GameInstance)
@@ -29,4 +31,6 @@ void USTK_UWFriendRow::OnClicked()
         //Sends an invite to the selected friend.
         GameInstance->SendSessionInviteToFriend(UniqueNetId->GetText().ToString());
     }
+
+#endif 
 }
