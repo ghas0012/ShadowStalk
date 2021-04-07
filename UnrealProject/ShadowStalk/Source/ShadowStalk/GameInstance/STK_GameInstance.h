@@ -96,6 +96,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Online|Session")
         bool SendSessionInviteToFriend(const FString& FriendUniqueNetId);
 
+    void FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
+
 #ifdef STEAM_ENABLED
 
     virtual void Init() override;
@@ -107,8 +109,6 @@ public:
     bool CreateSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, FName Map, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
 
     bool JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
-
-    void FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
 
     TArray<FFriendData> GetFriends() { return FriendArray; }
 
