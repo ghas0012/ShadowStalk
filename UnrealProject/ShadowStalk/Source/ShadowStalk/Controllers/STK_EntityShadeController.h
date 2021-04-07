@@ -42,6 +42,9 @@ protected:
     void MouseLook_Vertical(float value);
     void MouseLook_Horizontal(float value);
 
+    void CloseEyes();
+    void OpenEyes();
+
     bool isSprint;
 
     void SetupPauseMenu();
