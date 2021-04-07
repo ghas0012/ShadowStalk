@@ -11,6 +11,7 @@
   ChangeLog:
   H 3/12/2021: Initialized class.
   H 3/16/2021: Reformatted code, Added a class description and summaries to relevant methods.
+  C 4/07/2021: Added Code to NetMulticast the Door's.
 */
 
 #pragma once
@@ -43,13 +44,19 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
-
 	bool bIsOpen = false;
 
 public:
 
 	void DoorOpen();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NMC_DoorOpen();
+
 	void DoorClose();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void NMC_DoorClose();
 
 	bool GetIsOpen();
 

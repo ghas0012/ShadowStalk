@@ -5,6 +5,7 @@
 #include "ShadowStalk/Pickups/STK_PickupSpawn.h"
 #include "ShadowStalk/Gamestates/STK_MatchGameState.h"
 #include "GameFramework/SpectatorPawn.h"
+#include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
 
 #include "ShadowStalk/Controllers/STK_EntityShadeController.h"
 #include "ShadowStalk/Controllers/STK_EntityMonsterController.h"
@@ -263,6 +264,16 @@ void ASTK_MatchGameMode::BeginPlay()
     //}
 
     ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
+
+    TArray<AActor*> found;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASTK_ExitDoor::StaticClass(), found);
+
+    ExitDoorList.Empty();
+
+    for (size_t i = 0; i < found.Num(); i++)
+    {
+        ExitDoorList.Add(Cast<ASTK_ExitDoor>(found[i]));
+    }
 
     if (ExitDoorList.Num() > 0)
     {

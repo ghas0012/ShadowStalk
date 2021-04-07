@@ -17,6 +17,9 @@ const static FName SERVER_NAME_SETTINGS_KEY = TEXT("ServerName");
 
 USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer)
 {
+
+#ifdef STEAM_ENABLED
+
     //Create the Delegates
     {
         OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(this, &USTK_GameInstance::OnCreateSessionComplete);
@@ -27,6 +30,8 @@ USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer
         OnReadFriendsListCompleteDelegate = FOnReadFriendsListComplete::CreateUObject(this, &USTK_GameInstance::OnReadFriendsListComplete);
         OnSessionUserInviteAcceptedDelegate = FOnSessionUserInviteAcceptedDelegate::CreateUObject(this, &USTK_GameInstance::OnSessionUserInviteAccepted);
     }
+
+#endif
 
     //Search for Main Menu Widget Blueprint
     {
@@ -52,6 +57,183 @@ USTK_GameInstance::USTK_GameInstance(const FObjectInitializer& ObjectInitializer
         InviteMenuClass = InviteMenuBPClass.Class;
     }
 }
+
+bool USTK_GameInstance::HostSession(FName SessionName, FName Map, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers)
+{
+
+#ifdef STEAM_ENABLED
+
+    const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
+
+    if (LocalPlayer->IsValidLowLevelFast())
+    {
+        FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(LocalPlayer->GetPreferredUniqueNetId());
+
+        //Create the session
+        return CreateSession(UniqueNetIdWrapper.GetUniqueNetId(), SessionName, Map, bIsLAN, bIsPresence, MaxNumPlayers);
+    }
+
+#endif
+
+    return false;
+}
+
+bool USTK_GameInstance::FindSessions(bool bIsLAN, bool bIsPresence)
+{
+
+#ifdef STEAM_ENABLED
+
+    const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
+
+    if (LocalPlayer->IsValidLowLevelFast())
+    {
+        FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(LocalPlayer->GetPreferredUniqueNetId());
+
+        //Find sessions
+        FindSessions(UniqueNetIdWrapper.GetUniqueNetId(), bIsLAN, bIsPresence);
+
+        return true;
+    }
+
+#endif
+
+    return false;
+}
+
+
+/// <summary>
+/// Finds an online session.
+/// </summary>
+/// <param name="UserId">User that initiated the request.</param>
+/// <param name="bIsLAN">Are we searching for LAN matches?</param>
+/// <param name="bIsPresence">Are we searching for presence sessions?</param>
+void USTK_GameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence)
+{
+
+#ifdef STEAM_ENABLED
+
+    const IOnlineSubsystem* OnlineSubsystemInterface = IOnlineSubsystem::Get();
+
+    if (OnlineSubsystemInterface)
+    {
+        IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystemInterface->GetSessionInterface();
+
+        if (OnlineSessionInterface.IsValid() && UserId.IsValid())
+        {
+            //Set session search settings
+            SessionSearch = MakeShareable(new FOnlineSessionSearch());
+
+            SessionSearch->bIsLanQuery = bIsLAN;
+            SessionSearch->MaxSearchResults = 20;
+            SessionSearch->PingBucketSize = 50;
+
+            if (bIsPresence)
+            {
+                SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, bIsPresence, EOnlineComparisonOp::Equals);
+            }
+
+            TSharedRef<FOnlineSessionSearch> SearchSettingsRef = SessionSearch.ToSharedRef();
+
+            OnFindSessionsCompleteDelegateHandle = OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
+            OnlineSessionInterface->FindSessions(*UserId, SearchSettingsRef);
+        }
+    }
+    else
+    {
+        OnFindSessionsComplete(false);
+    }
+
+#endif
+
+}
+
+bool USTK_GameInstance::JoinSession()
+{
+
+#ifdef STEAM_ENABLED
+
+    const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
+
+    if (LocalPlayer->IsValidLowLevelFast())
+    {
+        FOnlineSessionSearchResult SearchResult;
+
+        if (SessionSearch->SearchResults.Num() > 0)
+        {
+            for (int32 i = 0; i < SessionSearch->SearchResults.Num(); i++)
+            {
+                if (SessionSearch->SearchResults[i].Session.OwningUserId != LocalPlayer->GetPreferredUniqueNetId())
+                {
+                    SearchResult = SessionSearch->SearchResults[i];
+
+                    FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(LocalPlayer->GetPreferredUniqueNetId());
+
+                    //Join the session
+                    return JoinSession(UniqueNetIdWrapper.GetUniqueNetId(), SESSION_NAME/*GameSessionName*/, SearchResult);
+                }
+            }
+        }
+    }
+
+#endif
+
+    return false;
+}
+
+void USTK_GameInstance::DestroySession()
+{
+
+#ifdef STEAM_ENABLED
+
+    const IOnlineSubsystem* OnlineSubsystemInterface = IOnlineSubsystem::Get();
+
+    if (OnlineSubsystemInterface)
+    {
+        IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystemInterface->GetSessionInterface();
+
+        if (OnlineSessionInterface.IsValid())
+        {
+            OnlineSessionInterface->AddOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegate);
+            OnlineSessionInterface->DestroySession(SESSION_NAME);
+        }
+    }
+
+#endif
+
+}
+
+bool USTK_GameInstance::SendSessionInviteToFriend(const FString& FriendUniqueNetId)
+{
+
+#ifdef STEAM_ENABLED
+
+    const IOnlineSubsystem* OnlineSubsystemInterface = IOnlineSubsystem::Get();
+
+    if (OnlineSubsystemInterface)
+    {
+        IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystemInterface->GetSessionInterface();
+
+        for (size_t i = 0; i < FriendsList.Num(); i++)
+        {
+            if (FriendsList[i].Get().GetUserId()->ToString().Contains(FriendUniqueNetId))
+            {
+                FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(FriendsList[i].Get().GetUserId());
+                const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
+
+                if (OnlineSessionInterface->SendSessionInviteToFriend(LocalPlayer->GetControllerId(), SESSION_NAME/*SessionInfo.SessionName*/, *UniqueNetIdWrapper.GetUniqueNetId()))
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Purple, FString::Printf(TEXT("Invited friend")));
+                }
+            }
+        }
+    }
+
+#endif
+
+    return false;
+}
+
+#ifdef STEAM_ENABLED
 
 /// <summary>
 /// Allows the Game Instance to setup what it needs.
@@ -104,21 +286,6 @@ void USTK_GameInstance::Shutdown()
     {
         GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("No OnlineSubsystem found!"));
     }
-}
-
-bool USTK_GameInstance::HostSession(FName SessionName, FName Map, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers)
-{
-    const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
-
-    if (LocalPlayer->IsValidLowLevelFast())
-    {
-        FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(LocalPlayer->GetPreferredUniqueNetId());
-
-        //Create the session
-        return CreateSession(UniqueNetIdWrapper.GetUniqueNetId(), SessionName, Map, bIsLAN, bIsPresence, MaxNumPlayers);
-    }
-
-    return false;
 }
 
 /// <summary>
@@ -247,33 +414,7 @@ void USTK_GameInstance::OnStartSessionComplete(FName SessionName, bool bWasSucce
     }
 }
 
-bool USTK_GameInstance::JoinSession()
-{
-    const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
 
-    if (LocalPlayer->IsValidLowLevelFast())
-    {
-        FOnlineSessionSearchResult SearchResult;
-
-        if (SessionSearch->SearchResults.Num() > 0)
-        {
-            for (int32 i = 0; i < SessionSearch->SearchResults.Num(); i++)
-            {
-                if (SessionSearch->SearchResults[i].Session.OwningUserId != LocalPlayer->GetPreferredUniqueNetId())
-                {
-                    SearchResult = SessionSearch->SearchResults[i];
-
-                    FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(LocalPlayer->GetPreferredUniqueNetId());
-
-                    //Join the session
-                    return JoinSession(UniqueNetIdWrapper.GetUniqueNetId(), SESSION_NAME/*GameSessionName*/, SearchResult);
-                }
-            }
-        }
-    }
-
-    return false;
-}
 
 /// <summary>
 /// Joins a session via a search result.
@@ -330,62 +471,7 @@ void USTK_GameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionC
     }
 }
 
-bool USTK_GameInstance::FindSessions(bool bIsLAN, bool bIsPresence)
-{
-    const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
 
-    if (LocalPlayer->IsValidLowLevelFast())
-    {
-        FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(LocalPlayer->GetPreferredUniqueNetId());
-
-        //Find sessions
-        FindSessions(UniqueNetIdWrapper.GetUniqueNetId(), bIsLAN, bIsPresence);
-
-        return true;
-    }
-
-    return false;
-}
-
-/// <summary>
-/// Finds an online session.
-/// </summary>
-/// <param name="UserId">User that initiated the request.</param>
-/// <param name="bIsLAN">Are we searching for LAN matches?</param>
-/// <param name="bIsPresence">Are we searching for presence sessions?</param>
-void USTK_GameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence)
-{
-    const IOnlineSubsystem* OnlineSubsystemInterface = IOnlineSubsystem::Get();
-
-    if (OnlineSubsystemInterface)
-    {
-        IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystemInterface->GetSessionInterface();
-
-        if (OnlineSessionInterface.IsValid() && UserId.IsValid())
-        {
-            //Set session search settings
-            SessionSearch = MakeShareable(new FOnlineSessionSearch());
-
-            SessionSearch->bIsLanQuery = bIsLAN;
-            SessionSearch->MaxSearchResults = 20;
-            SessionSearch->PingBucketSize = 50;
-
-            if (bIsPresence)
-            {
-                SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, bIsPresence, EOnlineComparisonOp::Equals);
-            }
-
-            TSharedRef<FOnlineSessionSearch> SearchSettingsRef = SessionSearch.ToSharedRef();
-
-            OnFindSessionsCompleteDelegateHandle = OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
-            OnlineSessionInterface->FindSessions(*UserId, SearchSettingsRef);
-        }
-    }
-    else
-    {
-        OnFindSessionsComplete(false);
-    }
-}
 
 /// <summary>
 /// Delegate fired when a session search query has completed.
@@ -497,32 +583,6 @@ void USTK_GameInstance::InviteFriend(FString FriendName, bool bWasSuccessful)
     }
 }
 
-bool USTK_GameInstance::SendSessionInviteToFriend(const FString& FriendUniqueNetId)
-{
-    const IOnlineSubsystem* OnlineSubsystemInterface = IOnlineSubsystem::Get();
-
-    if (OnlineSubsystemInterface)
-    {
-        IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystemInterface->GetSessionInterface();
-
-        for (size_t i = 0; i < FriendsList.Num(); i++)
-        {
-            if (FriendsList[i].Get().GetUserId()->ToString().Contains(FriendUniqueNetId))
-            {
-                FUniqueNetIdWrapper UniqueNetIdWrapper = FUniqueNetIdWrapper(FriendsList[i].Get().GetUserId());
-                const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
-
-                if (OnlineSessionInterface->SendSessionInviteToFriend(LocalPlayer->GetControllerId(), SESSION_NAME/*SessionInfo.SessionName*/, *UniqueNetIdWrapper.GetUniqueNetId()))
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Purple, FString::Printf(TEXT("Invited friend")));
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
 /// <summary>
 /// Called when a user accepts a session invitation. Allows the game code a chance to
 /// clean up any existing state before accepting the invite. The invite must be accepted by
@@ -547,21 +607,7 @@ void USTK_GameInstance::OnSessionUserInviteAccepted(const bool bWasSuccesful, co
     }
 }
 
-void USTK_GameInstance::DestroySession()
-{
-    const IOnlineSubsystem* OnlineSubsystemInterface = IOnlineSubsystem::Get();
 
-    if (OnlineSubsystemInterface)
-    {
-        IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystemInterface->GetSessionInterface();
-
-        if (OnlineSessionInterface.IsValid())
-        {
-            OnlineSessionInterface->AddOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegate);
-            OnlineSessionInterface->DestroySession(SESSION_NAME);
-        }
-    }
-}
 
 /// <summary>
 /// Delegate fired when a destroying an online session has completed.
@@ -589,6 +635,8 @@ void USTK_GameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSuc
         }
     }
 }
+
+#endif
 
 /// <summary>
 /// Creates and sets up the Main Menu Widget in the game's viewport.

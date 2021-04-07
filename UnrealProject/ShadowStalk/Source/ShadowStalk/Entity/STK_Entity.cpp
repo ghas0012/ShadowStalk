@@ -17,6 +17,7 @@
 #include "ShadowStalk/GameInstance/STK_GameInstance.h"
 #include "ShadowStalk/UI/STK_UserWidget.h"
 #include "ShadowStalk/UI/STK_UWPauseMenu.h"
+#include "ShadowStalk/Inventory/STK_InventoryComponent.h"
 
 
 // Sets default values
@@ -447,6 +448,20 @@ void ASTK_Entity::HandleCamera(float DeltaTime)
     }
 }
 
+void ASTK_Entity::NextItem()
+{
+	InventoryComponent->NextInventoryItem();
+}
+
+void ASTK_Entity::PrevItem()
+{
+	InventoryComponent->PreviousInventoryItem();
+}
+
+void ASTK_Entity::UseItem()
+{
+}
+
 
 /// <summary>
 /// This function passes the input acceleration to the movement component.
@@ -506,13 +521,27 @@ bool ASTK_Entity::Server_HandlePosition_Validate(float DeltaTime)
 void ASTK_Entity::HandleFootstepSounds(float DeltaTime)
 {
     FootstepTimer += DeltaTime * FootstepFrequency * m_MovementComp->GetForwardVelocity();
-    if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && !AudioComponent->IsPlaying())
+    if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
     {
         FootstepTimer = 0;
 
         //AudioComponent->SetSound(FootstepsSound);
         UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
+
+		PlayFootstep1 = false;
+		PlayFootstep2 = true;
     }
+
+	if (m_MovementComp->GetIsGrounded() && FootstepTimer >= 1 && PlayFootstep2 == true && !AudioComponent->IsPlaying())
+	{
+		FootstepTimer = 0;
+
+		//AudioComponent->SetSound(FootstepsSound);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound2, GetActorLocation());
+
+		PlayFootstep2 = false;
+		PlayFootstep1 = true;
+	}
 
 }
 
