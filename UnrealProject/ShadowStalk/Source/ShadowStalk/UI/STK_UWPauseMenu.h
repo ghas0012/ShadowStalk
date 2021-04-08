@@ -2,10 +2,11 @@
 
  /*
   Author: Arianne Fennell
-  Date Modified: 3/23/2021
+  Date Modified: 4/07/2021
   Comment/Description: Base user widget responsible for the Pause Menu interface.
   ChangeLog:
   A 3/23/2021: Implemented basic interface with button functionality.
+  A 4/07/2021: Altered Pause Menu "Quit" functionality to open a dialogue box that confirms user action.
   */
 
 #pragma once
@@ -26,10 +27,7 @@ public:
     class UImage* BGOverlay = nullptr;
 
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-    class UButton* ContinueButton = nullptr;
-
-    /*UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-    class UButton* InviteButton = nullptr;*/
+    class UButton* InviteButton = nullptr;
 
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     class UButton* OptionsButton = nullptr;
@@ -52,11 +50,17 @@ private:
     TSubclassOf<class UUserWidget> OptionsPanelClass;
     class USTK_UWOptionsPanel* UWOptionsPanel;
 
+    TSubclassOf<class UUserWidget> ConfirmQuitClass;
+    class USTK_UWConfirmQuit* UWConfirmQuit;
+
     UFUNCTION()
     void OpenInviteMenu();
 
     UFUNCTION()
     void OpenOptionsMenu();
+
+    UFUNCTION()
+    void OpenConfirmQuitBox();
 
     UFUNCTION()
     void ReturnToMainMenu();
