@@ -16,6 +16,8 @@
 
 #include "Net/UnrealNetwork.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ASTK_EntityCharacter::ASTK_EntityCharacter()
 {
@@ -166,6 +168,28 @@ void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
 
 void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 {
+	FootstepTimer += DeltaTime * FootstepFrequency * GetMovementComponent()->Velocity.Size();
+	if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
+	{
+		FootstepTimer = 0;
+
+		//AudioComponent->SetSound(FootstepsSound);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
+
+		PlayFootstep1 = false;
+		PlayFootstep2 = true;
+	}
+
+	if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep2 == true && !AudioComponent->IsPlaying())
+	{
+		FootstepTimer = 0;
+
+		//AudioComponent->SetSound(FootstepsSound);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound2, GetActorLocation());
+
+		PlayFootstep2 = false;
+		PlayFootstep1 = true;
+	}
 
 }
 

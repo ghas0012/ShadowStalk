@@ -25,12 +25,13 @@ void ASTK_MatchGameState::Register_KeyPickedUp()
     FMath::Clamp(finalCount, 0, 255);
 
     Current_Key_Count = finalCount;
-    GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, FString::Printf(TEXT("Gamestate: Key picked up. %d / %d"), Current_Key_Count, Max_Key_Count));
+    // GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, FString::Printf(TEXT("Gamestate: Key picked up. %d / %d"), Current_Key_Count, Max_Key_Count));
 
-    if (Current_Key_Count >= Max_Key_Count)
+    if (HasAuthority() && Current_Key_Count >= Max_Key_Count)
     {
-        Selected_Exit_Door->DoorOpen();
-        GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Gamestate: Attempting to open door."));
+        if (Selected_Exit_Door)
+            Selected_Exit_Door->DoorOpen();
+        //GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Gamestate: Attempting to open door."));
     }
 }
 
@@ -46,7 +47,7 @@ void ASTK_MatchGameState::Register_KeyDropped(uint8 count)
     FMath::Clamp(finalCount, 0, 255);
 
     Current_Key_Count = finalCount;
-    GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, FString::Printf(TEXT("Gamestate: Key dropped. %d / %d"), Current_Key_Count, Max_Key_Count));
+    // GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, FString::Printf(TEXT("Gamestate: Key dropped. %d / %d"), Current_Key_Count, Max_Key_Count));
 
     OnKeysDropped();
 }
@@ -125,16 +126,6 @@ void ASTK_MatchGameState::Register_NewEntity(APawn* entity)
 {
     Entities.Add(Cast<ASTK_EntityCharacter>(entity));
 }
-
-/// <summary>
-/// Opens the selected door if all keys are picked up.
-/// </summary>
-void ASTK_MatchGameState::OnAllKeysPickedUp()
-{
-    if (Selected_Exit_Door)
-        Selected_Exit_Door->DoorOpen();
-}
-
 
 /// <summary>
 /// Closes the selected door if a key was dropped.

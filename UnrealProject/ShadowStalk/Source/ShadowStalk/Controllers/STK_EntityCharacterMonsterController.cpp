@@ -16,7 +16,7 @@ void ASTK_EntityCharacterMonsterController::OnPossess(APawn* aPawn)
 
     m_MonsterEntityCharacter = Cast<ASTK_EntityCharacterMonster>(aPawn);
 
-    GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Monster Name: " + m_MonsterEntityCharacter->GetName());
+    //GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Monster Name: " + m_MonsterEntityCharacter->GetName());
 }
 
 void ASTK_EntityCharacterMonsterController::OnUnPossess()
