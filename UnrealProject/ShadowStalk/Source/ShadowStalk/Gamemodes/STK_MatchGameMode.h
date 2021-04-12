@@ -13,6 +13,7 @@
   H 3/12/2021: Init.
   H 3/15/2021: Added ability to spawn as the Monster. Added functionality to spawn only if the level has loaded.
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
 */
 
 #pragma once
