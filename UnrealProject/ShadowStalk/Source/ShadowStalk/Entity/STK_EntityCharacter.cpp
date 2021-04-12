@@ -21,7 +21,7 @@ ASTK_EntityCharacter::ASTK_EntityCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	//CapsuleComponent->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
 	//CapsuleComponent->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
 	//CapsuleComponent->SetEnableGravity(true);
@@ -45,7 +45,7 @@ ASTK_EntityCharacter::ASTK_EntityCharacter()
 	m_CameraComp->SetupAttachment(GetCapsuleComponent());
 	// m_CameraComp->bUsePawnControlRotation = true;
 
-	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...	
+	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...
 
 	m_TPMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("TP Mesh Comp");
 	m_TPMeshComp->bHiddenInGame = false;
@@ -80,7 +80,7 @@ ASTK_EntityCharacter::ASTK_EntityCharacter()
 	{
 		ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/UI/WBP_PauseMenu"));
 		if (!ensure(PauseMenuBPClass.Class != nullptr)) return;
-	
+
 		PauseMenuClass = PauseMenuBPClass.Class;
 	}
 }
@@ -112,7 +112,7 @@ void ASTK_EntityCharacter::BeginPlay()
 	GetCapsuleComponent()->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
 
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -134,7 +134,7 @@ void ASTK_EntityCharacter::HandlePositionOverride(float DeltaTime)
 			bPositionOverride = false;
 			return;
 		}
-		
+
 		SetActorLocation(FMath::Lerp(PositionOverrideOrigin, PositionOverrideTarget, PositionOverridePercent));
 		PositionOverridePercent += DeltaTime * PositionOverrideSpeed;
 	}
@@ -257,7 +257,7 @@ void ASTK_EntityCharacter::MouseLook_Horizontal(float value)
 {
 	if (InputLockFlags & EInputLockFlags::MouseLook || bCameraOverride)
 		return;
-	
+
 	APawn::AddControllerYawInput(value * m_MovementData.m_MouseLook_X);
 }
 
@@ -268,27 +268,24 @@ void ASTK_EntityCharacter::PauseMenu()
 {
 	if (PauseMenuClass)
 	{
-		// Create the pause menu widget
-		UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
-		UWPauseMenu->Setup();
+			// Create the pause menu widget
+			UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
+			UWPauseMenu->Setup();
 
 		//TODO: User Interface [Fix Toggle Menu to avoid widget overlap (widget switcher)]
 		/*if (UWPauseMenu)
 		{
 			UWPauseMenu->RemoveFromParent();
-
 			//Change Input Method
 			APlayerController* PlayerController = Cast<APlayerController>(GetController());
 			PlayerController->SetInputMode(FInputModeGameOnly());
 			PlayerController->bShowMouseCursor = false;
-
 			UWPauseMenu = nullptr;
 		}
 		else
 		{
 			UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
 			UWPauseMenu->AddToViewport();
-
 			//Change Input Method
 			APlayerController* PlayerController = Cast<APlayerController>(GetController());
 			PlayerController->SetInputMode(FInputModeGameAndUI());
