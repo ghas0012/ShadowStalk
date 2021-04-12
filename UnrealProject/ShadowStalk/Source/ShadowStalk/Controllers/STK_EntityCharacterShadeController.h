@@ -15,10 +15,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "STK_EntityShadeController.generated.h"
+#include "STK_EntityCharacterShadeController.generated.h"
 
 UCLASS()
-class SHADOWSTALK_API ASTK_EntityShadeController : public APlayerController
+class SHADOWSTALK_API ASTK_EntityCharacterShadeController : public APlayerController
 {
     GENERATED_BODY()
 
@@ -54,5 +54,5 @@ protected:
     void PauseMenu();
 
     UPROPERTY(Replicated)
-    class ASTK_EntityShade* m_ShadeEntity;
+    class ASTK_EntityCharacterShade* m_ShadeEntityCharacter;
 };

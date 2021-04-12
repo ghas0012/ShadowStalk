@@ -1,15 +1,18 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
 
-#include "STK_EntityShade.h"
+#include "STK_EntityCharacterShade.h"
+
 #include "ShadowStalk/Gamestates/STK_MatchGameState.h"
-#include "ShadowStalk/Entity/STK_EntityMonster.h"
+#include "ShadowStalk/Entity/STK_EntityCharacterMonster.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
-#include "STK_Entity.h"
+#include "STK_EntityCharacter.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShadowStalk/GameElements/STK_TrapBase.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
 
 //Eyes
 #include "Components/RectLightComponent.h"
@@ -25,30 +28,32 @@
 
 
 // Sets default values
-ASTK_EntityShade::ASTK_EntityShade()
+ASTK_EntityCharacterShade::ASTK_EntityCharacterShade()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SetupEyes();
 
-	m_PlayerCapsule->OnComponentBeginOverlap.AddDynamic(this, &ASTK_EntityShade::OnBeginOverlap);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ASTK_EntityCharacterShade::OnBeginOverlap);
 
-	//Default Shade Stats. 
-	m_MovementData.m_WalkSpeed = 500.0f;
+	//Default Shade Stats.
+	m_MovementData.m_JumpStrength = 2000.0f;
+	m_MovementData.m_Acceleration = 3500.0f;
+	m_MovementData.m_WalkSpeed = 600.0f;
 	m_MovementData.m_SprintSpeed = 800.0f;
 	m_MovementData.m_CrawlSpeed = 200.0f;
-	m_MovementData.m_Acceleration = 3500.0f;
-	m_MovementData.m_JumpStrength = 20000.0f;
 	m_MovementData.m_CapsuleHalfHeight = 75.0f;
 	m_MovementData.m_CrawlCapsuleHalfHeight = 50.f;
 	m_MovementData.m_CapsuleRadius = 40.0f;
+
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
 	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
-void ASTK_EntityShade::BeginPlay()
+void ASTK_EntityCharacterShade::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -62,44 +67,35 @@ void ASTK_EntityShade::BeginPlay()
 		m_pFPSpotlight->SetVisibility(false);
 		m_pEyeSocket->SetVisibility(false);
 	}
-
-	// here's how to use the eyes. each new emotion gets added to a queue to be emoted.
-	// order is: Emotion name, Emotion intensity, Duration, Transition speed, and fidgeting intensity.
-
-	//m_pEyes->SetEmotion("Close"	, 1.0f, 1, 2.0f);
-	//m_pEyes->SetEmotion("Angry"	, 0.6f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Happy"	, 1.0f, 2, 2.0f);
-	//m_pEyes->SetEmotion("Angry"	, 1.0f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Happy"	, 1.0f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Sad"	, 0.6f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Sad"	, 1.0f, 5, 2.0f);
-	//m_pEyes->SetEmotion("Close"	, 0.5f, 1, 2.0f, 0.5f);
 }
 
 // Called every frame
-void ASTK_EntityShade::Tick(float DeltaTime)
+void ASTK_EntityCharacterShade::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	if (OverlappingAnotherEntity)
 	{
 		TArray<AActor*> OverlappingActors;
-		GetOverlappingActors(OverlappingActors, ASTK_Entity::StaticClass());
+		GetOverlappingActors(OverlappingActors, ASTK_EntityCharacter::StaticClass());
 
 		for (size_t i = 0; i < OverlappingActors.Num(); i++)
 		{
 			FVector direction = GetActorLocation() - OverlappingActors[i]->GetActorLocation();
 			direction.Z = 0; direction.Normalize();
-			m_PlayerCapsule->AddImpulse(direction * 30000);
+			GetCapsuleComponent()->AddImpulse(direction * 30000);
 		}
 
 		OverlappingAnotherEntity = OverlappingActors.Num() == 0;
 
 	}
 
-	//if (BlinkPercentage != BlinkTarget)
+	if (BlinkPercentage != BlinkTarget)
 	{
-		HandleBlinkInput(DeltaTime);
+						  // if BlinkTarget == 1 ? 1 : -1
+		BlinkPercentage += 2 * (BlinkTarget - 0.5f) * DeltaTime * BlinkSpeed;
+		BlinkPercentage = FMath::Clamp(BlinkPercentage, 0.0f, 1.0f);
+
 		m_pEyes->SetState("Close", BlinkPercentage);
 
 		if (BlinkPercentage == 1)
@@ -120,61 +116,55 @@ void ASTK_EntityShade::Tick(float DeltaTime)
 /// <summary>
 /// prep the shade position and rotation for execution animation.
 /// </summary>
-void ASTK_EntityShade::StartExecution(ASTK_EntityMonster* Executioner)
+void ASTK_EntityCharacterShade::StartExecution(ASTK_EntityCharacterMonster* Executioner)
 {
 	Server_StartExecution(Executioner);
 }
 
-void ASTK_EntityShade::Server_StartExecution_Implementation(ASTK_EntityMonster* Executioner)
+void ASTK_EntityCharacterShade::Server_StartExecution_Implementation(ASTK_EntityCharacterMonster* Executioner)
 {
-	SetShadeState(EShadeState::Execution);
+	SetShadeState(ECharacterShadeState::Execution);
 	//FVector x = Executioner->GetActorLocation() + Executioner->m_CameraComp->GetComponentLocation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%f, %f, %f"), x.X,x.Y,x.Z));
 
-	LockCameraLookat(Executioner->m_CameraComp->GetComponentLocation());
+	LockCameraLookat(Executioner->m_CameraComp);
 
 	FVector targetPos = Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance;
-	targetPos.Z = m_PlayerCapsule->GetRelativeLocation().Z;
+	targetPos.Z = GetCapsuleComponent()->GetRelativeLocation().Z;
 	ForceMoveToPoint(targetPos);
 	//m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//m_PlayerCapsule->SetEnableGravity(false);
 
-	DelayedTargetState = EShadeState::Dead;
-	GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityShade::DelayedStateChange, Executioner->ExecutionTimeLength, false);
+	DelayedTargetState = ECharacterShadeState::Dead;
+	GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityCharacterShade::DelayedStateChange, Executioner->ExecutionTimeLength, false);
 }
 
 /// <summary>
 /// Apply damage and set shade state accordingly. Knocks shade back if requested.
 /// </summary>
-void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
+void ASTK_EntityCharacterShade::ApplyDamage(unsigned char damage, FVector knockback)
 {
 	Health = FMath::Clamp(Health - damage, 0, 2);
 
 	if (!knockback.IsNearlyZero())
 	{
-		Jump();
-
-		if (GetRootComponent()->IsSimulatingPhysics())
-		{
-			m_PlayerCapsule->AddImpulse(knockback);
-		}
-
-		GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityShade::DelayedStateChange, KnockbackRecoveryDuration, false);
+		GetCharacterMovement()->AddImpulse(knockback + FVector(0, 0, 50000));
+		GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityCharacterShade::DelayedStateChange, KnockbackRecoveryDuration, false);
 	}
 
 	switch (Health)
 	{
 		case 0:
-			DelayedTargetState = EShadeState::Downed;
-			SetShadeState(EShadeState::KnockedBack);
+			DelayedTargetState = ECharacterShadeState::Downed;
+			SetShadeState(ECharacterShadeState::KnockedBack);
 			break;
 
 	case 1:
-		DelayedTargetState = EShadeState::Hurt;
+		DelayedTargetState = ECharacterShadeState::Hurt;
 		break;
 
 	default:
-		DelayedTargetState = EShadeState::Default;
+		DelayedTargetState = ECharacterShadeState::Default;
 		break;
 	}
 }
@@ -182,19 +172,19 @@ void ASTK_EntityShade::ApplyDamage(unsigned char damage, FVector knockback)
 /// <summary>
 /// Helper function to apply a state change with a delay.
 /// </summary>
-void ASTK_EntityShade::DelayedStateChange()
+void ASTK_EntityCharacterShade::DelayedStateChange()
 {
 	SetShadeState(DelayedTargetState);
 }
 
 
-int ASTK_EntityShade::GetHealth()
+int ASTK_EntityCharacterShade::GetHealth()
 {
 	return Health;
 }
 
 
-void ASTK_EntityShade::SetHealth(int targetHealth)
+void ASTK_EntityCharacterShade::SetHealth(int targetHealth)
 {
 	Health = FMath::Clamp(targetHealth, 0, 2);
 }
@@ -203,7 +193,7 @@ void ASTK_EntityShade::SetHealth(int targetHealth)
 /// <summary>
 /// Returns this shade's state
 /// </summary>
-EShadeState ASTK_EntityShade::GetShadeState()
+ECharacterShadeState ASTK_EntityCharacterShade::GetShadeState()
 {
 	return CurrentState;
 }
@@ -212,60 +202,55 @@ EShadeState ASTK_EntityShade::GetShadeState()
 /// <summary>
 /// Interact with the environment.
 /// </summary>
-void ASTK_EntityShade::Interact()
+void ASTK_EntityCharacterShade::Interact()
 {
 	if (InputLockFlags & EInputLockFlags::Interact)
 		return;
 }
 
-void ASTK_EntityShade::CloseEyes()
+void ASTK_EntityCharacterShade::Blink(bool blink)
 {
-	Server_CloseEyes();
+	Server_Blink(blink);
 }
 
-void ASTK_EntityShade::Server_CloseEyes_Implementation()
+void ASTK_EntityCharacterShade::Server_Blink_Implementation(bool blink)
 {
-	BlinkTarget = 1;
+	BlinkTarget = blink? 1 : 0;
 }
 
-void ASTK_EntityShade::OpenEyes()
-{
-	Server_OpenEyes();
-}
+//void ASTK_EntityCharacterShade::HandleBlinkInput(float DeltaTime)
+//{
+//	// Server_HandleBlinkInput(DeltaTime);
+//}
+//
+//void ASTK_EntityCharacterShade::Server_HandleBlinkInput_Implementation(float DeltaTime)
+//{
+//	//BlinkPercentage = BlinkTarget - (BlinkTarget - BlinkPercentage) * DeltaTime * BlinkSpeed;
+//	//BlinkTarget ? BlinkPercentage += DeltaTime * BlinkSpeed : BlinkPercentage -= DeltaTime * BlinkSpeed;
+//	//BlinkPercentage = FMath::Max(FMath::Clamp(BlinkPercentage, 0.0f, 1.0f), EyeClosedOverride);
+//}
 
-void ASTK_EntityShade::Server_OpenEyes_Implementation()
+void ASTK_EntityCharacterShade::SetShadeState(ECharacterShadeState state)
 {
-	BlinkTarget = 0;
-}
-
-void ASTK_EntityShade::HandleBlinkInput(float DeltaTime)
-{
-	Server_HandleBlinkInput(DeltaTime);
-}
-
-void ASTK_EntityShade::Server_HandleBlinkInput_Implementation(float DeltaTime)
-{
-	//BlinkPercentage = BlinkTarget - (BlinkTarget - BlinkPercentage) * DeltaTime * BlinkSpeed;
-	BlinkTarget ? BlinkPercentage += DeltaTime * BlinkSpeed : BlinkPercentage -= DeltaTime * BlinkSpeed;
-	BlinkPercentage = FMath::Max(FMath::Clamp(BlinkPercentage, 0.0f, 1.0f), EyeClosedOverride);
+	Server_SetShadeState(state);
 }
 
 /// <summary>
 /// Sets the Shade's state. Also allows for custom functionality to apply when a certain state change occurs.
 /// </summary>
-void ASTK_EntityShade::SetShadeState(EShadeState state)
+void ASTK_EntityCharacterShade::Server_SetShadeState_Implementation(ECharacterShadeState state)
 {
 	switch (state)
 	{
 
-		case EShadeState::Hurt:
+		case ECharacterShadeState::Hurt:
 			//TODO: Find proper place for this sound effect to play
 			//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeHitScream, GetActorLocation());
 
 			// TODO: Apply cracked eye effects
 			break;
 
-		case EShadeState::Downed:
+		case ECharacterShadeState::Downed:
 
 			Crawl(true);
 
@@ -275,14 +260,14 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 			// Lock everything but keep mouselook and blinking
 			SetInputLock(EInputLockFlags::Everything & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
 
-			m_PlayerCapsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-			GetWorldTimerManager().SetTimer(DownedRecoveryHandle, this, &ASTK_EntityShade::RecoverFromDowned, DownedRecoveryTime, false);
+			GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+			GetWorldTimerManager().SetTimer(DownedRecoveryHandle, this, &ASTK_EntityCharacterShade::RecoverFromDowned, DownedRecoveryTime, false);
 
 			break;
 
-    case EShadeState::Dead:
-			m_PlayerCapsule->SetSimulatePhysics(false);
-			m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    case ECharacterShadeState::Dead:
+			GetCapsuleComponent()->SetSimulatePhysics(false);
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			SetInputLock(EInputLockFlags::Everything, true);
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HE'S DEAD, JIM!"));
 			GetWorldTimerManager().ClearAllTimersForObject(this);
@@ -291,7 +276,7 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 
 			break;
 
-		case EShadeState::Execution:
+		case ECharacterShadeState::Execution:
 			SetInputLock(EInputLockFlags::Everything, true);
 			break;
 
@@ -299,10 +284,10 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("UNDEFINED SHADE STATE!"));
 			break;
 
-		case EShadeState::Stuck:
+		case ECharacterShadeState::Stuck:
 			SetInputLock(EInputLockFlags::Movement & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
 			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HELP, I'M STUCK!"));
-			GetWorldTimerManager().SetTimer(StuckRecoveryHandle, this, &ASTK_EntityShade::RecoverFromTrap, StuckRecoveryTime, false);
+			GetWorldTimerManager().SetTimer(StuckRecoveryHandle, this, &ASTK_EntityCharacterShade::RecoverFromTrap, StuckRecoveryTime, false);
 			break;
 	}
 
@@ -312,7 +297,7 @@ void ASTK_EntityShade::SetShadeState(EShadeState state)
 }
 
 
-EEntityType ASTK_EntityShade::GetEntityType()
+EEntityType ASTK_EntityCharacterShade::GetEntityType()
 {
 	return EEntityType::Shade;
 }
@@ -321,47 +306,47 @@ EEntityType ASTK_EntityShade::GetEntityType()
 /// <summary>
 /// Get back up if downed
 /// </summary>
-void ASTK_EntityShade::RecoverFromDowned()
+void ASTK_EntityCharacterShade::RecoverFromDowned()
 {
-  if (GetShadeState() == EShadeState::Downed)
+  if (GetShadeState() == ECharacterShadeState::Downed)
 	{
-		// TArray<ASTK_Entity*> entities = Cast<ASTK_MatchGameState>(GetWorld()->GetGameState())->GetEntities();
-		m_PlayerCapsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+		// TArray<ASTK_EntityCharacter*> entities = Cast<ASTK_MatchGameState>(GetWorld()->GetGameState())->GetEntities();
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		SafeActivatePawnCollision();
 
-		SetInputLock(EInputLockFlags::Crawl, false);
-		SetShadeState(EShadeState::Hurt);
+		SetInputLock(EInputLockFlags::Everything, false);
+		SetShadeState(ECharacterShadeState::Hurt);
 		Crawl(false);
 	}
 }
 
-void ASTK_EntityShade::RecoverFromTrap()
+void ASTK_EntityCharacterShade::RecoverFromTrap()
 {
-	if (GetShadeState() == EShadeState::Stuck)
+	if (GetShadeState() == ECharacterShadeState::Stuck)
 	{
 		SetInputLock(EInputLockFlags::Everything, false);
-		SetShadeState(EShadeState::Default);
+		SetShadeState(ECharacterShadeState::Hurt);
 		//TODO Define Default State
   }	
 }
 
-void ASTK_EntityShade::SafeActivatePawnCollision()
+void ASTK_EntityCharacterShade::SafeActivatePawnCollision()
 {
 	bool success = false;
 
 	TArray<AActor*> OverlappingActors;
-	GetOverlappingActors(OverlappingActors, ASTK_Entity::StaticClass());
+	GetOverlappingActors(OverlappingActors, ASTK_EntityCharacter::StaticClass());
 
 	if (OverlappingActors.Num() == 0)
 	{
-		m_PlayerCapsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 		success = true;
 	}
 
 	if (!success)
 	{
 		OverlappingAnotherEntity = true;
-		GetWorldTimerManager().SetTimer(SafeActivatePawnCollisionHandle, this, &ASTK_EntityShade::SafeActivatePawnCollision, 0.2f, false);
+		GetWorldTimerManager().SetTimer(SafeActivatePawnCollisionHandle, this, &ASTK_EntityCharacterShade::SafeActivatePawnCollision, 0.2f, false);
 	}
 }
 
@@ -370,7 +355,7 @@ void ASTK_EntityShade::SafeActivatePawnCollision()
 /// <summary>
 /// Handle overlap with other components.
 /// </summary>
-void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// Handle pickups
 	if (OtherActor->ActorHasTag("Pickup"))
@@ -408,7 +393,7 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	else if (OtherActor->ActorHasTag("Trap"))
 	{
 		Cast<ASTK_TrapBase>(OtherActor)->ActivateTrap();
-		SetShadeState(EShadeState::Stuck);
+		SetShadeState(ECharacterShadeState::Stuck);
 	}
 }
 
@@ -416,7 +401,7 @@ void ASTK_EntityShade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 /// <summary>
 /// Sets up the lights and their positioning, as well as the blinking component. Numbers hard-coded to ensure no loss of effort in case of a blueprint reset.
 /// </summary>
-void ASTK_EntityShade::SetupEyes()
+void ASTK_EntityCharacterShade::SetupEyes()
 {
 	m_pEyeSocket = CreateDefaultSubobject<USkeletalMeshComponent>("m_pEyeSocket");
 	m_pEyeSocket->SetupAttachment(m_CameraComp);
@@ -430,34 +415,34 @@ void ASTK_EntityShade::SetupEyes()
 
 	m_pLSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pLSpotlight"));
 	m_pRSpotlight = CreateDefaultSubobject<URectLightComponent>(TEXT("m_pRSpotlight"));
-
+	
 	m_pLSpotlight->SetRelativeLocation(FVector(-4.358307, 1.676558, -7.412248));
 	m_pLSpotlight->SetRelativeRotation(FRotator(79.999390, 269.600494, 360.000641));
-
+	
 	m_pRSpotlight->SetRelativeLocation(FVector(4.358307, 1.676558, -7.412248));
 	m_pRSpotlight->SetRelativeRotation(FRotator(79.999390, 269.600494, 360.000641));
-
+	
 	m_pRSpotlight->Intensity = InitBrightness;
 	m_pLSpotlight->Intensity = InitBrightness;
-
+	
 	m_pRSpotlight->AttenuationRadius = 2500.f;
 	m_pLSpotlight->AttenuationRadius = 2500.f;
-
+	
 	m_pRSpotlight->SourceWidth = 4.823f;
 	m_pLSpotlight->SourceWidth = 4.823f;
-
+	
 	m_pRSpotlight->SourceHeight = 9.f;
 	m_pLSpotlight->SourceHeight = 9.f;
-
+	
 	m_pRSpotlight->BarnDoorAngle = 0;
 	m_pLSpotlight->BarnDoorAngle = 0;
-
+	
 	m_pRSpotlight->BarnDoorLength = 12.f;
 	m_pLSpotlight->BarnDoorLength = 12.f;
-
+	
 	m_pRSpotlight->VolumetricScatteringIntensity = 0.01f;
 	m_pLSpotlight->VolumetricScatteringIntensity = 0.01f;
-
+	
 	m_pLSpotlight->AttachToComponent(m_TPMeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
 	m_pRSpotlight->AttachToComponent(m_TPMeshComp, FAttachmentTransformRules::KeepRelativeTransform, TEXT("headSocket"));
 
@@ -477,9 +462,9 @@ void ASTK_EntityShade::SetupEyes()
 
 }
 
-void ASTK_EntityShade::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void ASTK_EntityCharacterShade::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ASTK_EntityShade, BlinkPercentage);
-	DOREPLIFETIME(ASTK_EntityShade, EyeClosedOverride);
+	DOREPLIFETIME(ASTK_EntityCharacterShade, BlinkTarget);
+	DOREPLIFETIME(ASTK_EntityCharacterShade, CurrentState);
 }

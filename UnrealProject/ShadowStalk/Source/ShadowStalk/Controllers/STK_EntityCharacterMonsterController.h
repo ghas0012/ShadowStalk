@@ -14,10 +14,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "STK_EntityMonsterController.generated.h"
+#include "STK_EntityCharacterMonsterController.generated.h"
 
 UCLASS()
-class SHADOWSTALK_API ASTK_EntityMonsterController : public APlayerController
+class SHADOWSTALK_API ASTK_EntityCharacterMonsterController : public APlayerController
 {
     GENERATED_BODY()
 
@@ -42,9 +42,7 @@ protected:
     void Attack();
 
 	UPROPERTY(Replicated)
-	class ASTK_EntityMonster* m_MonsterEntity;
-
+	class ASTK_EntityCharacterMonster* m_MonsterEntityCharacter;
 
     void PauseMenu();
-
 };

@@ -7,7 +7,7 @@
 
 #include "STK_InventoryComponent.h"
 #include "../Pickups/STK_PickupBase.h"
-#include "../Entity/STK_Entity.h"
+#include "../Entity/STK_EntityCharacter.h"
 
 // Sets default values for this component's properties
 USTK_InventoryComponent::USTK_InventoryComponent()
@@ -86,7 +86,7 @@ void USTK_InventoryComponent::EquipNewInventoryItem(ASTK_PickupBase* NewItem)
 	{
 		NewItem->Enable();
 
-		ASTK_Entity* OwningActor = Cast<ASTK_Entity>(GetOwner());
+		ASTK_EntityCharacter* OwningActor = Cast<ASTK_EntityCharacter>(GetOwner());
 	}
 
 	CurrentInventoryItem = NewItem;
