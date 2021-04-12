@@ -12,6 +12,7 @@
 
 #include "Engine/LevelStreaming.h"
 
+#include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
 
 /// <summary>
 /// Grab the Monster and shade Blueprints and controllers on startup.

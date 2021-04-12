@@ -26,6 +26,7 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundBase.h"
 
+#include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
 
 // Sets default values
 ASTK_EntityCharacterShade::ASTK_EntityCharacterShade()
@@ -394,6 +395,23 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 	{
 		Cast<ASTK_TrapBase>(OtherActor)->ActivateTrap();
 		SetShadeState(ECharacterShadeState::Stuck);
+	}
+
+	else if (OtherActor->ActorHasTag("Door"))
+	{
+		if(Cast<ASTK_ExitDoor>(OtherActor)->GetIsOpen())
+		{
+			// SHADE WIN STATE
+
+			FString name = GetName();
+			TArray< FStringFormatArg > args;
+			args.Add(FStringFormatArg(name));
+			FString string = FString::Format(TEXT("{0} Has gotten away with it lmao"), args);
+			if (HasAuthority())
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, string);
+			}
+		}
 	}
 }
 

@@ -51,7 +51,6 @@ public:
 
 	void Register_NewEntity(APawn* entity);
 
-	void OnAllKeysPickedUp();
 	void OnKeysDropped();
 
 protected:
