@@ -19,17 +19,17 @@
   J 3/28/2021: Added compatibility with the Trap class. The Shade will get stuck for brief moment when it collides with a trap. RecoverFromTrap() handles the Shade being freed from the trap.
   H 3/31/2021: Added Blinking input. Networked it. Added first person Blinking. Added vertical head movement and smooth head rotation. Modified first person light. Added first person mesh separate from 3rd person mesh.
   J 3/31/2021: Added variables and code for Inventory Component.
-
+  H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
 */
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "STK_Entity.h"
-#include "STK_EntityShade.generated.h"
+#include "STK_EntityCharacter.h"
+#include "STK_EntityCharacterShade.generated.h"
 
 UENUM(BlueprintType)
-enum class EShadeState : uint8 
+enum class ECharacterShadeState : uint8 
 {
     Execution   UMETA(DisplayName = "Execution"),
     Default     UMETA(DisplayName = "Default"),
@@ -41,7 +41,7 @@ enum class EShadeState : uint8
 };
 
 UCLASS()
-class SHADOWSTALK_API ASTK_EntityShade : public ASTK_Entity
+class SHADOWSTALK_API ASTK_EntityCharacterShade : public ASTK_EntityCharacter
 {
     GENERATED_BODY()
 
@@ -49,44 +49,44 @@ public:
 
     virtual EEntityType GetEntityType() override;
 
-    ASTK_EntityShade();
+    ASTK_EntityCharacterShade();
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Eyes")
         class USTK_EyeComponent* m_pEyes;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Eyes")
         class USkeletalMeshComponent* m_pEyeSocket;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Eyes")
         class URectLightComponent* m_pLSpotlight;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Eyes")
         class URectLightComponent* m_pRSpotlight;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Eyes")
         class URectLightComponent* m_pFPSpotlight;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eyes")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Eyes")
         float BlinkSpeed = 1;
 
     //Sound
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
         class USoundBase* ShadeHitScream;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
         class USoundBase* ShadeDownGroundHit;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
         class USoundBase* ShadeItemPickupSound;
 
 
 protected:
 
-    UPROPERTY(Replicated)
-        float BlinkPercentage;
+    float BlinkPercentage;
 
-        float BlinkTarget;
+    UPROPERTY(Replicated)
+    float BlinkTarget;
 
     // Called when the game starts
     virtual void BeginPlay() override;
@@ -96,21 +96,22 @@ protected:
     UFUNCTION()
     void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-    EShadeState CurrentState = EShadeState::Default;
+    UPROPERTY(Replicated)
+    ECharacterShadeState CurrentState = ECharacterShadeState::Default;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Health")
         int Health = 2;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Health")
         float DownedRecoveryTime = 10.0f;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Health")
         float KnockbackRecoveryDuration = 1.0f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Health")
         float KnockbackStandupDuration = 0.3f;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trap")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shade|Health")
         float StuckRecoveryTime = 6.0f;
 
     void RecoverFromDowned();
@@ -124,7 +125,7 @@ protected:
     bool OverlappingAnotherEntity = false;
 
     FTimerHandle DelayedStateChangeHandle;
-    EShadeState DelayedTargetState;
+    ECharacterShadeState DelayedTargetState;
 
     FTimerHandle StuckRecoveryHandle;
 
@@ -132,15 +133,12 @@ protected:
 
     float InitBrightness;
 
-    UPROPERTY(Replicated)
-    float EyeClosedOverride = 0;
-
 public:
 
-    void StartExecution(class ASTK_EntityMonster* Executioner);
+    void StartExecution(class ASTK_EntityCharacterMonster* Executioner);
 
     UFUNCTION(Server, Reliable)
-    void Server_StartExecution(class ASTK_EntityMonster* Executioner);
+    void Server_StartExecution(class ASTK_EntityCharacterMonster* Executioner);
 
     void ApplyDamage(unsigned char damage, FVector knockback);
 
@@ -152,25 +150,23 @@ public:
         void SetHealth(int targetHealth);
  
     UFUNCTION(BlueprintCallable)
-        EShadeState GetShadeState();
+        ECharacterShadeState GetShadeState();
 
     UFUNCTION(BlueprintCallable)
-        void SetShadeState(EShadeState state);
+        void SetShadeState(ECharacterShadeState state);
  
-    void CloseEyes();
+    UFUNCTION(Server, Reliable)
+        void Server_SetShadeState(ECharacterShadeState state);
+    
+    void Blink(bool blink);
 
     UFUNCTION(Server, Reliable)
-    void Server_CloseEyes();
-
-    void OpenEyes();
-
-    UFUNCTION(Server, Reliable)
-    void Server_OpenEyes();
+    void Server_Blink(bool blink);
 
     void HandleBlinkInput(float DeltaTime);
 
-    UFUNCTION(Server, Reliable)
-    void Server_HandleBlinkInput(float DeltaTime);
+   //UFUNCTION(Server, Reliable)
+   //void Server_HandleBlinkInput(float DeltaTime);
 
     virtual void Interact() override;
 

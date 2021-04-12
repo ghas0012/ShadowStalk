@@ -4,7 +4,7 @@
   Author: Hamidreza Ghasemi
   Date Modified: 3/12/2021
   Comment/Description:
-	
+
 	An exit door class. It has a collider, a mesh and some particle effects.
 	It can take requests to open and close.
 
@@ -51,12 +51,12 @@ public:
 	void DoorOpen();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NMC_DoorOpen();
+		void NMC_DoorOpen();
 
 	void DoorClose();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void NMC_DoorClose();
+		void NMC_DoorClose();
 
 	bool GetIsOpen();
 
