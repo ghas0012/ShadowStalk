@@ -7,8 +7,8 @@
 #include "GameFramework/SpectatorPawn.h"
 #include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
 
-#include "ShadowStalk/Controllers/STK_EntityShadeController.h"
-#include "ShadowStalk/Controllers/STK_EntityMonsterController.h"
+#include "ShadowStalk/Controllers/STK_EntityCharacterShadeController.h"
+#include "ShadowStalk/Controllers/STK_EntityCharacterMonsterController.h"
 
 #include "Engine/LevelStreaming.h"
 
@@ -19,10 +19,15 @@
 ASTK_MatchGameMode::ASTK_MatchGameMode()
 {
     // Get all our required bps and controllers
-    static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityMonster"));
-    static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_MonsterController"));
-    static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityShade"));
-    static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ShadeController"));
+    static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityCharacterMonster"));
+    static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ECharacterMonsterController"));
+    static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityCharacterShade"));
+    static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ECharacterShadeController"));
+
+    //static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityMonster"));
+    //static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_MonsterController"));
+    //static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityShade"));
+    //static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ShadeController"));
 
     if (MonsterPawnBP_Getter.Class != NULL)
     {
@@ -148,7 +153,7 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
     NewPlayer->SetInputMode(FInputModeGameOnly());
     NewPlayer->bShowMouseCursor = false;
 
-    if (ASTK_EntityMonsterController* monsterController = dynamic_cast<ASTK_EntityMonsterController*>(NewPlayer))
+    if (ASTK_EntityCharacterMonsterController* monsterController = dynamic_cast<ASTK_EntityCharacterMonsterController*>(NewPlayer))
     {
         APawn* oldPawn = monsterController->GetPawnOrSpectator();
 
@@ -162,7 +167,7 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 
         monsterController->bBlockInput = false;
     }
-    else if (ASTK_EntityShadeController* shadeController = dynamic_cast<ASTK_EntityShadeController*>(NewPlayer))
+    else if (ASTK_EntityCharacterShadeController* shadeController = dynamic_cast<ASTK_EntityCharacterShadeController*>(NewPlayer))
     {
         APawn* oldPawn = shadeController->GetPawnOrSpectator();
 
