@@ -121,6 +121,7 @@ void ASTK_EntityCharacter::BeginPlay()
 void ASTK_EntityCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	HandleFootstepSounds(DeltaTime);
 	HandlePositionOverride(DeltaTime);
 	HandleCamera(DeltaTime);
 }
@@ -168,8 +169,8 @@ void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
 
 void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 {
-	FootstepTimer += DeltaTime * FootstepFrequency * GetMovementComponent()->Velocity.Size();
-	if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
+	FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
+	if (GetCapsuleComponent()->GetComponentVelocity().Size() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
 	{
 		FootstepTimer = 0;
 
