@@ -362,7 +362,7 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 	if (OtherActor->ActorHasTag("Pickup"))
 	{
 		//TODO Find item pickup sound effect
-		//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeItemPickupSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeItemPickupSound, GetActorLocation());
 
 		EPickupType pickupType = Cast<ASTK_PickupBase>(OtherActor)->GetPickupType();
 		switch (pickupType)
