@@ -12,6 +12,7 @@
   H 3/12/2021: Initialized class.
   H 3/16/2021: Reformatted code, Added a class description and summaries to relevant methods.
   C 4/07/2021: Added Code to NetMulticast the Door's.
+  J 4/13/2021: Added Teleport Sound for when Win State is made.
 */
 
 #pragma once
@@ -40,6 +41,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
 		class UParticleSystemComponent* ParticleFX;
+
+	//Sound
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door|Audio", meta = (AllowPrivateAccess = "true"))
+		class USoundBase* TeleportSound;
 
 protected:
 
