@@ -5,5 +5,5 @@
 
 EPickupType ASTK_ItemBase::GetPickupType()
 {
-	return EPickupType();
+	return EPickupType::Item;
 }

@@ -79,16 +79,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
-	UFUNCTION()
-		void NextItem() {};
-
-	UFUNCTION()
-		void PrevItem() {};
-
-	UFUNCTION()
-		void UseItem() {};
-
 	class ASTK_PickupBase* CurrentItem;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Entity|Inventory", meta = (AllowPrivateAccess = "true"))
@@ -132,6 +122,13 @@ public:
 	virtual void MouseLook_Horizontal(float value);
 
 	virtual void PauseMenu();
+
+	virtual void NextItem();
+
+	virtual void PrevItem();
+
+	virtual void UseItem();
+
 #pragma endregion
 
 	void LockCameraLookat(USceneComponent* SceneComp);

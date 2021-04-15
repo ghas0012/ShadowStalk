@@ -113,5 +113,5 @@ void ASTK_PickupBase::Tick(float DeltaTime)
 
 EPickupType ASTK_PickupBase::GetPickupType()
 {
-	return EPickupType::Undefined;
+	return EPickupType::Item;
 }
