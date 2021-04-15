@@ -46,9 +46,9 @@ void USTK_UWConfirmQuit::ReturnToMainMenu()
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
     if (GameInstance == nullptr) return;
 
-    GameInstance->SetupMainMenuWidget();
+    GameInstance->DestroySession();
 
-    UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
+    GameInstance->SetupMainMenuWidget();
 }
 
 void USTK_UWConfirmQuit::ExitDialogueBox()

@@ -10,13 +10,19 @@
 /// </summary>
 void ASTK_EntityCharacterMonsterController::OnPossess(APawn* aPawn)
 {
-    //Temp Code, depending on how Networking stuff works with Possession.
-
     Super::OnPossess(aPawn);
+}
+
+
+void ASTK_EntityCharacterMonsterController::AcknowledgePossession(APawn* aPawn)
+{
+    Super::AcknowledgePossession(aPawn);
 
     m_MonsterEntityCharacter = Cast<ASTK_EntityCharacterMonster>(aPawn);
 
-    //GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Monster Name: " + m_MonsterEntityCharacter->GetName());
+    GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "OnPosess: Shade" + m_MonsterEntityCharacter->GetName());
+
+    SetupInputComponent();
 }
 
 void ASTK_EntityCharacterMonsterController::OnUnPossess()
@@ -65,7 +71,7 @@ void ASTK_EntityCharacterMonsterController::SetupInputComponent()
 
 void ASTK_EntityCharacterMonsterController::Forward(float value)
 {
-    if (m_MonsterEntityCharacter)
+    if(m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->Forward(value);
     }
@@ -74,7 +80,7 @@ void ASTK_EntityCharacterMonsterController::Forward(float value)
 
 void ASTK_EntityCharacterMonsterController::Strafe(float value)
 {
-    if(m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->Strafe(value);
     }
@@ -83,7 +89,7 @@ void ASTK_EntityCharacterMonsterController::Strafe(float value)
 
 void ASTK_EntityCharacterMonsterController::Jump()
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->Jump();
     }
@@ -92,7 +98,7 @@ void ASTK_EntityCharacterMonsterController::Jump()
 
 void ASTK_EntityCharacterMonsterController::Interact()
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->Interact();
     }
@@ -101,7 +107,7 @@ void ASTK_EntityCharacterMonsterController::Interact()
 
 void ASTK_EntityCharacterMonsterController::Attack()
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->Attack();
     }
@@ -110,7 +116,7 @@ void ASTK_EntityCharacterMonsterController::Attack()
 
 void ASTK_EntityCharacterMonsterController::SetSprint()
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->Sprint(true);
     }
@@ -119,7 +125,7 @@ void ASTK_EntityCharacterMonsterController::SetSprint()
 
 void ASTK_EntityCharacterMonsterController::StopSprint()
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->Sprint(false);
     }
@@ -128,7 +134,7 @@ void ASTK_EntityCharacterMonsterController::StopSprint()
 
 void ASTK_EntityCharacterMonsterController::MouseLook_Vertical(float value)
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->MouseLook_Vertical(value);
     }
@@ -137,7 +143,7 @@ void ASTK_EntityCharacterMonsterController::MouseLook_Vertical(float value)
 
 void ASTK_EntityCharacterMonsterController::MouseLook_Horizontal(float value)
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->MouseLook_Horizontal(value);
     }
@@ -152,8 +158,9 @@ void ASTK_EntityCharacterMonsterController::GetLifetimeReplicatedProps(TArray<FL
 
 void ASTK_EntityCharacterMonsterController::PauseMenu()
 {
-    if (m_MonsterEntityCharacter)
+    if (m_MonsterEntityCharacter != nullptr)
     {
         m_MonsterEntityCharacter->PauseMenu();
+        GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Escape hit, ack | " + m_MonsterEntityCharacter->GetName());
     }
 }
