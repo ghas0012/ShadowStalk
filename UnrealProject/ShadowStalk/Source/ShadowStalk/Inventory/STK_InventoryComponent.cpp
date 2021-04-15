@@ -46,6 +46,7 @@ int USTK_InventoryComponent::GetInventoryCount()
 void USTK_InventoryComponent::NextInventoryItem()
 {
 	SelectInventory(E_InventoryDirection::NEXT);
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("NEXT ITEM"));
 }
 
 
@@ -55,6 +56,7 @@ void USTK_InventoryComponent::NextInventoryItem()
 void USTK_InventoryComponent::PreviousInventoryItem()
 {
 	SelectInventory(E_InventoryDirection::PREV);
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("PREV ITEM"));
 }
 
 
@@ -107,11 +109,13 @@ void USTK_InventoryComponent::SelectInventory(E_InventoryDirection direction)
 
 	int32 Index = (direction == E_InventoryDirection::NEXT ? 0 : Inventory.Num() - 1);
 
+
 	if (CurrentInventoryItem)
 	{
 		Inventory.Find(CurrentInventoryItem, Index);
 
 		Index += (direction == E_InventoryDirection::NEXT ? 1 : -1);
+
 	}
 
 	if (Index < Inventory.Num() && Index > -1)

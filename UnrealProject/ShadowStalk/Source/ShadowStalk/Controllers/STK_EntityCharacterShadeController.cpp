@@ -5,6 +5,8 @@
 #include "../Entity/STK_EntityCharacterShade.h"
 #include "Net/UnrealNetwork.h"
 
+#include "../Inventory/STK_InventoryComponent.h"
+
 
 /// <summary>
 /// Grab the posessing pawn to send input to.
@@ -58,13 +60,18 @@ void ASTK_EntityCharacterShadeController::SetupInputComponent()
         InputComponent->BindAxis("TurnRate", m_ShadeEntityCharacter, &ASTK_EntityCharacterShade::TurnAtRate);
         InputComponent->BindAxis("LookUpRate", m_ShadeEntityCharacter, &ASTK_EntityCharacterShade::LookUpAtRate);
 
-        InputComponent->BindAction("PauseMenu", IE_Pressed, m_ShadeEntityCharacter, &ASTK_EntityCharacterShade::PauseMenu);
+        InputComponent->BindAction("CloseEyes", IE_Pressed, this, &ASTK_EntityCharacterShadeController::CloseEyes);
+        InputComponent->BindAction("CloseEyes", IE_Released, this, &ASTK_EntityCharacterShadeController::OpenEyes);
+        InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityCharacterShadeController::PauseMenu);
+        InputComponent->BindAction("NextItem", IE_Pressed, m_ShadeEntityCharacter, &ASTK_EntityCharacterShade::NextItem);
+        InputComponent->BindAction("PreviousItem", IE_Pressed, m_ShadeEntityCharacter, &ASTK_EntityCharacterShade::PrevItem);
     }
 }
 
 
 void ASTK_EntityCharacterShadeController::Forward(float value)
 {
+    if (m_ShadeEntityCharacter)
     if (m_ShadeEntityCharacter != nullptr)
     {
         GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, FString::Printf(TEXT("Forward, %f"), value));
@@ -181,14 +188,6 @@ void ASTK_EntityCharacterShadeController::OpenEyes()
     {
         m_ShadeEntityCharacter->Blink(false);
     }
-}
-
-void ASTK_EntityCharacterShadeController::NextItem()
-{
-}
-
-void ASTK_EntityCharacterShadeController::PrevItem()
-{
 }
 
 void ASTK_EntityCharacterShadeController::PauseMenu()

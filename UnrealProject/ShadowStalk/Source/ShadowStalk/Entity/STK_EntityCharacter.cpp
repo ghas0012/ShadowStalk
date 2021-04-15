@@ -11,6 +11,8 @@
 #include "ShadowStalk/UI/STK_UserWidget.h"
 #include "ShadowStalk/UI/STK_UWPauseMenu.h"
 
+#include "../Inventory/STK_InventoryComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 
@@ -73,6 +75,8 @@ ASTK_EntityCharacter::ASTK_EntityCharacter()
 	AudioComponent->bAutoActivate = false;
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	AudioComponent->SetupAttachment(RootComponent);
+
+	InventoryComponent = CreateDefaultSubobject<USTK_InventoryComponent>("Inventory");
 
 	////bReplicates = true;
 	////SetReplicatingMovement(true);
@@ -317,6 +321,21 @@ void ASTK_EntityCharacter::PauseMenu()
 			PlayerController->bShowMouseCursor = true;
 		}*/
 	}
+}
+
+void ASTK_EntityCharacter::NextItem()
+{
+	InventoryComponent->NextInventoryItem();
+}
+
+void ASTK_EntityCharacter::PrevItem()
+{
+	InventoryComponent->PreviousInventoryItem();
+}
+
+void ASTK_EntityCharacter::UseItem()
+{
+
 }
 
 void ASTK_EntityCharacter::LockCameraLookat(USceneComponent* SceneComp)

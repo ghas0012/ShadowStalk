@@ -22,6 +22,7 @@
 
 //Pickups
 #include "ShadowStalk/Pickups/STK_PickupBase.h"
+#include "ShadowStalk/Pickups/STK_ItemBase.h"
 #include "ShadowStalk/Inventory/STK_InventoryComponent.h"
 
 //Sounds
@@ -390,11 +391,29 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 
 			case EPickupType::Item:
 			{
-				// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
-				InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
-				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("Added Item"));
-				OtherActor->Destroy();
-				break;
+				EItemType itemType = Cast<ASTK_ItemBase>(OtherActor)->GetItemType();
+				switch (itemType)
+				{
+					case EItemType::TestItem1:
+					{
+						// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+						InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
+						GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, FString("Added TestItem1"));
+						OtherActor->Destroy();
+						break;
+					}
+
+					case EItemType::TestItem2:
+					{
+						// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+						InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
+						GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, FString("Added TestItem2"));
+						OtherActor->Destroy();
+						break;
+					}
+				}
+
+				
 			}
 		}
 	}
