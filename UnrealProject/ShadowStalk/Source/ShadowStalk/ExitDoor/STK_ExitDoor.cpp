@@ -4,6 +4,7 @@
 #include "Components/BoxComponent.h"
 #include "ShadowStalk/GameModes/STK_MatchGameMode.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 ASTK_ExitDoor::ASTK_ExitDoor()
@@ -12,7 +13,7 @@ ASTK_ExitDoor::ASTK_ExitDoor()
 	SetRootComponent(SceneComp);
 
 	DoorCollider = CreateDefaultSubobject<UBoxComponent>("Player Capsule");
-	DoorCollider->InitBoxExtent(FVector(80,20,120));
+	DoorCollider->InitBoxExtent(FVector(80, 20, 120));
 	DoorCollider->SetRelativeLocation(FVector(0, 0, 120));
 	DoorCollider->SetCollisionProfileName("BlockAll");
 	DoorCollider->SetupAttachment(SceneComp);
@@ -25,6 +26,7 @@ ASTK_ExitDoor::ASTK_ExitDoor()
 	ParticleFX = CreateDefaultSubobject<UParticleSystemComponent>("Particles");
 	ParticleFX->SetupAttachment(SceneComp);
 
+	Tags.Add("Door");
 	SetReplicates(true);
 }
 
@@ -47,24 +49,45 @@ void ASTK_ExitDoor::BeginPlay()
 	}
 }
 
+void ASTK_ExitDoor::DoorOpen()
+{
+	if (HasAuthority())
+	{
+		NMC_DoorOpen();
+	}
+}
+
 /// <summary>
 /// Open the door.
 /// </summary>
-void ASTK_ExitDoor::DoorOpen()
+void ASTK_ExitDoor::NMC_DoorOpen_Implementation()
 {
 	ParticleFX->DeactivateSystem();
-	DoorCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("DOOR IS OPEN!"));
+	DoorCollider->SetCollisionProfileName("OverlapAll");
+	if (HasAuthority())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("DOOR IS OPEN!"));
+	}
+	bIsOpen = true;
+}
+
+void ASTK_ExitDoor::DoorClose()
+{
+	if (HasAuthority())
+	{
+		NMC_DoorClose();
+	}
 }
 
 /// <summary>
 /// Close the door.
 /// </summary>
-void ASTK_ExitDoor::DoorClose()
+void ASTK_ExitDoor::NMC_DoorClose_Implementation()
 {
 	ParticleFX->ActivateSystem();
 	DoorCollider->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("DOOR IS CLOSED!"));
+	bIsOpen = false;
 }
 
 

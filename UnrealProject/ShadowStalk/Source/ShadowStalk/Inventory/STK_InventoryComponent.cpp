@@ -7,7 +7,7 @@
 
 #include "STK_InventoryComponent.h"
 #include "../Pickups/STK_PickupBase.h"
-#include "../Entity/STK_Entity.h"
+#include "../Entity/STK_EntityCharacter.h"
 
 // Sets default values for this component's properties
 USTK_InventoryComponent::USTK_InventoryComponent()
@@ -46,6 +46,7 @@ int USTK_InventoryComponent::GetInventoryCount()
 void USTK_InventoryComponent::NextInventoryItem()
 {
 	SelectInventory(E_InventoryDirection::NEXT);
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("NEXT ITEM"));
 }
 
 
@@ -55,6 +56,7 @@ void USTK_InventoryComponent::NextInventoryItem()
 void USTK_InventoryComponent::PreviousInventoryItem()
 {
 	SelectInventory(E_InventoryDirection::PREV);
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("PREV ITEM"));
 }
 
 
@@ -86,7 +88,7 @@ void USTK_InventoryComponent::EquipNewInventoryItem(ASTK_PickupBase* NewItem)
 	{
 		NewItem->Enable();
 
-		ASTK_Entity* OwningActor = Cast<ASTK_Entity>(GetOwner());
+		ASTK_EntityCharacter* OwningActor = Cast<ASTK_EntityCharacter>(GetOwner());
 	}
 
 	CurrentInventoryItem = NewItem;
@@ -107,11 +109,13 @@ void USTK_InventoryComponent::SelectInventory(E_InventoryDirection direction)
 
 	int32 Index = (direction == E_InventoryDirection::NEXT ? 0 : Inventory.Num() - 1);
 
+
 	if (CurrentInventoryItem)
 	{
 		Inventory.Find(CurrentInventoryItem, Index);
 
 		Index += (direction == E_InventoryDirection::NEXT ? 1 : -1);
+
 	}
 
 	if (Index < Inventory.Num() && Index > -1)

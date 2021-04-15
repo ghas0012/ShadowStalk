@@ -5,46 +5,55 @@
 #include "ShadowStalk/Pickups/STK_PickupSpawn.h"
 #include "ShadowStalk/Gamestates/STK_MatchGameState.h"
 #include "GameFramework/SpectatorPawn.h"
+#include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
 
-#include "ShadowStalk/Controllers/STK_EntityShadeController.h"
-#include "ShadowStalk/Controllers/STK_EntityMonsterController.h"
+#include "ShadowStalk/Controllers/STK_EntityCharacterShadeController.h"
+#include "ShadowStalk/Controllers/STK_EntityCharacterMonsterController.h"
 
 #include "Engine/LevelStreaming.h"
 
+#include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
 
 /// <summary>
 /// Grab the Monster and shade Blueprints and controllers on startup.
 /// </summary>
 ASTK_MatchGameMode::ASTK_MatchGameMode()
 {
-	// Get all our required bps and controllers
-	static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityMonster"));
-	static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_MonsterController"));
-	static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityShade"));
-	static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ShadeController"));
+    // Get all our required bps and controllers
+    static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityCharacterMonster"));
+    static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ECharacterMonsterController"));
+    static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityCharacterShade"));
+    static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ECharacterShadeController"));
 
-	if (MonsterPawnBP_Getter.Class != NULL)
-	{
-		pMonsterBP = MonsterPawnBP_Getter.Class;
-	}
+    //static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityMonster"));
+    //static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_MonsterController"));
+    //static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityShade"));
+    //static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ShadeController"));
 
-	if (MonsterControllerBP_Getter.Class != NULL)
-	{
-		pMonsterControllerBP = MonsterControllerBP_Getter.Class;
-	}
+    if (MonsterPawnBP_Getter.Class != NULL)
+    {
+        pMonsterBP = MonsterPawnBP_Getter.Class;
+    }
 
-	if (ShadePawnBP_Getter.Class != NULL)
-	{
-		pShadeBP = ShadePawnBP_Getter.Class;
-	}
+    if (MonsterControllerBP_Getter.Class != NULL)
+    {
+        pMonsterControllerBP = MonsterControllerBP_Getter.Class;
+    }
 
-	if (ShadeControllerBP_Getter.Class != NULL)
-	{
-		pShadeControllerBP = ShadeControllerBP_Getter.Class;
-	}
+    if (ShadePawnBP_Getter.Class != NULL)
+    {
+        pShadeBP = ShadePawnBP_Getter.Class;
+    }
 
-	bStartPlayersAsSpectators = true;
+    if (ShadeControllerBP_Getter.Class != NULL)
+    {
+        pShadeControllerBP = ShadeControllerBP_Getter.Class;
+    }
 
+    bStartPlayersAsSpectators = true;
+
+    if (GEngine)
+    GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("// 1 - 0"));
 }
 
 
@@ -53,18 +62,18 @@ ASTK_MatchGameMode::ASTK_MatchGameMode()
 /// </summary>
 APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
-	DefaultPawnClass = ASpectatorPawn::StaticClass();
+    DefaultPawnClass = ASpectatorPawn::StaticClass();
 
-	//if (PlayAsMonster)
-	//{
-	//	PlayerControllerClass = pMonsterControllerBP; 
-	//}
-	//else
-	//{
-	//	PlayerControllerClass = pShadeControllerBP;
-	//}
+    //if (PlayAsMonster)
+    //{
+    //	PlayerControllerClass = pMonsterControllerBP; 
+    //}
+    //else
+    //{
+    //	PlayerControllerClass = pShadeControllerBP;
+    //}
 
-	return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
+    return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
 }
 
 
@@ -73,31 +82,32 @@ APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemo
 /// </summary>
 void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 
-	PlayerCount++;
+    PlayerCount++;
 
-	if(NewPlayer->GetLocalRole() == ROLE_Authority)
-	{
-		PlayerControllerClass = pMonsterControllerBP;
-	}
-	if (NewPlayer->GetRemoteRole() < ROLE_Authority)
-	{
-		PlayerControllerClass = pShadeControllerBP;
-	}
+    if (NewPlayer->GetLocalRole() == ROLE_Authority)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("Role is auth, should be monster controller"));
+        PlayerControllerClass = pMonsterControllerBP;
+    }
+    if (NewPlayer->GetRemoteRole() < ROLE_Authority)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("Role less than auth, should be shade controller"));
+        PlayerControllerClass = pShadeControllerBP;
+    }
 
-	PlayerControllerList.Add(NewPlayer);
-	NewPlayer->bBlockInput = true;
+    PlayerControllerList.Add(NewPlayer);
+    NewPlayer->bBlockInput = true;
 
+    Super::PostLogin(NewPlayer);
 
-	Super::PostLogin(NewPlayer);
-
-	if (!bLevelHasLoaded)
-	{
-		DelaySpawnUntilLevelLoaded();
-	}
-	else
-	{
-		SpawnPawnAndPosess(NewPlayer);
-	}
+    if (!bLevelHasLoaded)
+    {
+        DelaySpawnUntilLevelLoaded();
+    }
+    else
+    {
+        SpawnPawnAndPosess(NewPlayer);
+    }
 }
 
 
@@ -106,36 +116,38 @@ void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 /// </summary>
 void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("Checking level loaded to spawn."));
+    //GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("Checking level loaded to spawn."));
 
-	TArray<ULevelStreaming*> levels = GetWorld()->GetStreamingLevels();
-	int LoadedCount = 0;
+    TArray<ULevelStreaming*> levels = GetWorld()->GetStreamingLevels();
+    int LoadedCount = 0;
 
-	if (levels.Num() != 0)
-	{
-		for (size_t i = 0; i < GetWorld()->GetStreamingLevels().Num(); i++)
-		{
-			if(levels[i]->GetCurrentState() == ULevelStreaming::ECurrentState::LoadedVisible)
-			LoadedCount += 1;
-		}
-	}
+    if (levels.Num() != 0)
+    {
+        for (size_t i = 0; i < GetWorld()->GetStreamingLevels().Num(); i++)
+        {
+            if (levels[i]->GetCurrentState() == ULevelStreaming::ECurrentState::LoadedVisible)
+                LoadedCount += 1;
+        }
+    }
 
-	bLevelHasLoaded = LoadedCount == GetWorld()->GetStreamingLevels().Num();
+    bLevelHasLoaded = LoadedCount == GetWorld()->GetStreamingLevels().Num();
 
-	if (bLevelHasLoaded)
-	{
-		// Spawn all shade players.
-		for (size_t i = 0; i < PlayerControllerList.Num(); i++)
-		{
-			SpawnPawnAndPosess(PlayerControllerList[i]);
-		}
+    if (bLevelHasLoaded)
+    {
+        // Spawn all shade players.
+        for (size_t i = 0; i < PlayerControllerList.Num(); i++)
+        {
+            SpawnPawnAndPosess(PlayerControllerList[i]);
+        }
 
-		GetWorldTimerManager().ClearTimer(SpawnDelayHandle);
+        GetWorldTimerManager().ClearTimer(SpawnDelayHandle);
 
-		return;
-	}
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("// 1 - 1"));
 
-	GetWorldTimerManager().SetTimer(SpawnDelayHandle, this, &ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded, 0.5f, false);
+        return;
+    }
+
+    GetWorldTimerManager().SetTimer(SpawnDelayHandle, this, &ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded, 0.5f, false);
 }
 
 
@@ -144,38 +156,45 @@ void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
 /// </summary>
 void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 {
-	if (ASTK_EntityMonsterController* monsterController = dynamic_cast<ASTK_EntityMonsterController*>(NewPlayer))
-	{
-		APawn* oldPawn = monsterController->GetPawnOrSpectator();
 
-		monsterController->UnPossess();
+    // NewPlayer->SetInputMode(FInputModeGameOnly());
+    // NewPlayer->bShowMouseCursor = false;
 
-		DefaultPawnClass = pMonsterBP;
-		RestartPlayer(monsterController);
+    if (ASTK_EntityCharacterMonsterController* monsterController = dynamic_cast<ASTK_EntityCharacterMonsterController*>(NewPlayer))
+    {
+        APawn* oldPawn = monsterController->GetPawnOrSpectator();
 
-		if (oldPawn)
-			oldPawn->Destroy();
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("MonsterController dynamic cast success"));
 
-		monsterController->bBlockInput = false;
-	}
-	else if (ASTK_EntityShadeController* shadeController = dynamic_cast<ASTK_EntityShadeController*>(NewPlayer))
-	{
-		APawn* oldPawn = shadeController->GetPawnOrSpectator();
+        monsterController->UnPossess();
 
+        DefaultPawnClass = pMonsterBP;
+        RestartPlayer(monsterController);
 
-		shadeController->UnPossess();
+        if (oldPawn)
+            oldPawn->Destroy();
 
-		DefaultPawnClass = pShadeBP;
-		RestartPlayer(shadeController);
+        monsterController->bBlockInput = false;
+    }
+    else if (ASTK_EntityCharacterShadeController* shadeController = dynamic_cast<ASTK_EntityCharacterShadeController*>(NewPlayer))
+    {
+        APawn* oldPawn = shadeController->GetPawnOrSpectator();
 
-		if (oldPawn)
-			oldPawn->Destroy();
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("ShadeController dynamic cast success"));
 
-		shadeController->bBlockInput = false;
-	}
+        shadeController->UnPossess();
 
-	ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
-	gamestate->Register_NewEntity(NewPlayer->GetPawn());
+        DefaultPawnClass = pShadeBP;
+        RestartPlayer(shadeController);
+
+        if (oldPawn)
+            oldPawn->Destroy();
+
+        shadeController->bBlockInput = false;
+    }
+
+    ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
+    gamestate->Register_NewEntity(NewPlayer->GetPawn());
 }
 
 
@@ -184,16 +203,16 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 /// </summary>
 void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 {
-	switch (PickupSpawn->GetPickupType())
-	{
-		case EPickupType::Key:
-			SpawnList_Key.Add(PickupSpawn->GetActorLocation());
-			break;
-		
-		//case EPickupType::Item:
-		//	PickupSpawn_Item.Add(PickupSpawn->GetActorLocation());
-		//	break;
-	}
+    switch (PickupSpawn->GetPickupType())
+    {
+    case EPickupType::Key:
+        SpawnList_Key.Add(PickupSpawn->GetActorLocation());
+        break;
+
+        //case EPickupType::Item:
+        //	PickupSpawn_Item.Add(PickupSpawn->GetActorLocation());
+        //	break;
+    }
 }
 
 
@@ -202,7 +221,7 @@ void ASTK_MatchGameMode::RegisterPickupSpawnPoint(ASTK_PickupSpawn* PickupSpawn)
 /// </summary>
 void ASTK_MatchGameMode::RegisterPotentialExitDoor(ASTK_ExitDoor* ExitDoor)
 {
-	ExitDoorList.Add(ExitDoor);
+    ExitDoorList.Add(ExitDoor);
 }
 
 
@@ -214,59 +233,69 @@ void ASTK_MatchGameMode::RegisterPotentialExitDoor(ASTK_ExitDoor* ExitDoor)
 void ASTK_MatchGameMode::BeginPlay()
 {
 
-	// What we do is we select randomly from our spawn locations and remove those as we go.
-	// If we run out of spawn locations, refill the temp array and print a warning.
+    // What we do is we select randomly from our spawn locations and remove those as we go.
+    // If we run out of spawn locations, refill the temp array and print a warning.
 
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	if (SpawnList_Key.Num() == 0)
-		return;
+    if (SpawnList_Key.Num() == 0)
+        return;
 
-	TArray <FVector> TempArray;
+    TArray <FVector> TempArray;
 
-	for (size_t i = 0; i < SpawnList_Key.Num(); i++)
-	{
-		TempArray.Add(SpawnList_Key[i]);
-	}
-	
-	FActorSpawnParameters SpawnParams;
+    for (size_t i = 0; i < SpawnList_Key.Num(); i++)
+    {
+        TempArray.Add(SpawnList_Key[i]);
+    }
 
-	for (size_t i = 0; i < Pickup_Key_Count; i++)
-	{
-		if (TempArray.Num() == 0)
-		{
-			for (size_t j = 0; j < SpawnList_Key.Num(); j++)
-			{
-				TempArray.Add(SpawnList_Key[j]);
-			}
-			GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("THERE ARE MORE KEYS THAN KEY SPAWN POINTS!"));
-		}
-		
-		uint8 PickedIndex = FMath::RandRange(0, TempArray.Num()-1);
+    FActorSpawnParameters SpawnParams;
 
-		FVector PickedLocation = TempArray[PickedIndex];
-		TempArray.RemoveAt(PickedIndex);
+    for (size_t i = 0; i < Pickup_Key_Count; i++)
+    {
+        if (TempArray.Num() == 0)
+        {
+            for (size_t j = 0; j < SpawnList_Key.Num(); j++)
+            {
+                TempArray.Add(SpawnList_Key[j]);
+            }
+            GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("THERE ARE MORE KEYS THAN KEY SPAWN POINTS!"));
+        }
 
-		if (Pickup_Key_Template != nullptr)
-		{
-			GetWorld()->SpawnActor<AActor>(Pickup_Key_Template, PickedLocation, FRotator(0,0,0), SpawnParams);
-		}
-	}
+        uint8 PickedIndex = FMath::RandRange(0, TempArray.Num() - 1);
 
-	// Spawn items here.
-	//for (size_t i = 0; i < Pickup_Item_Count; i++)
-	//{
-	//
-	//}
+        FVector PickedLocation = TempArray[PickedIndex];
+        TempArray.RemoveAt(PickedIndex);
 
-	ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
+        if (Pickup_Key_Template != nullptr)
+        {
+            GetWorld()->SpawnActor<AActor>(Pickup_Key_Template, PickedLocation, FRotator(0, 0, 0), SpawnParams);
+        }
+    }
 
-	if (ExitDoorList.Num() > 0)
-	{
-		SelectedExitDoor = ExitDoorList[FMath::RandRange(0, ExitDoorList.Num() - 1)];
-		gamestate->Register_SelectedExitDoor(SelectedExitDoor);
-	}
+    // Spawn items here.
+    //for (size_t i = 0; i < Pickup_Item_Count; i++)
+    //{
+    //
+    //}
 
-	gamestate->Register_MaxKeyCount(Pickup_Key_Count);
+    ASTK_MatchGameState* gamestate = GetGameState<ASTK_MatchGameState>();
+
+    TArray<AActor*> found;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASTK_ExitDoor::StaticClass(), found);
+
+    ExitDoorList.Empty();
+
+    for (size_t i = 0; i < found.Num(); i++)
+    {
+        ExitDoorList.Add(Cast<ASTK_ExitDoor>(found[i]));
+    }
+
+    if (ExitDoorList.Num() > 0)
+    {
+        SelectedExitDoor = ExitDoorList[FMath::RandRange(0, ExitDoorList.Num() - 1)];
+        gamestate->Register_SelectedExitDoor(SelectedExitDoor);
+    }
+
+    gamestate->Register_MaxKeyCount(Pickup_Key_Count);
 }
 

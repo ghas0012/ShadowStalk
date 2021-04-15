@@ -65,7 +65,25 @@ void USTK_UWMainMenu::PlayPressed()
     auto GameInstance = Cast<USTK_GameInstance>(GetGameInstance());
     if (GameInstance == nullptr) return;
 
+#ifdef STEAM_ENABLED
+
+    bool Success = GameInstance->HostSession("Game", "MapTest", false, true, 5);
+
+    if (Success)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Created Session"));
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Failed To Create Session"));
+    }
+
+#else
+
     GameInstance->LoadGameLevel();
+
+#endif
+
 }
 
 /// <summary>

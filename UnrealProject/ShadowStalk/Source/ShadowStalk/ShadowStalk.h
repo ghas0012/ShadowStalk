@@ -12,6 +12,13 @@ enum class EPickupType : uint8 {
 };
 
 UENUM(BlueprintType)
+enum class EItemType : uint8 {
+	Undefined UMETA(DisplayName = "Undefined"),
+	TestItem1 UMETA(DisplayName = "TestItem1"),
+	TestItem2 UMETA(DisplayName = "TestItem2"),
+};
+
+UENUM(BlueprintType)
 enum class EEntityType : uint8 {
 	Undefined UMETA(DisplayName = "Undefined"),
 	Shade UMETA(DisplayName = "Shade"),

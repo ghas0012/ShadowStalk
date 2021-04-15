@@ -12,6 +12,7 @@
   H 3/12/2021: Class init.
   H 3/12/2021: Added a list for entities, plus getters for both the monster and shades
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
 */
 
 #pragma once
@@ -20,8 +21,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "STK_MatchGameState.generated.h"
 
-class ASTK_Entity;
-class ASTK_EntityShade;
+class ASTK_EntityCharacter;
+class ASTK_EntityCharacterShade;
 
 UCLASS()
 class SHADOWSTALK_API ASTK_MatchGameState : public AGameStateBase
@@ -32,13 +33,17 @@ public:
 
 	ASTK_MatchGameState();
 
-	TArray <ASTK_Entity*> GetEntities();
-	TArray <ASTK_EntityShade*> GetShades();
-	class ASTK_EntityMonster* GetMonster();
+	TArray <ASTK_EntityCharacter*> GetEntities();
+	TArray <ASTK_EntityCharacterShade*> GetShades();
+	class ASTK_EntityCharacterMonster* GetMonster();
 
 	void Register_MaxKeyCount(uint8 count);
 
-	uint8 GetCurrentKeyCount();
+	UFUNCTION(BlueprintCallable)
+	uint8 GetCurrentKeyCount() { return Current_Key_Count; };
+
+	UFUNCTION(BlueprintCallable)
+	uint8 GetMaxKeyCount() { return Max_Key_Count; };
 
 	void Register_KeyPickedUp();
 	void Register_KeyDropped(uint8 count);
@@ -46,7 +51,6 @@ public:
 
 	void Register_NewEntity(APawn* entity);
 
-	void OnAllKeysPickedUp();
 	void OnKeysDropped();
 
 protected:
@@ -55,7 +59,7 @@ protected:
 	uint8 Current_Key_Count;
 	ASTK_ExitDoor* Selected_Exit_Door;
 
-	TArray <ASTK_Entity*> Entities;
+	TArray <ASTK_EntityCharacter*> Entities;
 
 	virtual void BeginPlay() override;
 
