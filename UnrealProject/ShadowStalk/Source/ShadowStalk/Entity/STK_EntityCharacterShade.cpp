@@ -14,6 +14,8 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "ShadowStalk/Controllers/STK_EntityCharacterShadeController.h"
+
 //Eyes
 #include "Components/RectLightComponent.h"
 #include "STK_EyeComponent.h"
@@ -67,6 +69,12 @@ void ASTK_EntityCharacterShade::BeginPlay()
 	{
 		m_pFPSpotlight->SetVisibility(false);
 		m_pEyeSocket->SetVisibility(false);
+	}
+
+	if (IsLocallyControlled())
+	{
+		GetController<ASTK_EntityCharacterShadeController>()->SetInputMode(FInputModeGameOnly());
+		GetController<ASTK_EntityCharacterShadeController>()->bShowMouseCursor = false;
 	}
 }
 
