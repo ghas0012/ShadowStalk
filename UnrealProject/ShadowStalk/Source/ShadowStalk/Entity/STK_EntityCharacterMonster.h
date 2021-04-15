@@ -59,10 +59,7 @@ public:
 	//Sound
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Monster|Audio", meta = (AllowPrivateAccess = "true"))
-		class USoundBase* MonsterAttackScream;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Monster|Audio", meta = (AllowPrivateAccess = "true"))
-		class USoundBase* MonsterStunned;
+		class USoundBase* MonsterAttackSound;
 
 protected:
 

@@ -11,6 +11,8 @@
 #include "ShadowStalk/UI/STK_UserWidget.h"
 #include "ShadowStalk/UI/STK_UWPauseMenu.h"
 
+#include "../Inventory/STK_InventoryComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 
@@ -74,6 +76,8 @@ ASTK_EntityCharacter::ASTK_EntityCharacter()
 	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	AudioComponent->SetupAttachment(RootComponent);
 
+	InventoryComponent = CreateDefaultSubobject<USTK_InventoryComponent>("Inventory");
+
 	////bReplicates = true;
 	////SetReplicatingMovement(true);
 	SetReplicates(true);
@@ -121,6 +125,7 @@ void ASTK_EntityCharacter::BeginPlay()
 void ASTK_EntityCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	HandleFootstepSounds(DeltaTime);
 	HandlePositionOverride(DeltaTime);
 	HandleCamera(DeltaTime);
 }
@@ -168,7 +173,7 @@ void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
 
 void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 {
-	FootstepTimer += DeltaTime * FootstepFrequency * GetMovementComponent()->Velocity.Size();
+	FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
 	if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
 	{
 		FootstepTimer = 0;
@@ -316,6 +321,21 @@ void ASTK_EntityCharacter::PauseMenu()
 			PlayerController->bShowMouseCursor = true;
 		}*/
 	}
+}
+
+void ASTK_EntityCharacter::NextItem()
+{
+	InventoryComponent->NextInventoryItem();
+}
+
+void ASTK_EntityCharacter::PrevItem()
+{
+	InventoryComponent->PreviousInventoryItem();
+}
+
+void ASTK_EntityCharacter::UseItem()
+{
+
 }
 
 void ASTK_EntityCharacter::LockCameraLookat(USceneComponent* SceneComp)

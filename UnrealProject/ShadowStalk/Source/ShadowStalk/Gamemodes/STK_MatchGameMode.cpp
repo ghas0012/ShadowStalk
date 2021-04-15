@@ -52,6 +52,8 @@ ASTK_MatchGameMode::ASTK_MatchGameMode()
 
     bStartPlayersAsSpectators = true;
 
+    if (GEngine)
+    GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("// 1 - 0"));
 }
 
 
@@ -84,16 +86,17 @@ void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 
     if (NewPlayer->GetLocalRole() == ROLE_Authority)
     {
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("Role is auth, should be monster controller"));
         PlayerControllerClass = pMonsterControllerBP;
     }
     if (NewPlayer->GetRemoteRole() < ROLE_Authority)
     {
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("Role less than auth, should be shade controller"));
         PlayerControllerClass = pShadeControllerBP;
     }
 
     PlayerControllerList.Add(NewPlayer);
     NewPlayer->bBlockInput = true;
-
 
     Super::PostLogin(NewPlayer);
 
@@ -139,6 +142,8 @@ void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
 
         GetWorldTimerManager().ClearTimer(SpawnDelayHandle);
 
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("// 1 - 1"));
+
         return;
     }
 
@@ -151,12 +156,15 @@ void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
 /// </summary>
 void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
 {
-    NewPlayer->SetInputMode(FInputModeGameOnly());
-    NewPlayer->bShowMouseCursor = false;
+
+    // NewPlayer->SetInputMode(FInputModeGameOnly());
+    // NewPlayer->bShowMouseCursor = false;
 
     if (ASTK_EntityCharacterMonsterController* monsterController = dynamic_cast<ASTK_EntityCharacterMonsterController*>(NewPlayer))
     {
         APawn* oldPawn = monsterController->GetPawnOrSpectator();
+
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("MonsterController dynamic cast success"));
 
         monsterController->UnPossess();
 
@@ -172,6 +180,7 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
     {
         APawn* oldPawn = shadeController->GetPawnOrSpectator();
 
+        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("ShadeController dynamic cast success"));
 
         shadeController->UnPossess();
 

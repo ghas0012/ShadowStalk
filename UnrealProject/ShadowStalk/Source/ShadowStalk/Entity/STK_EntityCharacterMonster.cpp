@@ -9,6 +9,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "ShadowStalk/Controllers/STK_EntityCharacterMonsterController.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 
 //Sounds
@@ -58,7 +60,7 @@ void ASTK_EntityCharacterMonster::Server_Attack_Implementation()
         return;
 
     //Play the sound
-    UGameplayStatics::PlaySoundAtLocation(GetWorld(), MonsterAttackScream, GetActorLocation());
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), MonsterAttackSound, GetActorLocation());
 
     TArray<ASTK_EntityCharacterShade*> Shades = gamestate->GetShades();
 

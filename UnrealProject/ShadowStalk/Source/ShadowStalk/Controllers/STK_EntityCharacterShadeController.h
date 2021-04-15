@@ -28,6 +28,8 @@ public:
     virtual void OnPossess(APawn* aPawn) override;
     virtual void OnUnPossess() override;
 
+    virtual void AcknowledgePossession(APawn* Pawn) override;
+
 protected:
 
     virtual void SetupInputComponent() override;
