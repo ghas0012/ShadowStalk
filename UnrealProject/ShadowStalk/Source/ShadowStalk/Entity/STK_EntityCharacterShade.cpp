@@ -384,6 +384,7 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 			{
 				// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
 				InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("Added Item"));
 				OtherActor->Destroy();
 				break;
 			}
