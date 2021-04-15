@@ -72,13 +72,13 @@ public:
     //Sound
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
-        class USoundBase* ShadeHitScream;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
         class USoundBase* ShadeDownGroundHit;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
         class USoundBase* ShadeItemPickupSound;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
+        class USoundBase* HitSound;
 
 
 protected:

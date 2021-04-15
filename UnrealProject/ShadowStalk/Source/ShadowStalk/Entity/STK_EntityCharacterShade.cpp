@@ -157,6 +157,7 @@ void ASTK_EntityCharacterShade::ApplyDamage(unsigned char damage, FVector knockb
 
 	if (!knockback.IsNearlyZero())
 	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetActorLocation());
 		GetCharacterMovement()->AddImpulse(knockback + FVector(0, 0, 50000));
 		GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityCharacterShade::DelayedStateChange, KnockbackRecoveryDuration, false);
 	}
@@ -253,10 +254,8 @@ void ASTK_EntityCharacterShade::Server_SetShadeState_Implementation(ECharacterSh
 	{
 
 		case ECharacterShadeState::Hurt:
-			//TODO: Find proper place for this sound effect to play
-			//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeHitScream, GetActorLocation());
-
 			// TODO: Apply cracked eye effects
+
 			break;
 
 		case ECharacterShadeState::Downed:
@@ -370,7 +369,7 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 	if (OtherActor->ActorHasTag("Pickup"))
 	{
 		//TODO Find item pickup sound effect
-		//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeItemPickupSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeItemPickupSound, GetActorLocation());
 
 		EPickupType pickupType = Cast<ASTK_PickupBase>(OtherActor)->GetPickupType();
 		switch (pickupType)
@@ -393,6 +392,7 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 			{
 				// TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
 				InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("Added Item"));
 				OtherActor->Destroy();
 				break;
 			}

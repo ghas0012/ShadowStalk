@@ -75,8 +75,8 @@ ASTK_EntityCharacter::ASTK_EntityCharacter()
 	AudioComponent->SetupAttachment(RootComponent);
 
 	////bReplicates = true;
+	////SetReplicatingMovement(true);
 	SetReplicates(true);
-	SetReplicatingMovement(true);
 
 	//Search for Pause Menu Widget Blueprint
 	{
@@ -102,15 +102,6 @@ void ASTK_EntityCharacter::LookUpAtRate(float Rate)
 // Called when the game starts or when spawned
 void ASTK_EntityCharacter::BeginPlay()
 {
-	Super::BeginPlay();
-}
-
-// Called every frame
-void ASTK_EntityCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	HandlePositionOverride(DeltaTime);
-	HandleCamera(DeltaTime);
 
 	GetCharacterMovement()->JumpZVelocity = m_MovementData.m_JumpStrength;
 	GetCharacterMovement()->MaxAcceleration = m_MovementData.m_Acceleration;
@@ -119,11 +110,20 @@ void ASTK_EntityCharacter::Tick(float DeltaTime)
 	GetCharacterMovement()->CrouchedHalfHeight = m_MovementData.m_CrawlCapsuleHalfHeight;
 	GetCharacterMovement()->AirControl = m_MovementData.m_AirControl;
 
-	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, FString::Printf(TEXT("WalkSpeed, %f"), GetCharacterMovement()->MaxWalkSpeed));
-
 	GetCapsuleComponent()->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
 	GetCapsuleComponent()->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
 
+	Super::BeginPlay();
+
+}
+
+// Called every frame
+void ASTK_EntityCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	HandleFootstepSounds(DeltaTime);
+	HandlePositionOverride(DeltaTime);
+	HandleCamera(DeltaTime);
 }
 
 void ASTK_EntityCharacter::HandlePositionOverride(float DeltaTime)
@@ -169,9 +169,7 @@ void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
 
 void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 {
-
 	FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
-
 	if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
 	{
 		FootstepTimer = 0;
@@ -224,13 +222,10 @@ void ASTK_EntityCharacter::Server_SetInputLock_Implementation(uint8 flag, bool l
 
 void ASTK_EntityCharacter::Forward(float value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, FString::Printf(TEXT("forward call - ")));
-
 	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
 		return;
 
 	ACharacter::AddMovementInput(GetActorForwardVector(), value);
-	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, FString::Printf(TEXT("forward call ack")));
 }
 
 void ASTK_EntityCharacter::Strafe(float value)
