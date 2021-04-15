@@ -13,7 +13,6 @@ void ASTK_EntityCharacterMonsterController::OnPossess(APawn* aPawn)
     Super::OnPossess(aPawn);
 }
 
-
 void ASTK_EntityCharacterMonsterController::AcknowledgePossession(APawn* aPawn)
 {
     Super::AcknowledgePossession(aPawn);
@@ -21,8 +20,6 @@ void ASTK_EntityCharacterMonsterController::AcknowledgePossession(APawn* aPawn)
     m_MonsterEntityCharacter = Cast<ASTK_EntityCharacterMonster>(aPawn);
 
     GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "OnPosess: Shade" + m_MonsterEntityCharacter->GetName());
-
-    SetupInputComponent();
 }
 
 void ASTK_EntityCharacterMonsterController::OnUnPossess()
@@ -63,8 +60,6 @@ void ASTK_EntityCharacterMonsterController::SetupInputComponent()
         InputComponent->BindAxis("LookUpRate", m_MonsterEntityCharacter, &ASTK_EntityCharacterMonster::LookUpAtRate);
 
         InputComponent->BindAction("PauseMenu", IE_Pressed, this, &ASTK_EntityCharacterMonsterController::PauseMenu);
-
-
     }
 }
 
@@ -162,5 +157,6 @@ void ASTK_EntityCharacterMonsterController::PauseMenu()
     {
         m_MonsterEntityCharacter->PauseMenu();
         GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Escape hit, ack | " + m_MonsterEntityCharacter->GetName());
+        GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Purple, "Pause Menu Created");
     }
 }
