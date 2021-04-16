@@ -1,7 +1,7 @@
 // Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
 
 /*
-  Author: Christian Young, Hamidreza Ghasemi, Arianne Fennell
+  Author: Christian Young, Hamidreza Ghasemi, Arianne Fennell, Jeffrey Armstrong
   Date Modified: 3/12/2021
   Comment/Description:
 
@@ -17,6 +17,7 @@
   A 3/23/2021: Added function that sets up the Pause Menu.
   J 3/31/2021: Added another footsteps sound and additional variables and code for Inventory Component.
   H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
+  J 4/14/2021: Adjustments for Pickup variables.
 
 */
 

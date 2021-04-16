@@ -1,4 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
+
+/*
+  Author: Jeffrey Armstrong
+  Date Modified: 3/28/2021
+  Comment/Description:
+
+	A Trap Class for when a Shade walks over it. It has a collider, a mesh, a scene root component, and variables for activating and disabling the trap.
+
+  ChangeLog:
+  J 3/28/2021: Initialized class.
+  J 4/14/2021: Added a class description and summaries to relevant methods.
+  J 4/15/2021: Added Trap Activate sound.
+
+*/
 
 #pragma once
 
@@ -29,6 +43,12 @@ public:
 	virtual void DisableTrap();
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Trap|Audio", meta = (AllowPrivateAccess = "true"))
+		class UAudioComponent* AudioComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Trap|Audio", meta = (AllowPrivateAccess = "true"))
+		class USoundBase* TrapSound;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
