@@ -23,178 +23,178 @@
 // Sets default values
 ASTK_EntityCharacter::ASTK_EntityCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+    PrimaryActorTick.bCanEverTick = true;
 
-	//CapsuleComponent->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
-	//CapsuleComponent->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
-	//CapsuleComponent->SetEnableGravity(true);
-	//CapsuleComponent->SetSimulatePhysics(true);
-	//CapsuleComponent->GetBodyInstance()->bLockYRotation;
-	//CapsuleComponent->GetBodyInstance()->bLockXRotation;
-	//CapsuleComponent->SetCollisionProfileName("Pawn");
-	//CapsuleComponent->SetLinearDamping(0.5f);
-	//CapsuleComponent->SetAngularDamping(1.0f);
-	//CapsuleComponent->BodyInstance.bLockXRotation = true;
-	//CapsuleComponent->BodyInstance.bLockYRotation = true;
-	//SetRootComponent(m_PlayerCapsule);
+    //CapsuleComponent->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
+    //CapsuleComponent->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
+    //CapsuleComponent->SetEnableGravity(true);
+    //CapsuleComponent->SetSimulatePhysics(true);
+    //CapsuleComponent->GetBodyInstance()->bLockYRotation;
+    //CapsuleComponent->GetBodyInstance()->bLockXRotation;
+    //CapsuleComponent->SetCollisionProfileName("Pawn");
+    //CapsuleComponent->SetLinearDamping(0.5f);
+    //CapsuleComponent->SetAngularDamping(1.0f);
+    //CapsuleComponent->BodyInstance.bLockXRotation = true;
+    //CapsuleComponent->BodyInstance.bLockYRotation = true;
+    //SetRootComponent(m_PlayerCapsule);
 
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = true;
-	bUseControllerRotationRoll = false;
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationYaw = true;
+    bUseControllerRotationRoll = false;
 
-	m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
-	m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
-	m_CameraComp->bUsePawnControlRotation = true;
-	m_CameraComp->SetupAttachment(GetCapsuleComponent());
-	// m_CameraComp->bUsePawnControlRotation = true;
+    m_CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Comp");
+    m_CameraComp->SetProjectionMode(ECameraProjectionMode::Perspective);
+    m_CameraComp->bUsePawnControlRotation = true;
+    m_CameraComp->SetupAttachment(GetCapsuleComponent());
+    // m_CameraComp->bUsePawnControlRotation = true;
 
-	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...
+    GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...
 
-	m_TPMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("TP Mesh Comp");
-	m_TPMeshComp->bHiddenInGame = false;
-	m_TPMeshComp->SetRelativeRotation(FRotator(0, 180, 0));
-	m_TPMeshComp->SetOwnerNoSee(true);
-	m_TPMeshComp->SetupAttachment(GetCapsuleComponent());
+    m_TPMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>("TP Mesh Comp");
+    m_TPMeshComp->bHiddenInGame = false;
+    m_TPMeshComp->SetRelativeRotation(FRotator(0, 180, 0));
+    m_TPMeshComp->SetOwnerNoSee(true);
+    m_TPMeshComp->SetupAttachment(GetCapsuleComponent());
 
-	GetMesh()->bHiddenInGame = false;
-	GetMesh()->SetRelativeRotation(FRotator(0, 180, 0));
-	GetMesh()->SetOnlyOwnerSee(true);
-	GetMesh()->SetupAttachment(GetCapsuleComponent());
+    GetMesh()->bHiddenInGame = false;
+    GetMesh()->SetRelativeRotation(FRotator(0, 180, 0));
+    GetMesh()->SetOnlyOwnerSee(true);
+    GetMesh()->SetupAttachment(GetCapsuleComponent());
 
-	if (GetLocalRole() == ROLE_AutonomousProxy)
-	{
-		GetMesh()->CastShadow = 0;
-	}
+    if (GetLocalRole() == ROLE_AutonomousProxy)
+    {
+        GetMesh()->CastShadow = 0;
+    }
 
-	//m_MovementComp = CreateDefaultSubobject<USTK_EntityMovementComponent>("Movement Component");
-	//m_MovementComp->CapsuleComp = m_PlayerCapsule;
-	//m_MovementComp->UpdatedComponent = RootComponent;
+    //m_MovementComp = CreateDefaultSubobject<USTK_EntityMovementComponent>("Movement Component");
+    //m_MovementComp->CapsuleComp = m_PlayerCapsule;
+    //m_MovementComp->UpdatedComponent = RootComponent;
 
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SoundEmitter"));
-	AudioComponent->bAutoActivate = false;
-	AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	AudioComponent->SetupAttachment(RootComponent);
+    AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SoundEmitter"));
+    AudioComponent->bAutoActivate = false;
+    AudioComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+    AudioComponent->SetupAttachment(RootComponent);
 
-	InventoryComponent = CreateDefaultSubobject<USTK_InventoryComponent>("Inventory");
+    InventoryComponent = CreateDefaultSubobject<USTK_InventoryComponent>("Inventory");
 
-	////bReplicates = true;
-	////SetReplicatingMovement(true);
-	SetReplicates(true);
+    ////bReplicates = true;
+    ////SetReplicatingMovement(true);
+    SetReplicates(true);
 
-	//Search for Pause Menu Widget Blueprint
-	{
-		ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/UI/WBP_PauseMenu"));
-		if (!ensure(PauseMenuBPClass.Class != nullptr)) return;
+    //Search for Pause Menu Widget Blueprint
+    {
+        ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/UI/WBP_PauseMenu"));
+        if (!ensure(PauseMenuBPClass.Class != nullptr)) return;
 
-		PauseMenuClass = PauseMenuBPClass.Class;
-	}
+        PauseMenuClass = PauseMenuBPClass.Class;
+    }
 }
 
 void ASTK_EntityCharacter::TurnAtRate(float Rate)
 {
-	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * m_MovementData.m_MouseLook_X * GetWorld()->GetDeltaSeconds());
+    // calculate delta for this frame from the rate information
+    AddControllerYawInput(Rate * m_MovementData.m_MouseLook_X * GetWorld()->GetDeltaSeconds());
 }
 
 void ASTK_EntityCharacter::LookUpAtRate(float Rate)
 {
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * m_MovementData.m_MouseLook_Y * GetWorld()->GetDeltaSeconds());
+    // calculate delta for this frame from the rate information
+    AddControllerPitchInput(Rate * m_MovementData.m_MouseLook_Y * GetWorld()->GetDeltaSeconds());
 }
 
 // Called when the game starts or when spawned
 void ASTK_EntityCharacter::BeginPlay()
 {
 
-	GetCharacterMovement()->JumpZVelocity = m_MovementData.m_JumpStrength;
-	GetCharacterMovement()->MaxAcceleration = m_MovementData.m_Acceleration;
-	GetCharacterMovement()->MaxWalkSpeed = m_MovementData.m_WalkSpeed;
-	GetCharacterMovement()->MaxWalkSpeedCrouched = m_MovementData.m_CrawlSpeed;
-	GetCharacterMovement()->CrouchedHalfHeight = m_MovementData.m_CrawlCapsuleHalfHeight;
-	GetCharacterMovement()->AirControl = m_MovementData.m_AirControl;
+    GetCharacterMovement()->JumpZVelocity = m_MovementData.m_JumpStrength;
+    GetCharacterMovement()->MaxAcceleration = m_MovementData.m_Acceleration;
+    GetCharacterMovement()->MaxWalkSpeed = m_MovementData.m_WalkSpeed;
+    GetCharacterMovement()->MaxWalkSpeedCrouched = m_MovementData.m_CrawlSpeed;
+    GetCharacterMovement()->CrouchedHalfHeight = m_MovementData.m_CrawlCapsuleHalfHeight;
+    GetCharacterMovement()->AirControl = m_MovementData.m_AirControl;
 
-	GetCapsuleComponent()->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
+    GetCapsuleComponent()->SetCapsuleRadius(m_MovementData.m_CapsuleRadius);
+    GetCapsuleComponent()->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
 
-	Super::BeginPlay();
+    Super::BeginPlay();
 
 }
 
 // Called every frame
 void ASTK_EntityCharacter::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-	HandleFootstepSounds(DeltaTime);
-	HandlePositionOverride(DeltaTime);
-	HandleCamera(DeltaTime);
+    Super::Tick(DeltaTime);
+    HandleFootstepSounds(DeltaTime);
+    HandlePositionOverride(DeltaTime);
+    HandleCamera(DeltaTime);
 }
 
 void ASTK_EntityCharacter::HandlePositionOverride(float DeltaTime)
 {
-	if (bPositionOverride)
-	{
-		if (PositionOverridePercent >= 1.0f)
-		{
-			SetActorLocation(PositionOverrideTarget);
-			PositionOverridePercent = 1;
-			bPositionOverride = false;
-			return;
-		}
+    if (bPositionOverride)
+    {
+        if (PositionOverridePercent >= 1.0f)
+        {
+            SetActorLocation(PositionOverrideTarget);
+            PositionOverridePercent = 1;
+            bPositionOverride = false;
+            return;
+        }
 
-		SetActorLocation(FMath::Lerp(PositionOverrideOrigin, PositionOverrideTarget, PositionOverridePercent));
-		PositionOverridePercent += DeltaTime * PositionOverrideSpeed;
-	}
+        SetActorLocation(FMath::Lerp(PositionOverrideOrigin, PositionOverrideTarget, PositionOverridePercent));
+        PositionOverridePercent += DeltaTime * PositionOverrideSpeed;
+    }
 }
 
 void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
 {
-	if (GetLocalRole() == ROLE_Authority)
-	{
-		CurrentControllerFacing = GetControlRotation();
-	}
+    if (GetLocalRole() == ROLE_Authority)
+    {
+        CurrentControllerFacing = GetControlRotation();
+    }
 
-	if (bCameraOverride)
-	{
-		FRotator targetRotation = (CameraOverrideTarget->GetComponentLocation() - m_CameraComp->GetComponentLocation()).Rotation();
+    if (bCameraOverride)
+    {
+        FRotator targetRotation = (CameraOverrideTarget->GetComponentLocation() - m_CameraComp->GetComponentLocation()).Rotation();
 
-		if (CameraOverridePercent >= 1.0f)
-		{
-			GetController()->SetControlRotation(targetRotation);
-			CameraOverridePercent = 1;
-			bCameraOverride = false;
-			return;
-		}
+        if (CameraOverridePercent >= 1.0f)
+        {
+            GetController()->SetControlRotation(targetRotation);
+            CameraOverridePercent = 1;
+            bCameraOverride = false;
+            return;
+        }
 
-		GetController()->SetControlRotation(FMath::Lerp(CameraOverrideOrigin, targetRotation, CameraOverridePercent));
-		CameraOverridePercent += DeltaTime * CameraOverrideSpeed;
-	}
+        GetController()->SetControlRotation(FMath::Lerp(CameraOverrideOrigin, targetRotation, CameraOverridePercent));
+        CameraOverridePercent += DeltaTime * CameraOverrideSpeed;
+    }
 }
 
 void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 {
-	FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
-	if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
-	{
-		FootstepTimer = 0;
+    FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
+    if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
+    {
+        FootstepTimer = 0;
 
-		//AudioComponent->SetSound(FootstepsSound);
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
+        //AudioComponent->SetSound(FootstepsSound);
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
 
-		PlayFootstep1 = false;
-		PlayFootstep2 = true;
-	}
+        PlayFootstep1 = false;
+        PlayFootstep2 = true;
+    }
 
-	if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep2 == true && !AudioComponent->IsPlaying())
-	{
-		FootstepTimer = 0;
+    if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep2 == true && !AudioComponent->IsPlaying())
+    {
+        FootstepTimer = 0;
 
-		//AudioComponent->SetSound(FootstepsSound);
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound2, GetActorLocation());
+        //AudioComponent->SetSound(FootstepsSound);
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound2, GetActorLocation());
 
-		PlayFootstep2 = false;
-		PlayFootstep1 = true;
-	}
+        PlayFootstep2 = false;
+        PlayFootstep1 = true;
+    }
 
 }
 
@@ -203,7 +203,7 @@ void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 /// </summary>
 void ASTK_EntityCharacter::SetInputLock(EInputLockFlags flag, bool lock)
 {
-	SetInputLock(static_cast<uint8>(flag), lock);
+    SetInputLock(static_cast<uint8>(flag), lock);
 }
 
 /// <summary>
@@ -211,34 +211,34 @@ void ASTK_EntityCharacter::SetInputLock(EInputLockFlags flag, bool lock)
 /// </summary>
 void ASTK_EntityCharacter::SetInputLock(uint8 flag, bool lock)
 {
-	Server_SetInputLock(flag, lock);
+    Server_SetInputLock(flag, lock);
 }
 
 void ASTK_EntityCharacter::Server_SetInputLock_Implementation(uint8 flag, bool lock)
 {
-	if (flag & EInputLockFlags::Movement)
-	{
-		GetCharacterMovement()->StopMovementImmediately();
-	}
+    if (flag & EInputLockFlags::Movement)
+    {
+        GetCharacterMovement()->StopMovementImmediately();
+    }
 
-	lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
+    lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
 }
 
 void ASTK_EntityCharacter::Forward(float value)
 {
-	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
-		return;
+    if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
+        return;
 
-	ACharacter::AddMovementInput(GetActorForwardVector(), value);
+    ACharacter::AddMovementInput(GetActorForwardVector(), value);
 }
 
 void ASTK_EntityCharacter::Strafe(float value)
 {
-	if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
-		return;
+    if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
+        return;
 
-	ACharacter::AddMovementInput(GetActorRightVector(), value);
-	//GetCharacterMovement()->AddInputVector(GetActorRightVector() * value);
+    ACharacter::AddMovementInput(GetActorRightVector(), value);
+    //GetCharacterMovement()->AddInputVector(GetActorRightVector() * value);
 }
 
 void ASTK_EntityCharacter::Interact()
@@ -247,47 +247,47 @@ void ASTK_EntityCharacter::Interact()
 
 void ASTK_EntityCharacter::Jump()
 {
-	if (InputLockFlags & EInputLockFlags::Jump)
-		return;
+    if (InputLockFlags & EInputLockFlags::Jump)
+        return;
 
-	ACharacter::Jump();
+    ACharacter::Jump();
 }
 
 void ASTK_EntityCharacter::Sprint(bool IsSprint)
 {
-	if (InputLockFlags & EInputLockFlags::Sprint)
-		return;
+    if (InputLockFlags & EInputLockFlags::Sprint)
+        return;
 
-	if (ACharacter::bIsCrouched)
-	{
-		Crawl(false);
-	}
+    if (ACharacter::bIsCrouched)
+    {
+        Crawl(false);
+    }
 
-	GetCharacterMovement()->MaxWalkSpeed = IsSprint? m_MovementData.m_SprintSpeed : m_MovementData.m_WalkSpeed;
+    GetCharacterMovement()->MaxWalkSpeed = IsSprint ? m_MovementData.m_SprintSpeed : m_MovementData.m_WalkSpeed;
 }
 
 void ASTK_EntityCharacter::Crawl(bool IsCrawl)
 {
-	if (InputLockFlags & EInputLockFlags::Crawl)
-		return;
+    if (InputLockFlags & EInputLockFlags::Crawl)
+        return;
 
-	IsCrawl? ACharacter::Crouch(true) : ACharacter::UnCrouch(true);
+    IsCrawl ? ACharacter::Crouch(true) : ACharacter::UnCrouch(true);
 }
 
 void ASTK_EntityCharacter::MouseLook_Vertical(float value)
 {
-	if (InputLockFlags & EInputLockFlags::MouseLook || bCameraOverride)
-		return;
+    if (InputLockFlags & EInputLockFlags::MouseLook || bCameraOverride)
+        return;
 
-	APawn::AddControllerPitchInput(-value * m_MovementData.m_MouseLook_X);
+    APawn::AddControllerPitchInput(-value * m_MovementData.m_MouseLook_X);
 }
 
 void ASTK_EntityCharacter::MouseLook_Horizontal(float value)
 {
-	if (InputLockFlags & EInputLockFlags::MouseLook || bCameraOverride)
-		return;
+    if (InputLockFlags & EInputLockFlags::MouseLook || bCameraOverride)
+        return;
 
-	APawn::AddControllerYawInput(value * m_MovementData.m_MouseLook_X);
+    APawn::AddControllerYawInput(value * m_MovementData.m_MouseLook_X);
 }
 
 /// <summary>
@@ -295,42 +295,44 @@ void ASTK_EntityCharacter::MouseLook_Horizontal(float value)
 /// </summary>
 void ASTK_EntityCharacter::PauseMenu()
 {
-	if (PauseMenuClass)
-	{
-			// Create the pause menu widget
-			UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
-			UWPauseMenu->Setup();
+    if (PauseMenuClass)
+    {
 
-		//TODO: User Interface [Fix Toggle Menu to avoid widget overlap (widget switcher)]
-		/*if (UWPauseMenu)
-		{
-			UWPauseMenu->RemoveFromParent();
-			//Change Input Method
-			APlayerController* PlayerController = Cast<APlayerController>(GetController());
-			PlayerController->SetInputMode(FInputModeGameOnly());
-			PlayerController->bShowMouseCursor = false;
-			UWPauseMenu = nullptr;
-		}
-		else
-		{
-			UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
-			UWPauseMenu->AddToViewport();
-			//Change Input Method
-			APlayerController* PlayerController = Cast<APlayerController>(GetController());
-			PlayerController->SetInputMode(FInputModeGameAndUI());
-			PlayerController->bShowMouseCursor = true;
-		}*/
-	}
+        // Create the pause menu widget
+        UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
+        UWPauseMenu->Setup();
+
+
+        //TODO: User Interface [Fix Toggle Menu to avoid widget overlap (widget switcher)]
+        /*if (UWPauseMenu)
+        {
+            UWPauseMenu->RemoveFromParent();
+            //Change Input Method
+            APlayerController* PlayerController = Cast<APlayerController>(GetController());
+            PlayerController->SetInputMode(FInputModeGameOnly());
+            PlayerController->bShowMouseCursor = false;
+            UWPauseMenu = nullptr;
+        }
+        else
+        {
+            UWPauseMenu = CreateWidget<USTK_UWPauseMenu>(GetWorld(), PauseMenuClass);
+            UWPauseMenu->AddToViewport();
+            //Change Input Method
+            APlayerController* PlayerController = Cast<APlayerController>(GetController());
+            PlayerController->SetInputMode(FInputModeGameAndUI());
+            PlayerController->bShowMouseCursor = true;
+        }*/
+    }
 }
 
 void ASTK_EntityCharacter::NextItem()
 {
-	InventoryComponent->NextInventoryItem();
+    InventoryComponent->NextInventoryItem();
 }
 
 void ASTK_EntityCharacter::PrevItem()
 {
-	InventoryComponent->PreviousInventoryItem();
+    InventoryComponent->PreviousInventoryItem();
 }
 
 void ASTK_EntityCharacter::UseItem()
@@ -340,40 +342,40 @@ void ASTK_EntityCharacter::UseItem()
 
 void ASTK_EntityCharacter::LockCameraLookat(USceneComponent* SceneComp)
 {
-	Client_LockCameraLookat(SceneComp);
+    Client_LockCameraLookat(SceneComp);
 }
 
 void ASTK_EntityCharacter::Client_LockCameraLookat_Implementation(USceneComponent* SceneComp)
 {
-	bCameraOverride = true;
-	CameraOverrideTarget = SceneComp;
-	CameraOverrideOrigin = GetController()->GetControlRotation();
-	CameraOverridePercent = 0;
+    bCameraOverride = true;
+    CameraOverrideTarget = SceneComp;
+    CameraOverrideOrigin = GetController()->GetControlRotation();
+    CameraOverridePercent = 0;
 }
 
 void ASTK_EntityCharacter::UnlockCameraLookat()
 {
-	bCameraOverride = false;
+    bCameraOverride = false;
 }
 
 void ASTK_EntityCharacter::ForceMoveToPoint(FVector target)
 {
-	bPositionOverride = true;
-	PositionOverrideTarget = target;
-	PositionOverridePercent = 0;
-	PositionOverrideOrigin = GetActorLocation();
+    bPositionOverride = true;
+    PositionOverrideTarget = target;
+    PositionOverridePercent = 0;
+    PositionOverrideOrigin = GetActorLocation();
 }
 
 // Called to bind functionality to input
 void ASTK_EntityCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
 void ASTK_EntityCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ASTK_EntityCharacter, InputLockFlags);
-	DOREPLIFETIME(ASTK_EntityCharacter, CurrentControllerFacing);
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(ASTK_EntityCharacter, InputLockFlags);
+    DOREPLIFETIME(ASTK_EntityCharacter, CurrentControllerFacing);
 }
