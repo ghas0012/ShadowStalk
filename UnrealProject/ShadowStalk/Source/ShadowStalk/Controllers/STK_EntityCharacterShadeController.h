@@ -10,6 +10,8 @@
   A 3/23/2021: Added function and Input that sets up the Pause Menu.
   J 3/31/2021: Added variables for pickup selection.
   H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
+  J 4/14/2021: Adjusted Bind Actions for Inventory Component.
+
 */
 
 #pragma once
@@ -48,9 +50,6 @@ protected:
 
     void CloseEyes();
     void OpenEyes();
-
-    void NextItem();
-    void PrevItem();
 
     bool isSprint;
 
