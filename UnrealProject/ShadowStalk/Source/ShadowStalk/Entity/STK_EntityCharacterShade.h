@@ -20,6 +20,9 @@
   H 3/31/2021: Added Blinking input. Networked it. Added first person Blinking. Added vertical head movement and smooth head rotation. Modified first person light. Added first person mesh separate from 3rd person mesh.
   J 3/31/2021: Added variables and code for Inventory Component.
   H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
+  J 4/12/2021: Fixed Hit Sound.
+  J 4/14/2021: Added Item Types for Pickup.
+
 */
 
 #pragma once

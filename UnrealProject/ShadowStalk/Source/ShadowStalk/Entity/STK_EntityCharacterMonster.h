@@ -15,6 +15,8 @@
   H 3/16/2021: Added a class description and summaries to pertinent functions.
   C 3/19/2021: Added Networking code
   H 3/23/2021: Moved movement data into its own struct.
+  J 4/12/2021: Fixed Attack Sound.
+
 */
 
 #pragma once
