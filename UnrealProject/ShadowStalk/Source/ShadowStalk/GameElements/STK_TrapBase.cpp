@@ -3,6 +3,8 @@
 
 #include "STK_TrapBase.h"
 #include "Components/BoxComponent.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASTK_TrapBase::ASTK_TrapBase()
@@ -33,6 +35,7 @@ ASTK_TrapBase::ASTK_TrapBase()
 void ASTK_TrapBase::ActivateTrap()
 {
 	TrapCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), TrapSound, GetActorLocation());
 }
 
 void ASTK_TrapBase::DisableTrap()
