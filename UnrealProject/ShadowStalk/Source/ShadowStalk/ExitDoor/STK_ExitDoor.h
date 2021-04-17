@@ -65,6 +65,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 		void NMC_DoorClose();
 
+	UFUNCTION(BlueprintCallable)
 	bool GetIsOpen();
 
 };
