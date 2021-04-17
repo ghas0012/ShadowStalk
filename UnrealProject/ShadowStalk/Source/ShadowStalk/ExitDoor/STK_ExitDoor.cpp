@@ -55,6 +55,7 @@ void ASTK_ExitDoor::DoorOpen()
 	{
 		NMC_DoorOpen();
 	}
+	bIsOpen = true;
 }
 
 /// <summary>
@@ -77,6 +78,7 @@ void ASTK_ExitDoor::DoorClose()
 	{
 		NMC_DoorClose();
 	}
+	bIsOpen = false;
 }
 
 /// <summary>
