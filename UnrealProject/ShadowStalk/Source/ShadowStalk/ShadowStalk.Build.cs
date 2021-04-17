@@ -6,7 +6,7 @@ public class ShadowStalk : ModuleRules
 {
 	public ShadowStalk(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PublicDefinitions.Add("STEAM_ENABLED");
+		// PublicDefinitions.Add("STEAM_ENABLED");
 
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

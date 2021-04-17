@@ -70,31 +70,31 @@ public:
     USTK_GameInstance(const FObjectInitializer& ObjectInitializer);
 
     UFUNCTION(BlueprintCallable)
-        void SetupMainMenuWidget();
+    void SetupMainMenuWidget();
 
     UFUNCTION(BlueprintCallable)
-        void SetupPauseMenuWidget();
+    void SetupPauseMenuWidget();
 
     UFUNCTION(BlueprintCallable)
-        void SetupInviteMenuWidget();
+    void SetupInviteMenuWidget();
 
     UFUNCTION(BlueprintCallable)
-        void LoadGameLevel();
+    void LoadGameLevel();
 
     UFUNCTION(BlueprintCallable, Category = "Online|Session")
-        bool HostSession(FName SessionName, FName Map, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
+    bool HostSession(FName SessionName, FName Map, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers);
 
     UFUNCTION(BlueprintCallable, Category = "Online|Session")
-        bool FindSessions(bool bIsLAN, bool bIsPresence);
+    bool FindSessions(bool bIsLAN, bool bIsPresence);
 
     UFUNCTION(BlueprintCallable, Category = "Online|Session")
-        bool JoinSession();
+    bool JoinSession();
 
     UFUNCTION(BlueprintCallable, Category = "Online|Session")
-        void DestroySession();
+    void DestroySession();
 
     UFUNCTION(BlueprintCallable, Category = "Online|Session")
-        bool SendSessionInviteToFriend(const FString& FriendUniqueNetId);
+    bool SendSessionInviteToFriend(const FString& FriendUniqueNetId);
 
     void FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
 
