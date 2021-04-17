@@ -52,6 +52,8 @@ public:
 
 protected:
 
+
+
 	void SpawnPawnAndPosess(APlayerController* NewPlayer);
 
 	FTimerHandle SpawnDelayHandle;

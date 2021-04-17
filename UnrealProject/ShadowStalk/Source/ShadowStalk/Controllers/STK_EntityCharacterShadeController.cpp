@@ -43,8 +43,6 @@ void ASTK_EntityCharacterShadeController::SetupInputComponent()
 
     if (InputComponent != nullptr && m_ShadeEntityCharacter)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, TEXT("Bound Shade input"));
-
         InputComponent->BindAxis("Forward", this, &ASTK_EntityCharacterShadeController::Forward);
         InputComponent->BindAxis("Strafe", this, &ASTK_EntityCharacterShadeController::Strafe);
 
@@ -71,10 +69,8 @@ void ASTK_EntityCharacterShadeController::SetupInputComponent()
 
 void ASTK_EntityCharacterShadeController::Forward(float value)
 {
-    if (m_ShadeEntityCharacter)
     if (m_ShadeEntityCharacter != nullptr)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, FString::Printf(TEXT("Forward, %f"), value));
         m_ShadeEntityCharacter->Forward(value);
     }
 }
@@ -84,7 +80,6 @@ void ASTK_EntityCharacterShadeController::Strafe(float value)
 {
     if (m_ShadeEntityCharacter != nullptr)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, FString::Printf(TEXT("Strafe, %f"), value));
         m_ShadeEntityCharacter->Strafe(value);
     }
 }
@@ -195,7 +190,6 @@ void ASTK_EntityCharacterShadeController::PauseMenu()
     if (m_ShadeEntityCharacter != nullptr)
     {
         m_ShadeEntityCharacter->PauseMenu();
-        GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Green, "Escape hit, ack | " + m_ShadeEntityCharacter->GetName());
     }
 }
 

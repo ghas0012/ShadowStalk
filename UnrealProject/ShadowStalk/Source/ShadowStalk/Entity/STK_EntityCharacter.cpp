@@ -173,29 +173,56 @@ void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
 
 void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 {
-    FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
-    if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
+    if (!IsLocallyControlled())
     {
-        FootstepTimer = 0;
+        FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
+        if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
+        {
+            FootstepTimer = 0;
 
-        //AudioComponent->SetSound(FootstepsSound);
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
+            //AudioComponent->SetSound(FootstepsSound);
+            UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation(), 1.f, 1.f, 0.f, FootstepAttenuation);
 
-        PlayFootstep1 = false;
-        PlayFootstep2 = true;
+            PlayFootstep1 = false;
+            PlayFootstep2 = true;
+        }
+
+        if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep2 == true && !AudioComponent->IsPlaying())
+        {
+            FootstepTimer = 0;
+
+            //AudioComponent->SetSound(FootstepsSound);
+            UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound2, GetActorLocation(), 1.f, 1.f, 0.f, FootstepAttenuation);
+
+            PlayFootstep2 = false;
+            PlayFootstep1 = true;
+        }
     }
-
-    if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep2 == true && !AudioComponent->IsPlaying())
+    else
     {
-        FootstepTimer = 0;
+        FootstepTimer += DeltaTime * FootstepFrequency * GetCapsuleComponent()->GetComponentVelocity().Size();
+        if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep1 == true && !AudioComponent->IsPlaying())
+        {
+            FootstepTimer = 0;
 
-        //AudioComponent->SetSound(FootstepsSound);
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound2, GetActorLocation());
+            //AudioComponent->SetSound(FootstepsSound);
+            UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound, GetActorLocation());
 
-        PlayFootstep2 = false;
-        PlayFootstep1 = true;
+            PlayFootstep1 = false;
+            PlayFootstep2 = true;
+        }
+
+        if (GetMovementComponent()->IsMovingOnGround() && FootstepTimer >= 1 && PlayFootstep2 == true && !AudioComponent->IsPlaying())
+        {
+            FootstepTimer = 0;
+
+            //AudioComponent->SetSound(FootstepsSound);
+            UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepsSound2, GetActorLocation());
+
+            PlayFootstep2 = false;
+            PlayFootstep1 = true;
+        }
     }
-
 }
 
 /// <summary>
@@ -263,6 +290,12 @@ void ASTK_EntityCharacter::Sprint(bool IsSprint)
         Crawl(false);
     }
 
+    GetCharacterMovement()->MaxWalkSpeed = IsSprint ? m_MovementData.m_SprintSpeed : m_MovementData.m_WalkSpeed;
+    Server_Sprint(IsSprint);
+}
+
+void ASTK_EntityCharacter::Server_Sprint_Implementation(bool IsSprint)
+{
     GetCharacterMovement()->MaxWalkSpeed = IsSprint ? m_MovementData.m_SprintSpeed : m_MovementData.m_WalkSpeed;
 }
 

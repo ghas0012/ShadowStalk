@@ -15,6 +15,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "ShadowStalk/Controllers/STK_EntityCharacterShadeController.h"
+#include "ShadowStalk/Gamemodes/STK_MatchGameMode.h"
 
 //Eyes
 #include "Components/RectLightComponent.h"
@@ -30,6 +31,8 @@
 #include "Sound/SoundBase.h"
 
 #include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
+
+#include "Engine/TargetPoint.h"
 
 // Sets default values
 ASTK_EntityCharacterShade::ASTK_EntityCharacterShade()
@@ -134,16 +137,11 @@ void ASTK_EntityCharacterShade::StartExecution(ASTK_EntityCharacterMonster* Exec
 void ASTK_EntityCharacterShade::Server_StartExecution_Implementation(ASTK_EntityCharacterMonster* Executioner)
 {
     SetShadeState(ECharacterShadeState::Execution);
-    //FVector x = Executioner->GetActorLocation() + Executioner->m_CameraComp->GetComponentLocation();
-    //GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("%f, %f, %f"), x.X,x.Y,x.Z));
-
     LockCameraLookat(Executioner->m_CameraComp);
 
-    FVector targetPos = Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance;
-    targetPos.Z = GetCapsuleComponent()->GetRelativeLocation().Z;
-    ForceMoveToPoint(targetPos);
-    //m_PlayerCapsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    //m_PlayerCapsule->SetEnableGravity(false);
+    //FVector targetPos = Executioner->GetActorLocation() + (GetActorLocation() - Executioner->GetActorLocation()).GetSafeNormal() * Executioner->ExecutionPositioningDistance;
+    //targetPos.Z = GetCapsuleComponent()->GetRelativeLocation().Z;
+    //ForceMoveToPoint(targetPos);
 
     DelayedTargetState = ECharacterShadeState::Dead;
     GetWorldTimerManager().SetTimer(DelayedStateChangeHandle, this, &ASTK_EntityCharacterShade::DelayedStateChange, Executioner->ExecutionTimeLength, false);
@@ -188,6 +186,19 @@ void ASTK_EntityCharacterShade::DelayedStateChange()
     SetShadeState(DelayedTargetState);
 }
 
+//void ASTK_EntityCharacterShade::Client_Spectate_Implementation()
+//{
+//    Server_Spectate();
+//
+//    GetMesh()->DetachFromParent(true);
+//
+//    GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("Client"));
+//
+//    GetCapsuleComponent()->SetSimulatePhysics(false);
+//    GetCapsuleComponent()->SetCollisionProfileName("Spectator");
+//    SetInputLock(EInputLockFlags::Everything, true);
+//    //SetInputLock(EInputLockFlags::Everything & !(EInputLockFlags::Movement | EInputLockFlags::MouseLook), true);
+//}
 
 int ASTK_EntityCharacterShade::GetHealth()
 {
@@ -207,8 +218,18 @@ void ASTK_EntityCharacterShade::SetHealth(int targetHealth)
 ECharacterShadeState ASTK_EntityCharacterShade::GetShadeState()
 {
     return CurrentState;
+
 }
 
+// void ASTK_EntityCharacterShade::Server_Spectate_Implementation()
+// {
+//     GetCapsuleComponent()->SetSimulatePhysics(false);
+//     GetCapsuleComponent()->SetCollisionProfileName("Spectator");
+//     SetInputLock(EInputLockFlags::Everything, true);
+//     GetCharacterMovement()->bCheatFlying = true;
+//     //SetInputLock(EInputLockFlags::Everything & !(EInputLockFlags::Movement | EInputLockFlags::MouseLook), true);
+//     //GetCharacterMovement()->bCheatFlying = true;
+// }
 
 /// <summary>
 /// Interact with the environment.
@@ -275,11 +296,17 @@ void ASTK_EntityCharacterShade::Server_SetShadeState_Implementation(ECharacterSh
         break;
 
     case ECharacterShadeState::Dead:
+
         GetCapsuleComponent()->SetSimulatePhysics(false);
         GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         SetInputLock(EInputLockFlags::Everything, true);
         GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HE'S DEAD, JIM!"));
         GetWorldTimerManager().ClearAllTimersForObject(this);
+
+       // Client_Spectate();
+       // GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HE'S DEAD, JIM!"));
+       // GetWorldTimerManager().ClearAllTimersForObject(this);
+
         // TODO: ragdoll
         // TODO: change eye material brightness to 0
 
@@ -290,11 +317,11 @@ void ASTK_EntityCharacterShade::Server_SetShadeState_Implementation(ECharacterSh
         break;
 
     default:
-        GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("UNDEFINED SHADE STATE!"));
+        // GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("UNDEFINED SHADE STATE!"));
         break;
 
     case ECharacterShadeState::Stuck:
-        SetInputLock(EInputLockFlags::Movement & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
+        SetInputLock(EInputLockFlags::Movement & EInputLockFlags::Jump & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
         GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HELP, I'M STUCK!"));
         GetWorldTimerManager().SetTimer(StuckRecoveryHandle, this, &ASTK_EntityCharacterShade::RecoverFromTrap, StuckRecoveryTime, false);
         break;
@@ -375,6 +402,7 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
         EPickupType pickupType = Cast<ASTK_PickupBase>(OtherActor)->GetPickupType();
         switch (pickupType)
         {
+
         case EPickupType::Undefined:
         {
             GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString("UNDEFINED PICKUP TYPE!"));
@@ -394,27 +422,26 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
             EItemType itemType = Cast<ASTK_ItemBase>(OtherActor)->GetItemType();
             switch (itemType)
             {
-            case EItemType::TestItem1:
-            {
-                // TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
-                InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
-                GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, FString("Added TestItem1"));
-                OtherActor->Destroy();
-                break;
-            }
+                case EItemType::TestItem1:
+                {
+                    // TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+                    InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
+                    GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, FString("Added TestItem1"));
+                    OtherActor->Destroy();
+                    break;
+                }
 
-            case EItemType::TestItem2:
-            {
-                // TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
-                InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
-                GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, FString("Added TestItem2"));
-                OtherActor->Destroy();
-                break;
+                case EItemType::TestItem2:
+                {
+                    // TODO: ADD THE PICKED ITEM TO PLAYERSTATE INVENTORY.
+                    InventoryComponent->AddToInventory(Cast<ASTK_PickupBase>(OtherActor));
+                    GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Yellow, FString("Added TestItem2"));
+                    OtherActor->Destroy();
+                    break;
+                }
             }
-            }
-
-
         }
+
         }
     }
 
@@ -426,6 +453,11 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 
     else if (OtherActor->ActorHasTag("Door"))
     {
+        if (CurrentState == ECharacterShadeState::Dead)
+        {
+            return;
+        }
+
         if (Cast<ASTK_ExitDoor>(OtherActor)->GetIsOpen())
         {
             // SHADE WIN STATE
@@ -437,6 +469,29 @@ void ASTK_EntityCharacterShade::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
             if (HasAuthority())
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, string);
+            }
+
+            TArray<AActor*> found;
+            UGameplayStatics::GetAllActorsOfClass( GetWorld(), ATargetPoint::StaticClass(), found );
+
+            for (size_t i = 0; i < found.Num(); i++)
+            {
+                ATargetPoint* t = Cast< ATargetPoint >(found[i]);
+                if (t)
+                {
+                    if (t->ActorHasTag("EndRoom"))
+                    {
+                        UGameplayStatics::PlaySoundAtLocation(GetWorld(), ShadeTeleportSound, GetActorLocation());
+                        if (GetController())
+                        {
+                            GetController()->SetControlRotation(t->GetActorRotation());
+                        }
+
+                        GetRootComponent()->SetRelativeLocation(t->GetActorLocation());
+
+                        break;
+                    };
+                }
             }
         }
     }
