@@ -63,12 +63,12 @@ void ASTK_ExitDoor::DoorOpen()
 /// </summary>
 void ASTK_ExitDoor::NMC_DoorOpen_Implementation()
 {
-	ParticleFX->DeactivateSystem();
 	DoorCollider->SetCollisionProfileName("OverlapAll");
-	if (HasAuthority())
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("DOOR IS OPEN!"));
-	}
+	//ParticleFX->DeactivateSystem();
+	// if (HasAuthority())
+	// {
+	//	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("DOOR IS OPEN!"));
+	// }
 	bIsOpen = true;
 }
 
@@ -86,9 +86,9 @@ void ASTK_ExitDoor::DoorClose()
 /// </summary>
 void ASTK_ExitDoor::NMC_DoorClose_Implementation()
 {
-	ParticleFX->ActivateSystem();
+	// ParticleFX->ActivateSystem();
 	DoorCollider->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("DOOR IS CLOSED!"));
+	// GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("DOOR IS CLOSED!"));
 	bIsOpen = false;
 }
 
@@ -98,3 +98,8 @@ bool ASTK_ExitDoor::GetIsOpen()
 	return bIsOpen;
 }
 
+void ASTK_ExitDoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASTK_ExitDoor, bIsOpen);
+}

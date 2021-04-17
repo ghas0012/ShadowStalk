@@ -51,6 +51,8 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
+
+	UPROPERTY(Replicated, BlueprintReadWrite)
 	bool bIsOpen = false;
 
 public:
