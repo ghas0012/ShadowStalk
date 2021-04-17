@@ -59,6 +59,7 @@ void ASTK_MatchGameState::Register_KeyDropped(uint8 count)
 TArray<class ASTK_EntityCharacterShade*> ASTK_MatchGameState::GetShades()
 {
     TArray<class ASTK_EntityCharacterShade*> to_return;
+    GetEntities();
 
     for (size_t i = 0; i < Entities.Num(); i++)
     {

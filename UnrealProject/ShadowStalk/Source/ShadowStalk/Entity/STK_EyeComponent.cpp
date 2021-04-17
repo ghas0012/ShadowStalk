@@ -308,8 +308,6 @@ void USTK_EyeComponent::ApplyFidgeting(float DeltaTime, StateData* StateToFidget
 		fidgetLerpFactor
 		);
 
-	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, FString::Printf(TEXT("Fidgeted from %f to %f"), fidgetOriginalIntensity, fidgetRecordedIntensity));
-
 	if (fidgetTime > 1 / (5 * StateToFidget->Fidget))
 	{
 		fidgetTime = 0;

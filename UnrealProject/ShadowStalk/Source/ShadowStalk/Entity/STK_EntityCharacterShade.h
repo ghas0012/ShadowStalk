@@ -75,6 +75,9 @@ public:
     //Sound
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
+        class USoundBase* ShadeTeleportSound;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
         class USoundBase* ShadeDownGroundHit;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shade|Audio", meta = (AllowPrivateAccess = "true"))
@@ -134,6 +137,9 @@ protected:
 
     void DelayedStateChange();
 
+    // UFUNCTION(Client, Reliable)
+    // void Client_Spectate();
+
     float InitBrightness;
 
 public:
@@ -168,8 +174,10 @@ public:
 
     void HandleBlinkInput(float DeltaTime);
 
-   //UFUNCTION(Server, Reliable)
-   //void Server_HandleBlinkInput(float DeltaTime);
+    // UFUNCTION(Server, Reliable)
+    // void Server_Spectate();
+    
+    //void Server_HandleBlinkInput(float DeltaTime);
 
     virtual void Interact() override;
 

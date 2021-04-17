@@ -9,9 +9,9 @@
 
 #include "ShadowStalk/Controllers/STK_EntityCharacterShadeController.h"
 #include "ShadowStalk/Controllers/STK_EntityCharacterMonsterController.h"
+#include "ShadowStalk/Controllers/STK_SpectatorController.h"
 
 #include "Engine/LevelStreaming.h"
-
 #include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
 
 /// <summary>
@@ -52,8 +52,6 @@ ASTK_MatchGameMode::ASTK_MatchGameMode()
 
     bStartPlayersAsSpectators = true;
 
-    if (GEngine)
-    GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("// 1 - 0"));
 }
 
 
@@ -76,7 +74,6 @@ APlayerController* ASTK_MatchGameMode::Login(UPlayer* NewPlayer, ENetRole InRemo
     return Super::Login(NewPlayer, InRemoteRole, Portal, Options, UniqueId, ErrorMessage);
 }
 
-
 /// <summary>
 /// Intercept players PostLogin, wait until level has loaded before spawning their proper pawn based on their controller.
 /// </summary>
@@ -86,12 +83,10 @@ void ASTK_MatchGameMode::PostLogin(APlayerController* NewPlayer) {
 
     if (NewPlayer->GetLocalRole() == ROLE_Authority)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("Role is auth, should be monster controller"));
         PlayerControllerClass = pMonsterControllerBP;
     }
     if (NewPlayer->GetRemoteRole() < ROLE_Authority)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Cyan, TEXT("Role less than auth, should be shade controller"));
         PlayerControllerClass = pShadeControllerBP;
     }
 
@@ -142,8 +137,6 @@ void ASTK_MatchGameMode::DelaySpawnUntilLevelLoaded()
 
         GetWorldTimerManager().ClearTimer(SpawnDelayHandle);
 
-        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("// 1 - 1"));
-
         return;
     }
 
@@ -164,8 +157,6 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
     {
         APawn* oldPawn = monsterController->GetPawnOrSpectator();
 
-        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("MonsterController dynamic cast success"));
-
         monsterController->UnPossess();
 
         DefaultPawnClass = pMonsterBP;
@@ -179,8 +170,6 @@ void ASTK_MatchGameMode::SpawnPawnAndPosess(APlayerController* NewPlayer)
     else if (ASTK_EntityCharacterShadeController* shadeController = dynamic_cast<ASTK_EntityCharacterShadeController*>(NewPlayer))
     {
         APawn* oldPawn = shadeController->GetPawnOrSpectator();
-
-        GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("ShadeController dynamic cast success"));
 
         shadeController->UnPossess();
 

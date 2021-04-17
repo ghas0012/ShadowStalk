@@ -59,6 +59,9 @@ public:
     UPROPERTY(Replicated, BlueprintReadOnly)
     FRotator CurrentControllerFacing;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    class USoundAttenuation* FootstepAttenuation;
+
 protected:
 
     // position override variables
@@ -137,6 +140,7 @@ public:
     UFUNCTION(Client, Reliable)
     void Client_LockCameraLookat(USceneComponent* SceneComp);
 
+
     void ForceMoveToPoint(FVector target);
 
     UFUNCTION(BlueprintCallable)
@@ -155,6 +159,9 @@ public:
 
     UFUNCTION(Server, Reliable)
     void Server_SetInputLock(uint8 flag, bool lock);
+
+    UFUNCTION(Server, Reliable)
+    void Server_Sprint(bool IsSprint);
 
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

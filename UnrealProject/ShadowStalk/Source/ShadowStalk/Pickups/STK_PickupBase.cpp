@@ -26,6 +26,7 @@ ASTK_PickupBase::ASTK_PickupBase()
 	Collider->SetupAttachment(SceneRootComp);
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>("PickupMesh");
+	PickupMesh->SetCollisionProfileName("NoCollision");
 	PickupMesh->SetRelativeLocation(FVector(0, 0, -40));
 	PickupMesh->SetupAttachment(Collider);
 
