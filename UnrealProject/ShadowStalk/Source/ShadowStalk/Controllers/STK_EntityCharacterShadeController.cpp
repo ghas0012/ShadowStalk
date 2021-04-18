@@ -47,7 +47,9 @@ void ASTK_EntityCharacterShadeController::SetupInputComponent()
         InputComponent->BindAxis("Strafe", this, &ASTK_EntityCharacterShadeController::Strafe);
 
         InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityCharacterShadeController::Jump);
+
         InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityCharacterShadeController::SetSprint);
+        InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityCharacterShadeController::StopSprint);
 
         InputComponent->BindAction("Crawl", IE_Pressed, this, &ASTK_EntityCharacterShadeController::SetCrawl);
         InputComponent->BindAction("Crawl", IE_Released, this, &ASTK_EntityCharacterShadeController::UnsetCrawl);
@@ -96,33 +98,21 @@ void ASTK_EntityCharacterShadeController::Jump()
 
 void ASTK_EntityCharacterShadeController::SetSprint()
 {
-    if (m_ShadeEntityCharacter != nullptr)
+    if (m_ShadeEntityCharacter)
     {
-        if (isSprint)
-        {
-            isSprint = false;
-        }
-        else
-        {
-            isSprint = true;
-        }
-
-        m_ShadeEntityCharacter->Sprint(isSprint);
+        m_ShadeEntityCharacter->Sprint(true);
     }
 }
 
 
 
-
-//TODO - Make Sprint toggle optional.
-
-//void ASTK_EntityCharacterShadeController::StopSprint()
-//{
-//  if (m_ShadeEntityCharacter)
-//  {
-//  	m_ShadeEntityCharacter->Sprint(false);
-//  }
-//}
+void ASTK_EntityCharacterShadeController::StopSprint()
+{
+  if (m_ShadeEntityCharacter)
+  {
+  	m_ShadeEntityCharacter->Sprint(false);
+  }
+}
 
 
 void ASTK_EntityCharacterShadeController::SetCrawl()

@@ -12,6 +12,7 @@
   H 3/12/2021: Class init.
   H 3/12/2021: Added a list for entities, plus getters for both the monster and shades
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  C 4/07/2021: Added Updated some stuff to make the doors work on the Network. 
   H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
 */
 
