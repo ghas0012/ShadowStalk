@@ -22,8 +22,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "STK_MatchGameState.generated.h"
 
-class ASTK_EntityCharacter;
-class ASTK_EntityCharacterShade;
+class ASTK_Entity;
+class ASTK_EntityShade;
 
 UCLASS()
 class SHADOWSTALK_API ASTK_MatchGameState : public AGameStateBase
@@ -34,17 +34,13 @@ public:
 
 	ASTK_MatchGameState();
 
-	TArray <ASTK_EntityCharacter*> GetEntities();
-	TArray <ASTK_EntityCharacterShade*> GetShades();
-	class ASTK_EntityCharacterMonster* GetMonster();
+	TArray <ASTK_Entity*> GetEntities();
+	TArray <ASTK_EntityShade*> GetShades();
+	class ASTK_EntityMonster* GetMonster();
 
 	void Register_MaxKeyCount(uint8 count);
 
-	UFUNCTION(BlueprintCallable)
-	uint8 GetCurrentKeyCount() { return Current_Key_Count; };
-
-	UFUNCTION(BlueprintCallable)
-	uint8 GetMaxKeyCount() { return Max_Key_Count; };
+	uint8 GetCurrentKeyCount();
 
 	void Register_KeyPickedUp();
 	void Register_KeyDropped(uint8 count);
@@ -52,6 +48,7 @@ public:
 
 	void Register_NewEntity(APawn* entity);
 
+	void OnAllKeysPickedUp();
 	void OnKeysDropped();
 
 protected:
@@ -60,7 +57,7 @@ protected:
 	uint8 Current_Key_Count;
 	ASTK_ExitDoor* Selected_Exit_Door;
 
-	TArray <ASTK_EntityCharacter*> Entities;
+	TArray <ASTK_Entity*> Entities;
 
 	virtual void BeginPlay() override;
 
