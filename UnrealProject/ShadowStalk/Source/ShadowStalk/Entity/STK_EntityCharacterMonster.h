@@ -16,6 +16,7 @@
   C 3/19/2021: Added Networking code
   H 3/23/2021: Moved movement data into its own struct.
   J 4/12/2021: Fixed Attack Sound.
+  C 4/15/2021: Let Monster drop traps.
 
 */
 
@@ -69,6 +70,12 @@ protected:
 
 	class ASTK_MatchGameState* gamestate = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Trap")
+	TSubclassOf<class ASTK_TrapBase> BearTrap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Trap")
+	int numOfTraps;
+
 	virtual void BeginPlay() override;
 
 
@@ -102,6 +109,9 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void Server_OnExcecuteEnd();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void SpawnTrap();
 
 	void Attack();
 
