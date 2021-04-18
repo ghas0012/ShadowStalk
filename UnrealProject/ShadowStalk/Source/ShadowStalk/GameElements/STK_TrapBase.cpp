@@ -21,22 +21,15 @@ ASTK_TrapBase::ASTK_TrapBase()
 	TrapCollider = CreateDefaultSubobject<UBoxComponent>("BoxCollider");
 	TrapCollider->SetEnableGravity(false);
 	TrapCollider->SetGenerateOverlapEvents(true);
-	TrapCollider->SetCollisionProfileName("BlockAll");
-	TrapCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	TrapCollider->SetCollisionProfileName("OverlapAll");
+	TrapCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	TrapCollider->SetRelativeLocation(FVector(0, 0, 40));
-	TrapCollider->BodyInstance.bLockRotation;
-	TrapCollider->BodyInstance.bLockYTranslation;
-	TrapCollider->BodyInstance.bLockXTranslation;
-	TrapCollider->SetNotifyRigidBodyCollision(true);
-	TrapCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	TrapCollider->SetupAttachment(SceneRootComp);
 
 	TrapMesh = CreateDefaultSubobject<UStaticMeshComponent>("Trap Mesh");
 	TrapMesh->SetRelativeLocation(FVector(0, 0, 0));
 	TrapMesh->SetupAttachment(TrapCollider);
 	TrapMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	OnActorHit.AddDynamic(this, &ASTK_TrapBase::OnHit);
 }
 
 void ASTK_TrapBase::ActivateTrap()
@@ -47,21 +40,7 @@ void ASTK_TrapBase::ActivateTrap()
 
 void ASTK_TrapBase::DisableTrap()
 {
-	
-}
 
-void ASTK_TrapBase::SetTrap()
-{
-	TrapCollider->SetSimulatePhysics(false);
-	TrapCollider->SetEnableGravity(false);
-	TrapCollider->SetCollisionProfileName("OverlapAll");
-	TrapCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-}
-
-void ASTK_TrapBase::SpawnTrap()
-{
-	TrapCollider->SetSimulatePhysics(true);
-	TrapCollider->SetEnableGravity(true);
 }
 
 // Called when the game starts or when spawned
@@ -78,10 +57,3 @@ void ASTK_TrapBase::Tick(float DeltaTime)
 
 }
 
-void ASTK_TrapBase::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
-{
-	if (TrapCollider->IsSimulatingPhysics() == true)
-			{
-				SetTrap();
-			}
-}

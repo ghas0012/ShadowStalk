@@ -42,10 +42,6 @@ public:
 
 	virtual void DisableTrap();
 
-	void SetTrap();
-
-	void SpawnTrap();
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Trap|Audio", meta = (AllowPrivateAccess = "true"))
 		class UAudioComponent* AudioComponent;
@@ -55,9 +51,6 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UFUNCTION()
-	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 public:	
 	// Called every frame

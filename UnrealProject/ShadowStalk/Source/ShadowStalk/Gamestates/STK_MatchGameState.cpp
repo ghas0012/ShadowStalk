@@ -66,7 +66,7 @@ TArray<class ASTK_EntityCharacterShade*> ASTK_MatchGameState::GetShades()
         if (Entities[i])
         {
             if (Entities[i]->GetEntityType() == EEntityType::Shade)
-                to_return.Add(Cast<ASTK_EntityCharacterShade>(Entities[i]));
+            to_return.Add( Cast<ASTK_EntityCharacterShade>(Entities[i]) );
         }
     }
 
@@ -101,7 +101,7 @@ ASTK_EntityCharacterMonster* ASTK_MatchGameState::GetMonster()
     for (size_t i = 0; i < Entities.Num(); i++)
     {
         if (Entities[i]->GetEntityType() == EEntityType::MistWalker)
-            return Cast<ASTK_EntityCharacterMonster>(Entities[i]);
+        return Cast<ASTK_EntityCharacterMonster>(Entities[i]);
     }
 
     return nullptr;

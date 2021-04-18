@@ -56,8 +56,6 @@ ASTK_EntityCharacterShade::ASTK_EntityCharacterShade()
 
     GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
-    Tags.Add("Shade");
-
     SetReplicates(true);
 }
 
@@ -240,8 +238,6 @@ void ASTK_EntityCharacterShade::Interact()
 {
     if (InputLockFlags & EInputLockFlags::Interact)
         return;
-
-    SetInputLock(EInputLockFlags::Everything, true);
 }
 
 void ASTK_EntityCharacterShade::Blink(bool blink)
@@ -325,7 +321,7 @@ void ASTK_EntityCharacterShade::Server_SetShadeState_Implementation(ECharacterSh
         break;
 
     case ECharacterShadeState::Stuck:
-        SetInputLock((EInputLockFlags::Movement | EInputLockFlags::Jump) & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
+        SetInputLock(EInputLockFlags::Movement & EInputLockFlags::Jump & ~(EInputLockFlags::MouseLook | EInputLockFlags::Blink), true);
         GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString("HELP, I'M STUCK!"));
         GetWorldTimerManager().SetTimer(StuckRecoveryHandle, this, &ASTK_EntityCharacterShade::RecoverFromTrap, StuckRecoveryTime, false);
         break;

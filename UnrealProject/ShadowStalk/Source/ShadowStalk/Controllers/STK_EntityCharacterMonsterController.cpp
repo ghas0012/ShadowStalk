@@ -42,7 +42,6 @@ void ASTK_EntityCharacterMonsterController::SetupInputComponent()
         InputComponent->BindAction("Jump", IE_Pressed, this, &ASTK_EntityCharacterMonsterController::Jump);
         InputComponent->BindAction("Attack", IE_Pressed, this, &ASTK_EntityCharacterMonsterController::Attack);
         InputComponent->BindAction("Interact", IE_Pressed, this, &ASTK_EntityCharacterMonsterController::Interact);
-        InputComponent->BindAction("DropTrap", IE_Pressed, this, &ASTK_EntityCharacterMonsterController::DropTrap);
 
         InputComponent->BindAction("Sprint", IE_Pressed, this, &ASTK_EntityCharacterMonsterController::SetSprint);
         InputComponent->BindAction("Sprint", IE_Released, this, &ASTK_EntityCharacterMonsterController::StopSprint);
@@ -143,22 +142,6 @@ void ASTK_EntityCharacterMonsterController::MouseLook_Horizontal(float value)
     }
 }
 
-void ASTK_EntityCharacterMonsterController::PauseMenu()
-{
-    if (m_MonsterEntityCharacter != nullptr)
-    {
-        m_MonsterEntityCharacter->PauseMenu();
-    }
-}
-
-void ASTK_EntityCharacterMonsterController::DropTrap()
-{
-    if (m_MonsterEntityCharacter != nullptr)
-    {
-        m_MonsterEntityCharacter->SpawnTrap();
-    }
-}
-
 void ASTK_EntityCharacterMonsterController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -166,3 +149,10 @@ void ASTK_EntityCharacterMonsterController::GetLifetimeReplicatedProps(TArray<FL
     DOREPLIFETIME(ASTK_EntityCharacterMonsterController, m_MonsterEntityCharacter);
 }
 
+void ASTK_EntityCharacterMonsterController::PauseMenu()
+{
+    if (m_MonsterEntityCharacter != nullptr)
+    {
+        m_MonsterEntityCharacter->PauseMenu();
+    }
+}

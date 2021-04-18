@@ -8,7 +8,6 @@
 #include "DrawDebugHelpers.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
-#include "ShadowStalk/GameElements/STK_TrapBase.h"
 
 #include "ShadowStalk/Controllers/STK_EntityCharacterMonsterController.h"
 
@@ -31,10 +30,6 @@ ASTK_EntityCharacterMonster::ASTK_EntityCharacterMonster()
 
     GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = false;
 
-    numOfTraps = 5;
-
-    Tags.Add("Monster");
-
     SetReplicates(true);
 }
 
@@ -50,27 +45,6 @@ void ASTK_EntityCharacterMonster::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 }
 
-
-void ASTK_EntityCharacterMonster::SpawnTrap_Implementation()
-{
-    if (numOfTraps > 0)
-    {
-        FActorSpawnParameters SpawnParms;
-        SpawnParms.Owner = this;
-
-        FTransform trapLoc;
-        trapLoc.SetLocation(GetActorLocation());
-
-         ASTK_TrapBase* Trap = GetWorld()->SpawnActor<ASTK_TrapBase>(BearTrap, trapLoc, SpawnParms);
-
-         Trap->SetInstigator(this);
-         Trap->SpawnTrap();
-
-         numOfTraps--;
-            
-        
-    }
-}
 
 /// <summary>
 /// Basic function to allow the monster to attack shades. Will be updated to have a cooldown, and be dependent on the monster's animation.

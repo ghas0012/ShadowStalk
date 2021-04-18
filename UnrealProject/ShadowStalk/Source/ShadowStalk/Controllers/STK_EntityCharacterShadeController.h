@@ -11,7 +11,6 @@
   J 3/31/2021: Added variables for pickup selection.
   H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
   J 4/14/2021: Adjusted Bind Actions for Inventory Component.
-  C 4/15/2021: Reverted Sprint Toggle.
 
 */
 
@@ -42,7 +41,7 @@ protected:
 
     void Jump();
     void SetSprint();
-    void StopSprint();
+    //void StopSprint();
     void SetCrawl();
     void UnsetCrawl();
     void Interact();
@@ -52,6 +51,7 @@ protected:
     void CloseEyes();
     void OpenEyes();
 
+    bool isSprint;
 
     void PauseMenu();
 
