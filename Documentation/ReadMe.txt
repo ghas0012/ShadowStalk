@@ -2,6 +2,8 @@ Copyright (C) Particle Interactive Ltd. 2021. All Rights Reserved.
 
 ShadowStalk User Guide
 
+Playable Build: https://bit.ly/3dwK8lM
+
 Shade Controls:
 
     W A S D           - Basic movement
