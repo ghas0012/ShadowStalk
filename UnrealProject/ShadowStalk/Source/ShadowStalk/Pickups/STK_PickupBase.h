@@ -12,6 +12,7 @@
   ChangeLog:
   H 3/12/2021: Class init.
   H 3/16/2021: Added a class description and summaries to relevant methods.
+  H 4/16/2021: Mesh collider turned off so monster can pass through.
 */
 
 #pragma once

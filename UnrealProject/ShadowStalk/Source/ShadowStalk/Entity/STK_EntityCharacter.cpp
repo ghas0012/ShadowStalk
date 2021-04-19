@@ -91,22 +91,29 @@ ASTK_EntityCharacter::ASTK_EntityCharacter()
     }
 }
 
+/// <summary>
+/// Controller support for rotation
+/// </summary>
 void ASTK_EntityCharacter::TurnAtRate(float Rate)
 {
     // calculate delta for this frame from the rate information
     AddControllerYawInput(Rate * m_MovementData.m_MouseLook_X * GetWorld()->GetDeltaSeconds());
 }
 
+/// <summary>
+/// Controller support for Lookup
+/// </summary>
 void ASTK_EntityCharacter::LookUpAtRate(float Rate)
 {
     // calculate delta for this frame from the rate information
     AddControllerPitchInput(Rate * m_MovementData.m_MouseLook_Y * GetWorld()->GetDeltaSeconds());
 }
 
-// Called when the game starts or when spawned
+/// <summary>
+/// Sets up character related variables. done in beginplay so shade and monster can override the numbers in their constructor.
+/// </summary>
 void ASTK_EntityCharacter::BeginPlay()
 {
-
     GetCharacterMovement()->JumpZVelocity = m_MovementData.m_JumpStrength;
     GetCharacterMovement()->MaxAcceleration = m_MovementData.m_Acceleration;
     GetCharacterMovement()->MaxWalkSpeed = m_MovementData.m_WalkSpeed;
@@ -118,10 +125,8 @@ void ASTK_EntityCharacter::BeginPlay()
     GetCapsuleComponent()->SetCapsuleHalfHeight(m_MovementData.m_CapsuleHalfHeight);
 
     Super::BeginPlay();
-
 }
 
-// Called every frame
 void ASTK_EntityCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -130,6 +135,9 @@ void ASTK_EntityCharacter::Tick(float DeltaTime)
     HandleCamera(DeltaTime);
 }
 
+/// <summary>
+/// Helper function to allow for position overriding. otherwise normal movement applies.
+/// </summary>
 void ASTK_EntityCharacter::HandlePositionOverride(float DeltaTime)
 {
     if (bPositionOverride)
@@ -147,6 +155,10 @@ void ASTK_EntityCharacter::HandlePositionOverride(float DeltaTime)
     }
 }
 
+/// <summary>
+/// Allows us to override what the player's looking at.
+/// used mainly to rotate the player on execution.
+/// </summary>
 void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
 {
     if (GetLocalRole() == ROLE_Authority)
@@ -171,6 +183,9 @@ void ASTK_EntityCharacter::HandleCamera(float DeltaTime)
     }
 }
 
+/// <summary>
+/// Plays footstep sounds based on velocity.
+/// </summary>
 void ASTK_EntityCharacter::HandleFootstepSounds(float DeltaTime)
 {
     if (!IsLocallyControlled())
@@ -241,6 +256,9 @@ void ASTK_EntityCharacter::SetInputLock(uint8 flag, bool lock)
     Server_SetInputLock(flag, lock);
 }
 
+/// <summary>
+/// Locks input. See above for explanation.
+/// </summary>
 void ASTK_EntityCharacter::Server_SetInputLock_Implementation(uint8 flag, bool lock)
 {
     if (flag & EInputLockFlags::Movement)
@@ -251,6 +269,9 @@ void ASTK_EntityCharacter::Server_SetInputLock_Implementation(uint8 flag, bool l
     lock ? InputLockFlags |= flag : InputLockFlags &= ~flag;
 }
 
+/// <summary>
+/// Passes movement to the character controller
+/// </summary>
 void ASTK_EntityCharacter::Forward(float value)
 {
     if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
@@ -259,6 +280,9 @@ void ASTK_EntityCharacter::Forward(float value)
     ACharacter::AddMovementInput(GetActorForwardVector(), value);
 }
 
+/// <summary>
+/// Passes movement to the character controller
+/// </summary>
 void ASTK_EntityCharacter::Strafe(float value)
 {
     if (InputLockFlags & EInputLockFlags::Movement || bPositionOverride)
@@ -268,10 +292,16 @@ void ASTK_EntityCharacter::Strafe(float value)
     //GetCharacterMovement()->AddInputVector(GetActorRightVector() * value);
 }
 
+/// <summary>
+/// Virtual function. no base behavior.
+/// </summary>
 void ASTK_EntityCharacter::Interact()
 {
 }
 
+/// <summary>
+/// Passes jump requests to the character
+/// </summary>
 void ASTK_EntityCharacter::Jump()
 {
     if (InputLockFlags & EInputLockFlags::Jump)
@@ -280,6 +310,9 @@ void ASTK_EntityCharacter::Jump()
     ACharacter::Jump();
 }
 
+/// <summary>
+/// Sets new speed based on whether or not we're sprinting. networked the speed value.
+/// </summary>
 void ASTK_EntityCharacter::Sprint(bool IsSprint)
 {
     if (InputLockFlags & EInputLockFlags::Sprint)
@@ -299,6 +332,9 @@ void ASTK_EntityCharacter::Server_Sprint_Implementation(bool IsSprint)
     GetCharacterMovement()->MaxWalkSpeed = IsSprint ? m_MovementData.m_SprintSpeed : m_MovementData.m_WalkSpeed;
 }
 
+/// <summary>
+/// Passes crawl requests to the character
+/// </summary>
 void ASTK_EntityCharacter::Crawl(bool IsCrawl)
 {
     if (InputLockFlags & EInputLockFlags::Crawl)
@@ -307,6 +343,9 @@ void ASTK_EntityCharacter::Crawl(bool IsCrawl)
     IsCrawl ? ACharacter::Crouch(true) : ACharacter::UnCrouch(true);
 }
 
+/// <summary>
+/// Handles vertical mouselook
+/// </summary>
 void ASTK_EntityCharacter::MouseLook_Vertical(float value)
 {
     if (InputLockFlags & EInputLockFlags::MouseLook || bCameraOverride)
@@ -315,6 +354,9 @@ void ASTK_EntityCharacter::MouseLook_Vertical(float value)
     APawn::AddControllerPitchInput(-value * m_MovementData.m_MouseLook_X);
 }
 
+/// <summary>
+/// Handles horizontal mouselook
+/// </summary>
 void ASTK_EntityCharacter::MouseLook_Horizontal(float value)
 {
     if (InputLockFlags & EInputLockFlags::MouseLook || bCameraOverride)
@@ -358,11 +400,17 @@ void ASTK_EntityCharacter::PauseMenu()
     }
 }
 
+/// <summary>
+/// Cycles to next inventory item
+/// </summary>
 void ASTK_EntityCharacter::NextItem()
 {
     InventoryComponent->NextInventoryItem();
 }
 
+/// <summary>
+/// Cycles to previous inventory item
+/// </summary>
 void ASTK_EntityCharacter::PrevItem()
 {
     InventoryComponent->PreviousInventoryItem();
@@ -370,14 +418,20 @@ void ASTK_EntityCharacter::PrevItem()
 
 void ASTK_EntityCharacter::UseItem()
 {
-
+    // TODO
 }
 
+/// <summary>
+/// Forces the client to rotate and face a requested scene comp (usually other camera components)
+/// </summary>
 void ASTK_EntityCharacter::LockCameraLookat(USceneComponent* SceneComp)
 {
     Client_LockCameraLookat(SceneComp);
 }
 
+/// <summary>
+/// Forces the client to rotate and face a requested scene comp (usually other camera components)
+/// </summary>
 void ASTK_EntityCharacter::Client_LockCameraLookat_Implementation(USceneComponent* SceneComp)
 {
     bCameraOverride = true;
@@ -386,11 +440,17 @@ void ASTK_EntityCharacter::Client_LockCameraLookat_Implementation(USceneComponen
     CameraOverridePercent = 0;
 }
 
+/// <summary>
+/// Releases the client's camera rotation
+/// </summary>
 void ASTK_EntityCharacter::UnlockCameraLookat()
 {
     bCameraOverride = false;
 }
 
+/// <summary>
+/// Forces the client to lerp to a requested fvector
+/// </summary>
 void ASTK_EntityCharacter::ForceMoveToPoint(FVector target)
 {
     bPositionOverride = true;
@@ -403,7 +463,6 @@ void ASTK_EntityCharacter::ForceMoveToPoint(FVector target)
 void ASTK_EntityCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ASTK_EntityCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

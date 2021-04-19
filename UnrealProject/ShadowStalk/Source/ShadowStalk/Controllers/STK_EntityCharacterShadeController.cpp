@@ -17,7 +17,6 @@ void ASTK_EntityCharacterShadeController::OnPossess(APawn* aPawn)
 
 }
 
-
 void ASTK_EntityCharacterShadeController::OnUnPossess()
 {
     APawn* possessedPawn = Cast<APawn>(GetOwner());
@@ -25,6 +24,9 @@ void ASTK_EntityCharacterShadeController::OnUnPossess()
     Super::OnUnPossess();
 }
 
+/// <summary>
+/// Sets up input.
+/// </summary>
 void ASTK_EntityCharacterShadeController::AcknowledgePossession(APawn* aPawn)
 {
     Super::AcknowledgePossession(aPawn);

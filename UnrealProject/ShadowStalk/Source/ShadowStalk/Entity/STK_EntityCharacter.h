@@ -18,7 +18,7 @@
   J 3/31/2021: Added another footsteps sound and additional variables and code for Inventory Component.
   H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
   J 4/14/2021: Adjustments for Pickup variables.
-
+  H 4/16/2021: Networked sprint. Added sound attenuation to footsteps.
 */
 
 #pragma once
@@ -53,9 +53,6 @@ public:
     UPROPERTY(Replicated)
     uint8 InputLockFlags = 0;
 
-    void TurnAtRate(float Rate);
-    void LookUpAtRate(float Rate);
-
     UPROPERTY(Replicated, BlueprintReadOnly)
     FRotator CurrentControllerFacing;
 
@@ -77,7 +74,6 @@ protected:
     class USceneComponent* CameraOverrideTarget;
     FRotator CameraOverrideOrigin;
     float CameraOverrideSpeed = 4.f;
-
 
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -108,6 +104,7 @@ public:
 
     /// Input functions
 #pragma region
+
     virtual void Forward(float value);
 
     virtual void Strafe(float value);
@@ -140,11 +137,13 @@ public:
     UFUNCTION(Client, Reliable)
     void Client_LockCameraLookat(USceneComponent* SceneComp);
 
-
     void ForceMoveToPoint(FVector target);
 
     UFUNCTION(BlueprintCallable)
     virtual EEntityType GetEntityType() { return EEntityType::Undefined; };
+
+    void TurnAtRate(float Rate);
+    void LookUpAtRate(float Rate);
 
     // Called every frame
     virtual void Tick(float DeltaTime) override;

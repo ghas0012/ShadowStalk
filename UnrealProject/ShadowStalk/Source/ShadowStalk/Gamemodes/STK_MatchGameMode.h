@@ -36,6 +36,9 @@ class SHADOWSTALK_API ASTK_MatchGameMode : public AGameModeBase
 
 public:
 
+	/// <summary>
+	/// Depricated. Marked for removal.
+	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Logistics")
 		bool PlayAsMonster;
 

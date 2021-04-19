@@ -39,6 +39,10 @@ ASTK_TrapBase::ASTK_TrapBase()
 	OnActorHit.AddDynamic(this, &ASTK_TrapBase::OnHit);
 }
 
+/// <summary>
+/// Called when the shade is caught in the trap.
+/// Disables the collider and plays a trap sound.
+/// </summary>
 void ASTK_TrapBase::ActivateTrap()
 {
 	TrapCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -50,6 +54,9 @@ void ASTK_TrapBase::DisableTrap()
 	
 }
 
+/// <summary>
+/// Called when the trap hits the floor. it disables gravity and enables overlap collision.
+/// </summary>
 void ASTK_TrapBase::SetTrap()
 {
 	TrapCollider->SetSimulatePhysics(false);
@@ -58,6 +65,9 @@ void ASTK_TrapBase::SetTrap()
 	TrapCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 }
 
+/// <summary>
+/// Called when the trap hits the floor. it disables gravity and enables overlap collision.
+/// </summary>
 void ASTK_TrapBase::SpawnTrap()
 {
 	TrapCollider->SetSimulatePhysics(true);
@@ -81,7 +91,7 @@ void ASTK_TrapBase::Tick(float DeltaTime)
 void ASTK_TrapBase::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (TrapCollider->IsSimulatingPhysics() == true)
-			{
-				SetTrap();
-			}
+	{
+		SetTrap();
+	}
 }

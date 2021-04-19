@@ -17,7 +17,6 @@
   H 3/23/2021: Moved movement data into its own struct.
   J 4/12/2021: Fixed Attack Sound.
   C 4/15/2021: Let Monster drop traps.
-
 */
 
 #pragma once

@@ -9,7 +9,6 @@
 
 #include "ShadowStalk/Controllers/STK_EntityCharacterShadeController.h"
 #include "ShadowStalk/Controllers/STK_EntityCharacterMonsterController.h"
-#include "ShadowStalk/Controllers/STK_SpectatorController.h"
 
 #include "Engine/LevelStreaming.h"
 #include "ShadowStalk/ExitDoor/STK_ExitDoor.h"
@@ -24,11 +23,6 @@ ASTK_MatchGameMode::ASTK_MatchGameMode()
     static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ECharacterMonsterController"));
     static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityCharacterShade"));
     static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ECharacterShadeController"));
-
-    //static ConstructorHelpers::FClassFinder<APawn> MonsterPawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityMonster"));
-    //static ConstructorHelpers::FClassFinder<APlayerController> MonsterControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_MonsterController"));
-    //static ConstructorHelpers::FClassFinder<APawn> ShadePawnBP_Getter(TEXT("/Game/Blueprints/Entities/BP_EntityShade"));
-    //static ConstructorHelpers::FClassFinder<APlayerController> ShadeControllerBP_Getter(TEXT("/Game/Blueprints/Misc/BP_ShadeController"));
 
     if (MonsterPawnBP_Getter.Class != NULL)
     {

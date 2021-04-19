@@ -6,6 +6,9 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Net/UnrealNetwork.h"
 
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
+
 
 ASTK_ExitDoor::ASTK_ExitDoor()
 {
@@ -17,6 +20,10 @@ ASTK_ExitDoor::ASTK_ExitDoor()
 	DoorCollider->SetRelativeLocation(FVector(0, 0, 120));
 	DoorCollider->SetCollisionProfileName("BlockAll");
 	DoorCollider->SetupAttachment(SceneComp);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->bAutoActivate = false;
+	AudioComponent->SetupAttachment(RootComponent);
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("Mesh Comp");
 	MeshComp->SetSimulatePhysics(false);
@@ -59,16 +66,17 @@ void ASTK_ExitDoor::DoorOpen()
 }
 
 /// <summary>
-/// Open the door.
+/// Open the door. plays sound.
 /// </summary>
 void ASTK_ExitDoor::NMC_DoorOpen_Implementation()
 {
-	DoorCollider->SetCollisionProfileName("OverlapAll");
 	//ParticleFX->DeactivateSystem();
 	// if (HasAuthority())
 	// {
 	//	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("DOOR IS OPEN!"));
 	// }
+	DoorCollider->SetCollisionProfileName("OverlapAll");
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), OpenDoorSound, GetActorLocation());
 	bIsOpen = true;
 }
 
@@ -82,13 +90,14 @@ void ASTK_ExitDoor::DoorClose()
 }
 
 /// <summary>
-/// Close the door.
+/// Close the door. plays sound.
 /// </summary>
 void ASTK_ExitDoor::NMC_DoorClose_Implementation()
 {
 	// ParticleFX->ActivateSystem();
-	DoorCollider->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	// GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("DOOR IS CLOSED!"));
+	DoorCollider->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), OpenDoorSound, GetActorLocation());
 	bIsOpen = false;
 }
 

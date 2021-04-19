@@ -13,6 +13,7 @@
   H 3/12/2021: Added a list for entities, plus getters for both the monster and shades
   H 3/16/2021: Added a class description and summaries to relevant methods.
   H 4/12/2021: Swapped to character. includes changes to lookat, moveto, execution, animation blueprint, attack, controllers, gamemode, gamestate.
+  H 4/16/2021: GetShades() call updated to refresh shades list every time to prevent crashes due to players joining/disconnecting.
 */
 
 #pragma once

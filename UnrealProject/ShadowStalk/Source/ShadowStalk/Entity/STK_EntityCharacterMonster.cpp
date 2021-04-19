@@ -44,13 +44,14 @@ void ASTK_EntityCharacterMonster::BeginPlay()
     gamestate = GetWorld()->GetGameState<ASTK_MatchGameState>();
 }
 
-
 void ASTK_EntityCharacterMonster::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 }
 
-
+/// <summary>
+/// Drop traps on server
+/// </summary>
 void ASTK_EntityCharacterMonster::SpawnTrap_Implementation()
 {
     if (numOfTraps > 0)
@@ -67,8 +68,6 @@ void ASTK_EntityCharacterMonster::SpawnTrap_Implementation()
          Trap->SpawnTrap();
 
          numOfTraps--;
-            
-        
     }
 }
 
@@ -196,7 +195,6 @@ ECharacterMonsterState ASTK_EntityCharacterMonster::GetMonsterState()
 {
     return CurrentState;
 }
-
 
 /// <summary>
 /// Sets the monster's state. Also allows for custom functionality to apply when a certain state change occurs.

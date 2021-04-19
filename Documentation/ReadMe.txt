@@ -62,3 +62,13 @@ Gameplay Features:
     - Networked Build that is integrated with Steam.
     - When player crosses through unlocked door, they are teleported to end room.
     
+
+Additional Credits:
+
+	- This House by Kevin MacLeod
+	Link: https://incompetech.filmmusic.io/song/4525-this-house
+	License: https://filmmusic.io/standard-license
+	
+	- Lobby Time by Kevin MacLeod
+	Link: https://incompetech.filmmusic.io/song/3986-lobby-time
+	License: https://filmmusic.io/standard-license

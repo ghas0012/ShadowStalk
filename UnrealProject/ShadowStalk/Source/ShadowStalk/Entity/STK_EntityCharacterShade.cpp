@@ -84,7 +84,9 @@ void ASTK_EntityCharacterShade::BeginPlay()
     }
 }
 
-// Called every frame
+/// <summary>
+/// If we're overlapping another actor (likely because we were downed and are recovering), push out from the other collider and then enable collisions.
+/// </summary>
 void ASTK_EntityCharacterShade::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);

@@ -13,6 +13,9 @@ void ASTK_EntityCharacterMonsterController::OnPossess(APawn* aPawn)
     Super::OnPossess(aPawn);
 }
 
+/// <summary>
+/// Sets up input.
+/// </summary>
 void ASTK_EntityCharacterMonsterController::AcknowledgePossession(APawn* aPawn)
 {
     Super::AcknowledgePossession(aPawn);

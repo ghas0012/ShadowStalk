@@ -20,7 +20,6 @@ USTK_EyeComponent::USTK_EyeComponent()
 	//StatesQueue.Add(CurrentState);
 }
 
-
 /// <summary>
 /// Called when the game starts. It registers the mesh to be modified.
 /// </summary>
