@@ -22,7 +22,7 @@ void ASTK_MatchGameState::Register_KeyPickedUp()
 {
     // safety so it doesn't go above 255
     int finalCount = ++Current_Key_Count;
-    FMath::Clamp(finalCount, 0, 255);
+    finalCount = FMath::Clamp(finalCount, 0, 255);
 
     Current_Key_Count = finalCount;
     // GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, FString::Printf(TEXT("Gamestate: Key picked up. %d / %d"), Current_Key_Count, Max_Key_Count));
@@ -33,6 +33,7 @@ void ASTK_MatchGameState::Register_KeyPickedUp()
             Selected_Exit_Door->DoorOpen();
         //GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Green, TEXT("Gamestate: Attempting to open door."));
     }
+
 }
 
 
@@ -44,7 +45,7 @@ void ASTK_MatchGameState::Register_KeyDropped(uint8 count)
 {
     // safety so it doesn't go below 0
     int finalCount = Current_Key_Count - count;
-    FMath::Clamp(finalCount, 0, 255);
+    finalCount = FMath::Clamp(finalCount, 0, 255);
 
     Current_Key_Count = finalCount;
     // GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, FString::Printf(TEXT("Gamestate: Key dropped. %d / %d"), Current_Key_Count, Max_Key_Count));

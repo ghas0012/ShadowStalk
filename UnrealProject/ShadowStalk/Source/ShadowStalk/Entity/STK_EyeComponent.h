@@ -16,8 +16,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include <string>
 #include "STK_EyeComponent.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHADOWSTALK_API USTK_EyeComponent : public UActorComponent
